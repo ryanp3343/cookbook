@@ -3,51 +3,57 @@ import React from 'react';
 import { Component } from 'react';
 import { useState } from 'react';
 import { StyleSheet, Text, View,Image, Button as RNButton } from 'react-native';
-
+import { cond } from 'react-native-reanimated';
 import { Button, InputField, ErrorMessage } from '../components';
-import firebase from '../config/firebase';
+import Firebase from '../config/firebase';
+import firestore from '@react-native-firebase/firestore'
 
-class AddUser extends Component{
-  constructor() {
-    super();
-    this.dbRef = firebase.firebase().colle
-    this.state = {
-      name: '',
-      email: '',
-      password: '',
-      isLoading: false
-    };
-  }
-}
+// class addUser extends Component {
+//   constructor() {
+//     super();
+//     this.db = firebase.firestore().collection('users');
+//     this.state = {
+//       username: '',
+//       email: '',
+//     };
+//   }
+//   inputValue = (val,prop) =>{
+//     const state = this.state;
+//     state[prop] = val;
+//     this.setState(state);
+//   }
+//   storeUser() {
+//     this.db.add({
+//       username:this.state.username,
+//       email:this.state.email
+//     }).then((res) =>{
+//       this.setState({
+//         username: '',
+//         email: ''
+//       })
+//     })
+//   }
+// }
 
+const auth = Firebase.auth();
 
-
-export default function SignupScreen({ navigation }) {
+export default function SignupScreen({navigation}){
   const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [passwordVisibility, setPasswordVisibility] = useState(true);
+  const [rightIcon, setRightIcon] = useState('eye');
   const [signupError, setSignupError] = useState('');
-  const handlePasswordVisibility = () => {
-    if (rightIcon === 'eye') {
-      setRightIcon('eye-off');
-      setPasswordVisibility(!passwordVisibility);
-    } else if (rightIcon === 'eye-off') {
-      setRightIcon('eye');
-      setPasswordVisibility(!passwordVisibility);
-    }
-  };
 
   const onHandleSignup = async () => {
     try {
-      if (email !== '' && password !== '' && username !== '') {
-        await auth().writeUserData(username,email,password);
+      if (email !== '' && password !== '') {
+        await auth.createUserWithEmailAndPassword(email, password);
       }
     } catch (error) {
       setSignupError(error.message);
     }
   };
-  return (
+    return (
     <View style={styles.container}>
         <Image style={styles.Logo} source={require('../imgs/LOGO.png')} />
       <StatusBar style='dark-content' />
@@ -68,7 +74,7 @@ export default function SignupScreen({ navigation }) {
         value={email}
         onChangeText={text => setEmail(text)}
       />
-        <InputField
+        {/* <InputField
         inputStyle={{
           fontSize: 20
         }}
@@ -82,9 +88,9 @@ export default function SignupScreen({ navigation }) {
         autoCorrect={false}
         keyboardType='user-name'
         textContentType='userName'
-        value={username}
-        onChangeText={text => setUsername(text)}
-      />
+        value={this}
+        onChangeText={text => this.inputValue(val,'username')}
+      /> */}
       <InputField
         inputStyle={{
           fontSize: 20
@@ -101,7 +107,7 @@ export default function SignupScreen({ navigation }) {
         textContentType='password'
         value={password}
         onChangeText={text => setPassword(text)}
-        handlePasswordVisibility={handlePasswordVisibility}
+        //handlePasswordVisibility={handlePasswordVisibility}
       />
     
       {signupError ? <ErrorMessage error={signupError} visible={true} /> : null}
@@ -123,8 +129,9 @@ export default function SignupScreen({ navigation }) {
       />
       </View>
     </View>
-  );
-}
+    );
+      }
+
 
 const styles = StyleSheet.create({
     container: {
