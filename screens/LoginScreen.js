@@ -11,8 +11,6 @@ import Firebase from '../config/firebase';
 
 const auth = Firebase.auth();
 
-class Login extends Component {}
-
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -42,8 +40,8 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-    <Image style={styles.Logo} source={require('../imgs/LOGO.png')} />
       <StatusBar style='dark-content' />
+      {<Image style={styles.Logo} source={require('../imgs/LOGO.png')} />}
       <InputField 
         inputStyle={{
           fontSize: 20
@@ -53,7 +51,7 @@ export default function LoginScreen({ navigation }) {
           marginBottom: 20
         }}
         placeholder='EMAIL'
-        placeholderTextColor='BABC94'
+        placeholderTextColor='#BABC94'
         autoCapitalize='none'
         keyboardType='email-address'
         textContentType='emailAddress'
@@ -70,7 +68,7 @@ export default function LoginScreen({ navigation }) {
           marginBottom: 20
         }}
         placeholder='PASSWORD'
-        placeholderTextColor='BABC94'
+        placeholderTextColor='#BABC94'
         autoCapitalize='none'
         autoCorrect={false}
         secureTextEntry={passwordVisibility}
@@ -94,7 +92,7 @@ export default function LoginScreen({ navigation }) {
         title='REGISTER'
         titleSize={13}
         backgroundColor='#EAE7E0'
-        titleColor='A1A189'
+        titleColor='#A1A189'
       />
       </View>
     </View>

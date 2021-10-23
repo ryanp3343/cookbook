@@ -3,10 +3,10 @@ import React from 'react';
 import { Component } from 'react';
 import { useState } from 'react';
 import { StyleSheet, Text, View,Image, Button as RNButton } from 'react-native';
-import { cond } from 'react-native-reanimated';
+// import { cond } from 'react-native-reanimated';
 import { Button, InputField, ErrorMessage } from '../components';
 import Firebase from '../config/firebase';
-import firestore from '@react-native-firebase/firestore'
+//import firestore from '@react-native-firebase/firestore'
 
 // class addUser extends Component {
 //   constructor() {
@@ -55,7 +55,7 @@ export default function SignupScreen({navigation}){
   };
     return (
     <View style={styles.container}>
-        <Image style={styles.Logo} source={require('../imgs/LOGO.png')} />
+        {<Image style={styles.Logo} source={require('../imgs/LOGO.png')} />}
       <StatusBar style='dark-content' />
       <InputField
         inputStyle={{
@@ -65,8 +65,23 @@ export default function SignupScreen({navigation}){
           backgroundColor: '#F9f6f6',
           marginBottom: 20
         }}
+        placeholder='USERNAME'
+        placeholderTextColor='#BABC94'
+        autoCapitalize='none'
+        keyboardType='email-address'
+        textContentType='emailAddress'
+        autoFocus={true}
+      />
+      <InputField
+        inputStyle={{
+          fontSize: 20
+        }}
+        containerStyle={{
+          backgroundColor: '#F9f6f6',
+          marginBottom: 20
+        }}
         placeholder='EMAIL'
-        placeholderTextColor='BABC94'
+        placeholderTextColor='#BABC94'
         autoCapitalize='none'
         keyboardType='email-address'
         textContentType='emailAddress'
@@ -83,7 +98,7 @@ export default function SignupScreen({navigation}){
           marginBottom: 20
         }}
         placeholder='USERNAME'
-        placeholderTextColor='BABC94'
+        placeholderTextColor='#BABC94'
         autoCapitalize='none'
         autoCorrect={false}
         keyboardType='user-name'
@@ -100,7 +115,7 @@ export default function SignupScreen({navigation}){
           marginBottom: 20
         }}
         placeholder='PASSWORD'
-        placeholderTextColor='BABC94'
+        placeholderTextColor='#BABC94'
         autoCapitalize='none'
         autoCorrect={false}
         secureTextEntry={passwordVisibility}
@@ -125,7 +140,7 @@ export default function SignupScreen({navigation}){
         title='back to login'
         titleSize={13}
         backgroundColor='#EAE7E0'
-        titleColor='A1A189'
+        titleColor='#A1A189'
       />
       </View>
     </View>

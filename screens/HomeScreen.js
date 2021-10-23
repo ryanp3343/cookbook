@@ -1,14 +1,21 @@
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StatusBar } from 'expo-status-bar';
 import React, { useContext } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-
+import { StyleSheet, Text, View, Button } from 'react-native';
 import { IconButton } from '../components';
 import Firebase from '../config/firebase';
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
+import ProfileScreen from './ProfileScreen'
+import RecipeScreen from './RecipeScreen'
+import ForumScreen  from './ForumScreen'
+import { Icon } from 'react-native-elements/dist/icons/Icon';
 
 const auth = Firebase.auth();
+const Tabs = createBottomTabNavigator();
 
-export default function HomeScreen() {
+
+export default function HomeScreen({ navigation }) {
   const { user } = useContext(AuthenticatedUserContext);
   const handleSignOut = async () => {
     try {
@@ -18,19 +25,26 @@ export default function HomeScreen() {
     }
   };
   return (
-    <View style={styles.container}>
-      <StatusBar style='dark-content' />
-      <View style={styles.row}>
-        <Text style={styles.title}>Welcome {user.email}!</Text>
-        <IconButton
-          name='logout'
-          size={24}
-          color='#EAE7E0'
-          onPress={handleSignOut}
-        />
-      </View>
-      <Text style={styles.text}>Your UID is: {user.uid} </Text>
-    </View>
+    <Tabs.Navigator screenOptions={{
+                    tabBarStyle: { position: 'absolute' },
+                    tabBarActiveTintColor: '#4D4D3D',
+                    tabBarActiveBackgroundColor: '#4D4D3D',
+                    tabBarInactiveBackgroundColor: '#BABC94',
+                    tabBarLabelStyle: {
+                      fontSize: 15,
+                      color: '#EAE7E0',
+                    },
+    }}>
+        <Tabs.Screen name="Forums" component={ForumScreen} options={{tabBarIcon: ({ tintColor }) => (
+                <Icon name="chat" type='entypo' color='#EAE7E0'/>
+            )}}/>
+        <Tabs.Screen name="Recipes" component={RecipeScreen} options={{tabBarIcon: ({ tintColor }) => (
+                <Icon name="book" type='entypo' color='#EAE7E0'/>
+            )}}/>
+        <Tabs.Screen name="Profile" component={ProfileScreen} options={{tabBarIcon: ({ tintColor }) => (
+                <Icon name="user" type='entypo' color='#EAE7E0'/>
+            )}}/>
+      </Tabs.Navigator>
   );
 }
 
