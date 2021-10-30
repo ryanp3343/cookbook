@@ -1,109 +1,159 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import {SafeAreaView, StyleSheet, Text, View, TextInput, Pressable, ScrollView } from 'react-native';
-import { Icon } from 'react-native-elements';
-import EventCard from '../components/EventCard';
+import React, { useContext, useState, useEffect } from 'react';
+import { StyleSheet, Text, View, Image, Pressable, ScrollView } from 'react-native';
+import ForumCard from '../components/ForumCard';
 
-export default function ProfileScreen({navigation}) {
+import { IconButton, InputField } from '../components';
+import Firebase from '../config/firebase';
+import { Icon } from 'react-native-elements/dist/icons/Icon';
+import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
+
+const auth = Firebase.auth();
+
+export default function ProfileScreen() {
+  const { user } = useContext(AuthenticatedUserContext);
+  const [followers, setFollowers] = useState(300)
+  const [following, setfollowing] = useState(400)
+  const [username, setUsername] = useState('Username')
+  const [userClass, setUserClass] = useState('professional chef')
+
+
+  const handleSignOut = async () => {
+    try {
+      await auth.signOut();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const recipe = true
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.profileContainer}>
-        <View style={styles.profileName}>
-          <Text style={styles.title}>@Poppmane</Text>
-          <Icon name="notifications-outline" type='ionicon' color='black'/>
-          <Icon name="menu-outline" type='ionicon' color='black'/>
-        </View>
-        <View style={styles.profileButtons}>
-          <Pressable style={styles.button} onPress={() => navigation.navigate('Register')}>
-            <Text style={styles.friend}>Add Friend</Text>
-          </Pressable>
-          <Pressable style={styles.button} onPress={() => navigation.navigate('Register')}>
-            <Text style={styles.friend}>Edit Profile</Text>
-          </Pressable>
-        </View>
-      </View>
+    <View style={styles.container}>
+      <StatusBar style='dark-content' />
 
-      <View style={styles.componentContainer}>
-        <View style={styles.compHeader}>
-          <Text style={styles.title}>Your Events</Text>
+        <View  style={styles.profileHeader}>
+          <View style={styles.profileInfo}>
+            <Image style={styles.Logo} source={require('../imgs/pfp1.jpg')}></Image>
+            <View>
+              <View style={styles.settingsName}>
+                <Text style={styles.userName}>{username}</Text>
+                <Pressable style={styles.button} onPress={() => navigation.navigate('Register')}>
+                  <Icon name="edit" type='entypo' color='#000'/>
+                </Pressable>
+              </View>
+              <Text style={styles.userDescription}>{userClass}</Text>
+              <View style={styles.profileFollowers}>
+                <Text style={styles.followers}>followers: {followers}</Text>
+                <Text style={styles.followers}>following: {following}</Text>
+              </View>
+            </View>
+          </View>
         </View>
-      </View>
-      <ScrollView style={styles.scroll}>
-        <EventCard />
-        <EventCard />
-      </ScrollView>
 
-    </SafeAreaView>
+        <View style={styles.navContainer}>
+          <View style={styles.profileNav}>
+            <Pressable style={styles.button} onPress={() => navigation.navigate('Register')}>
+              <Text style={styles.buttonText}>FORUMS</Text>
+            </Pressable>
+            <Pressable style={styles.button} onPress={() => navigation.navigate('Register')}>
+              <Text style={styles.buttonText}>RECIPES</Text>
+            </Pressable>
+            <Pressable style={styles.button} onPress={() => navigation.navigate('Register')}>
+              <Text style={styles.buttonText}>SAVED</Text>
+            </Pressable>
+          </View>
+        </View>
+
+        <View style={styles.contentContainer}>
+          <ScrollView style={styles.Scroll}>
+            {recipe ? <ForumCard name="Skinner" title="Cut my Finger!" repliesAmount={15}/> 
+                    : <ForumCard name="NotSkinner" title="Cut my Finger!" repliesAmount={15}/>}
+          </ScrollView>
+        </View>
+
+        <View style={styles.logOut}>
+            <IconButton
+              name='logout'
+              size={24}
+              color='#000000'
+              onPress={handleSignOut}
+            />
+            <Text>Log out</Text>
+        </View>
+
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 25,
-    paddingBottom: 60,
-    paddingLeft: 15,
-    paddingRight: 15,
-    marginBottom: 250,
+    flex: 1,
+    backgroundColor: '#fff',
+    paddingTop: 15,
+    paddingHorizontal: 8,
   },
-  scroll: {
-    marginTop: 10,
+  profileHeader: {
+    flexDirection: 'column'
   },
-  title: {
-    fontSize: 30,
-    textAlign: 'left',
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  profileName: {
+  profileInfo: {
     flexDirection: 'row',
-    marginBottom: 5,
-    justifyContent: 'space-between',
     alignItems: 'center'
   },
-  profileContainer: {
-    marginBottom: 60,
-    marginTop: 30,
-    justifyContent: 'space-between',
-  },
-  profileButtons: {
+  settingsName: {
     flexDirection: 'row',
-  },
-  compHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between'
+  }, 
+  userName: {
+    fontSize: 30,
+    fontWeight: 'bold',
+  },
+  userDescription: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#bbb',
+  },
+  Logo: {
+    marginRight: 10,
+    width: 80,
+    height: 80,
+    borderRadius: 50,
+  },
+  profileFollowers: {
+    marginTop: 10,
+    flexDirection: 'row',
+    width: 200,
+    justifyContent: 'space-between',
+  },
+  info: {
+    marginBottom: 14
+  },
+  logOut: {
+    width: 50,
+    height: 50,
+  },
+  navContainer: {
+    height: 'auto',
+    paddingTop: 15,
+    alignItems: 'center',
+  },
+  contentContainer: {
+    alignItems: 'center',
+    marginBottom: 250
+  },
+  profileNav: {
+    flexDirection: 'row',
+    marginTop: 20,
+    marginBottom: 20,
+    justifyContent: 'space-between',
+    width: 300,
   },
   button: {
-    borderRadius: 8,
-    width: 100,
-    borderColor: 'black',
-    borderWidth: 2,
-    alignItems: 'center',
-    paddingVertical: 5,
-    marginRight: 15
+    marginTop: 5,
   },
-  friend: {
-    fontSize: 16,
-    lineHeight: 21,
-    fontWeight: 'bold',
-    letterSpacing: 0.25,
-    color:  'black',
-  },
-
-  buttonCreate: {
-    borderRadius: 8,
-    width: 120,
-    alignItems: 'center',
-    paddingVertical: 7,
-    borderColor:  'black',
-    borderWidth: 2,
-    backgroundColor: 'lightgrey',
-  },
-  createText: {
-    fontSize: 16,
-    lineHeight: 21,
-    fontWeight: 'bold',
-    letterSpacing: 0.25,
-    color:  'black',
-  },
+  buttonText: {
+    fontSize: 20,
+    fontWeight: 'bold'
+  }
 });
