@@ -39,8 +39,8 @@ export default function ForumScreen() {
       <Text>Filter by:</Text>
 
       <ScrollView style={styles.Scroll}>
-        {forums.map((forum) => (
-          <ForumCard name={forum.Name} title={forum.Question} repliesAmount={forum.Replies}/>
+        {forums.map((forum, index) => (
+          <ForumCard key={index} name={forum.Name} title={forum.Question} repliesAmount={forum.Replies}/>
         ))}
         <ForumCard name="Skinner" title="Cut my Finger!" repliesAmount={15}/>
         <ForumCard name="Skinner" title="Chicken undercooked?" repliesAmount={5}/>
@@ -58,7 +58,7 @@ export default function ForumScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#EAE7E0',
+    backgroundColor: '#fff',
     paddingTop: 10,
     paddingHorizontal: 8,
     paddingBottom: 60
@@ -67,12 +67,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
    },
    input: {
-     backgroundColor: '#fff',
+    backgroundColor: '#fff',
     height: 40,
     marginBottom: 10,
     borderWidth: 1,
     padding: 10,
     borderRadius: 10
   },
-
 });
