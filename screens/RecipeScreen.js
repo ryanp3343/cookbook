@@ -1,14 +1,16 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useContext } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import Firebase from '../config/firebase';
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
-import RecipeEditor from '../components/RecipeEditor';
+import RecipeCard from '../components/RecipeCard';
+//import RecipeEditor from '../components/RecipeEditor';
 
 const auth = Firebase.auth();
 
 export default function RecipeScreen() {
   const { user } = useContext(AuthenticatedUserContext);
+  const[recipe, setRecipe] = useState([]);
   const handleSignOut = async () => {
     try {
       await auth.signOut();
@@ -19,9 +21,14 @@ export default function RecipeScreen() {
   return (
     <View style={styles.container}>
       <StatusBar style='dark-content' />
-        <View style={styles.row}>
-          <Text>RecipeScreen 2</Text>
-        </View>
+        <ScrollView style={styles.Scroll}>
+        {recipe.map((recipe) => (
+          <RecipeCard name={recipe.Name} title={recipe.Question} repliesAmount={recipe.Replies}/>
+        ))}
+          <RecipeCard name="Gordan Ramsay" title="Beef Wellington" repliesAmount={1337}/>
+          <RecipeCard name="Gordan Ramsay" title="Scrambled Eggs" repliesAmount={42}/>
+          <RecipeCard name="Gordan Ramsay" title="Truffle Mac & Cheese" repliesAmount={28}/>
+        </ScrollView>
     </View>
   );
 }
@@ -39,6 +46,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 24
   },
+  Scroll: {
+    marginTop: 10,
+   },
   title: {
     fontSize: 24,
     fontWeight: '600',
