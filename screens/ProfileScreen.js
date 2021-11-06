@@ -4,7 +4,6 @@ import { StyleSheet, Text, View, Image, Pressable, ScrollView } from 'react-nati
 import ForumCard from '../components/ForumCard';
 import RecipeCard from '../components/RecipeCard';
 
-import { IconButton, InputField } from '../components';
 import Firebase from '../config/firebase';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
