@@ -2,6 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useContext, useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, Pressable, ScrollView } from 'react-native';
 import ForumCard from '../components/ForumCard';
+import RecipeCard from '../components/RecipeCard';
 
 import { IconButton, InputField } from '../components';
 import Firebase from '../config/firebase';
@@ -39,7 +40,7 @@ export default function ProfileScreen() {
               <View style={styles.settingsName}>
                 <Text style={styles.userName}>{username}</Text>
                 <Pressable style={styles.button} onPress={() => navigation.navigate('Register')}>
-                  <Icon name="edit" type='entypo' color='#000'/>
+                  <Icon name="edit" type='material' color='#000'/>
                 </Pressable>
               </View>
               <Text style={styles.userDescription}>{userClass}</Text>
@@ -68,18 +69,14 @@ export default function ProfileScreen() {
         <View style={styles.contentContainer}>
           <ScrollView style={styles.Scroll}>
             {recipe ? <ForumCard name="Skinner" title="Cut my Finger!" repliesAmount={15}/> 
-                    : <ForumCard name="NotSkinner" title="Cut my Finger!" repliesAmount={15}/>}
+                    : <RecipeCard name={"Spaghetti"}/>}
           </ScrollView>
         </View>
 
         <View style={styles.logOut}>
-            <IconButton
-              name='logout'
-              size={24}
-              color='#000000'
-              onPress={handleSignOut}
-            />
-            <Text>Log out</Text>
+            <Pressable style={styles.button} onPress={handleSignOut}>
+              <Text style={styles.buttonText}>Log out</Text>
+            </Pressable>
         </View>
 
     </View>
@@ -130,8 +127,8 @@ const styles = StyleSheet.create({
     marginBottom: 14
   },
   logOut: {
-    width: 50,
-    height: 50,
+    width: 100,
+    height: 100,
   },
   navContainer: {
     height: 'auto',
