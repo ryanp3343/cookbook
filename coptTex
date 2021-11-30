@@ -1,0 +1,7 @@
+
+<IconButton
+name='logout'
+size={24}
+color='#000000'
+onPress={handleSignOut}
+/>
