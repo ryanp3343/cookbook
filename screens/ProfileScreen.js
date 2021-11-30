@@ -3,7 +3,6 @@ import React, { useContext, useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, Pressable, ScrollView } from 'react-native';
 import ForumCard from '../components/ForumCard';
 import RecipeCard from '../components/RecipeCard';
-
 import Firebase from '../config/firebase';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
@@ -16,6 +15,7 @@ export default function ProfileScreen() {
   const [following, setfollowing] = useState(400)
   const [username, setUsername] = useState('Username')
   const [userClass, setUserClass] = useState('professional chef')
+  const [display, setDisplay] = useState(true)
 
 
   const handleSignOut = async () => {
@@ -25,8 +25,6 @@ export default function ProfileScreen() {
       console.log(error);
     }
   };
-
-  const recipe = true
 
   return (
     <View style={styles.container}>
@@ -53,22 +51,19 @@ export default function ProfileScreen() {
 
         <View style={styles.navContainer}>
           <View style={styles.profileNav}>
-            <Pressable style={styles.button} onPress={() => navigation.navigate('Register')}>
+            <Pressable style={styles.button} onPress={() => setDisplay(true)}>
               <Text style={styles.buttonText}>FORUMS</Text>
             </Pressable>
-            <Pressable style={styles.button} onPress={() => navigation.navigate('Register')}>
+            <Pressable style={styles.button} onPress={() => setDisplay(false)}>
               <Text style={styles.buttonText}>RECIPES</Text>
-            </Pressable>
-            <Pressable style={styles.button} onPress={() => navigation.navigate('Register')}>
-              <Text style={styles.buttonText}>SAVED</Text>
             </Pressable>
           </View>
         </View>
 
         <View style={styles.contentContainer}>
           <ScrollView style={styles.Scroll}>
-            {recipe ? <ForumCard name="Skinner" title="Cut my Finger!" repliesAmount={15}/> 
-                    : <RecipeCard name={"Spaghetti"}/>}
+            {display ? <ForumCard name="Skinner" title="Cut my Finger!" repliesAmount={15}/> 
+                     : <RecipeCard name={"Spaghetti"} url={'https://www.eatthis.com/wp-content/uploads/sites/4/2019/01/healthy-spaghetti-spicy-tomato-sauce.jpg?fit=1200%2C879&ssl=1'} directions={"odk"} ingredients={"odk"}/>}
           </ScrollView>
         </View>
 

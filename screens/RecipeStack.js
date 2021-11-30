@@ -6,22 +6,21 @@ import Firebase from '../config/firebase';
 import { createStackNavigator } from '@react-navigation/stack';
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
 import ForumList from '../components/ForumList';
-import { Icon } from 'react-native-elements/dist/icons/Icon';
-import ForumExpanded from '../components/ForumExpanded';
+import RecipeScreen from './RecipeScreen';
+import RecipeEditor from '../components/RecipeEditor';
 
 const auth = Firebase.auth();
 const Stack = createStackNavigator();
 
-export default function ForumScreen() {
+export default function RecipeStack() {
   const { user } = useContext(AuthenticatedUserContext);
 
   return (
     <Stack.Navigator screenOptions={{
       headerShown: false
     }}>
-      <Stack.Screen name='List' component={ForumList} />
-      <Stack.Screen name='Editor' component={ForumEditor} />
-      <Stack.Screen name='ForumExpand' component={ForumExpanded} />
+      <Stack.Screen name='RecipesList' component={RecipeScreen} />
+      <Stack.Screen name='RecipeEditor' component={RecipeEditor} />
     </Stack.Navigator>
   );
 }

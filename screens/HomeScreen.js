@@ -9,6 +9,7 @@ import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvide
 import ProfileScreen from './ProfileScreen'
 import RecipeScreen from './RecipeScreen'
 import ForumScreen  from './ForumScreen'
+import RecipeStack from './RecipeStack';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 
 const auth = Firebase.auth();
@@ -27,22 +28,26 @@ export default function HomeScreen({ navigation }) {
   return (
     <Tabs.Navigator screenOptions={{
                     tabBarStyle: { position: 'absolute' },
-                    tabBarActiveTintColor: '#4D4D3D',
-                    tabBarActiveBackgroundColor: '#4D4D3D',
-                    tabBarInactiveBackgroundColor: '#BABC94',
+                    tabBarActiveTintColor: '#fff',
+                    tabBarActiveBackgroundColor: '#84a186',
+                    tabBarInactiveBackgroundColor: '#3f5c41',
                     tabBarLabelStyle: {
                       fontSize: 15,
-                      color: '#EAE7E0',
+                      color: '#000',
                     },
+                    headerStyle: {
+                      backgroundColor: '#3f5c41',
+                    },
+                    headerTintColor: "white"
     }}>
         <Tabs.Screen name="Forums" component={ForumScreen} options={{tabBarIcon: ({ tintColor }) => (
-                <Icon name="chat" type='entypo' color='#EAE7E0'/>
+                <Icon name="forum" type='material' color='#000'/>
             )}}/>
-        <Tabs.Screen name="Recipes" component={RecipeScreen} options={{tabBarIcon: ({ tintColor }) => (
-                <Icon name="book" type='entypo' color='#EAE7E0'/>
+        <Tabs.Screen name="Recipes" component={RecipeStack} options={{tabBarIcon: ({ tintColor }) => (
+                <Icon name="book" type='material' color='#000'/>
             )}}/>
         <Tabs.Screen name="Profile" component={ProfileScreen} options={{tabBarIcon: ({ tintColor }) => (
-                <Icon name="user" type='entypo' color='#EAE7E0'/>
+                <Icon name="person" type='material' color='#000'/>
             )}}/>
       </Tabs.Navigator>
   );

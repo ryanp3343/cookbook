@@ -1,33 +1,51 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useContext, useState } from 'react';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import React, { useContext, useState, useEffect } from 'react';
+import { StyleSheet, Text, View, ScrollView, Pressable } from 'react-native';
 import Firebase from '../config/firebase';
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
+import RecipeEditor from '../components/RecipeEditor';
 import RecipeCard from '../components/RecipeCard';
-//import RecipeEditor from '../components/RecipeEditor';
+import { Icon } from 'react-native-elements/dist/icons/Icon';
 
-const auth = Firebase.auth();
+const fireDB = Firebase.firestore();
 
-export default function RecipeScreen() {
-  const { user } = useContext(AuthenticatedUserContext);
-  const[recipe, setRecipe] = useState([]);
-  const handleSignOut = async () => {
-    try {
-      await auth.signOut();
-    } catch (error) {
-      console.log(error);
-    }
-  };
+export default function RecipeScreen({navigation}) {
+  const[recipes, setRecipes] = useState([]);
+  const [text, onChangeText] = React.useState("");
+  const[loading, setLoading] = useState(false);
+  const[editor, setEditor] = useState(true);
+
+  const ref = fireDB.collection('Recipes');
+  
+  const getRecipes = () => {
+    setLoading(true);
+    ref.onSnapshot((QuerySnapshot) => {
+      const recipes = [];
+      QuerySnapshot.forEach((doc) => {
+        recipes.push(doc.data());
+      });
+      setRecipes(recipes);
+      setLoading(false);
+    });
+  }
+
+  useEffect(() => {
+    getRecipes();
+  });
+
   return (
     <View style={styles.container}>
       <StatusBar style='dark-content' />
-        <ScrollView style={styles.Scroll}>
-        {recipe.map((recipe) => (
-          <RecipeCard name={recipe.Name} title={recipe.Question} repliesAmount={recipe.Replies}/>
+      <View style={styles.editorButton}>
+      <Pressable onPress={() => navigation.navigate('RecipeEditor')}>
+            <Icon size={40} name="edit" type='material' color='#fff'/>
+      </Pressable>
+      </View>
+        <ScrollView style={styles.scroll}>
+        {recipes.map((recipe, index) => (
+          <RecipeCard key={index} name={recipe.name} directions={recipe.directions} url={recipe.photoURL} ingredients={recipe.ingredients}/>
         ))}
-          <RecipeCard name="Gordan Ramsay" title="Beef Wellington" repliesAmount={1337}/>
-          <RecipeCard name="Gordan Ramsay" title="Scrambled Eggs" repliesAmount={42}/>
-          <RecipeCard name="Gordan Ramsay" title="Truffle Mac & Cheese" repliesAmount={28}/>
+         <RecipeCard key={1} name={"Spaghetti"} url={'https://www.eatthis.com/wp-content/uploads/sites/4/2019/01/healthy-spaghetti-spicy-tomato-sauce.jpg?fit=1200%2C879&ssl=1'} directions={"odk"} ingredients={"odk"}/>
         </ScrollView>
     </View>
   );
@@ -36,15 +54,10 @@ export default function RecipeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#EAE7E0',
-    paddingTop: 50,
-    paddingHorizontal: 12
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 24
+    backgroundColor: '#fff',
+    paddingTop: 10,
+    paddingHorizontal: 8,
+    paddingBottom: 60
   },
   Scroll: {
     marginTop: 10,
@@ -58,5 +71,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'normal',
     color: '#fff'
-  }
+  },
+  editorButton: {
+    position: 'absolute',
+    bottom: 100,
+    right: 20,
+    width: 80,
+    height: 80,
+    borderRadius: 50,
+    backgroundColor: "#3f5c41",
+    zIndex: 10,
+    justifyContent: 'center',
+    alignItems: 'center'
+},
 });

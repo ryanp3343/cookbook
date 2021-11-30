@@ -55,18 +55,20 @@ export default function SignupScreen({navigation}){
   };
     return (
     <View style={styles.container}>
-        {<Image style={styles.Logo} source={require('../imgs/LOGO.png')} />}
+        {<Image style={styles.Logo} source={require('../imgs/LOGO_BLACK.png')} />}
       <StatusBar style='dark-content' />
       <InputField
         inputStyle={{
           fontSize: 20
         }}
         containerStyle={{
-          backgroundColor: '#F9f6f6',
-          marginBottom: 20
+          backgroundColor: 'transparent',
+          marginBottom: 20,
+          borderBottomColor: 'black',
+          borderBottomWidth: 2
         }}
         placeholder='USERNAME'
-        placeholderTextColor='#BABC94'
+        placeholderTextColor='#bbb'
         autoCapitalize='none'
         keyboardType='email-address'
         textContentType='emailAddress'
@@ -77,11 +79,13 @@ export default function SignupScreen({navigation}){
           fontSize: 20
         }}
         containerStyle={{
-          backgroundColor: '#F9f6f6',
-          marginBottom: 20
+          backgroundColor: 'transparent',
+          marginBottom: 20,
+          borderBottomColor: 'black',
+          borderBottomWidth: 2
         }}
         placeholder='EMAIL'
-        placeholderTextColor='#BABC94'
+        placeholderTextColor='#bbb'
         autoCapitalize='none'
         keyboardType='email-address'
         textContentType='emailAddress'
@@ -89,33 +93,18 @@ export default function SignupScreen({navigation}){
         value={email}
         onChangeText={text => setEmail(text)}
       />
-        {/* <InputField
-        inputStyle={{
-          fontSize: 20
-        }}
-        containerStyle={{
-          backgroundColor: '#fff',
-          marginBottom: 20
-        }}
-        placeholder='USERNAME'
-        placeholderTextColor='#BABC94'
-        autoCapitalize='none'
-        autoCorrect={false}
-        keyboardType='user-name'
-        textContentType='userName'
-        value={this}
-        onChangeText={text => this.inputValue(val,'username')}
-      /> */}
       <InputField
         inputStyle={{
           fontSize: 20
         }}
         containerStyle={{
           backgroundColor: '#fff',
-          marginBottom: 20
+          marginBottom: 20,
+          borderBottomColor: 'black',
+          borderBottomWidth: 2
         }}
         placeholder='PASSWORD'
-        placeholderTextColor='#BABC94'
+        placeholderTextColor='#bbb'
         autoCapitalize='none'
         autoCorrect={false}
         secureTextEntry={passwordVisibility}
@@ -129,7 +118,7 @@ export default function SignupScreen({navigation}){
       <View style={styles.buttonContainer}>
       <Button
         onPress={onHandleSignup}
-        backgroundColor='#BABC94'
+        backgroundColor='#000'
         title='REGISTER'
         titleSize={25}
       />
@@ -139,8 +128,8 @@ export default function SignupScreen({navigation}){
         onPress={() => navigation.navigate('Login')}
         title='back to login'
         titleSize={13}
-        backgroundColor='#EAE7E0'
-        titleColor='#A1A189'
+        backgroundColor='transparent'
+        titleColor='#555'
       />
       </View>
     </View>
@@ -151,15 +140,16 @@ export default function SignupScreen({navigation}){
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#EAE7E0',
-        paddingTop: 150,
-        paddingHorizontal: 60
+        backgroundColor: '#fff',
+        paddingHorizontal: 60,
+        justifyContent:'center'
       },
       Logo: {
         alignSelf:'center',
         width: 250,
         height: 250,
-        paddingTop: 150
+        paddingTop: 150,
+        marginBottom: 20
       },
       buttonContainer: {
           margin:2,

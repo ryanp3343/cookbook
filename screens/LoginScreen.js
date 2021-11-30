@@ -41,17 +41,19 @@ export default function LoginScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar style='dark-content' />
-      {<Image style={styles.Logo} source={require('../imgs/LOGO.png')} />}
+      {<Image style={styles.Logo} source={require('../imgs/LOGO_BLACK.png')} />}
       <InputField 
         inputStyle={{
           fontSize: 20
         }}
         containerStyle={{
-          backgroundColor: '#F9f6f6',
-          marginBottom: 20
+          backgroundColor: 'transparent',
+          marginBottom: 20,
+          borderBottomColor: 'black',
+          borderBottomWidth: 2
         }}
         placeholder='EMAIL'
-        placeholderTextColor='#BABC94'
+        placeholderTextColor='#bbb'
         autoCapitalize='none'
         keyboardType='email-address'
         textContentType='emailAddress'
@@ -64,11 +66,13 @@ export default function LoginScreen({ navigation }) {
           fontSize: 20
         }}
         containerStyle={{
-          backgroundColor: '#fff',
-          marginBottom: 20
+          backgroundColor: 'transparent',
+          marginBottom: 20,
+          borderBottomColor: 'black',
+          borderBottomWidth: 2
         }}
         placeholder='PASSWORD'
-        placeholderTextColor='#BABC94'
+        placeholderTextColor='#bbb'
         autoCapitalize='none'
         autoCorrect={false}
         secureTextEntry={passwordVisibility}
@@ -81,7 +85,7 @@ export default function LoginScreen({ navigation }) {
       <View style={styles.buttonContainer}>
       <Button
         onPress={onLogin}
-        backgroundColor='#BABC94'
+        backgroundColor='#000'
         title='LOGIN'
         titleSize={25}
       />
@@ -91,8 +95,8 @@ export default function LoginScreen({ navigation }) {
         onPress={() => navigation.navigate('Signup')}
         title='REGISTER'
         titleSize={13}
-        backgroundColor='#EAE7E0'
-        titleColor='#A1A189'
+        backgroundColor='transparent'
+        titleColor='#000'
       />
       </View>
     </View>
@@ -102,15 +106,15 @@ export default function LoginScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#EAE7E0',
-    paddingTop: 150,
-    paddingHorizontal: 60
+    backgroundColor: '#fff',
+    paddingHorizontal: 60,
+    justifyContent: 'center'
   },
   Logo: {
     alignSelf:'center',
     width: 250,
     height: 250,
-    paddingTop: 150
+    marginBottom: 20
   },
   buttonContainer: {
       margin:2,
