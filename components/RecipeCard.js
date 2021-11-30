@@ -1,18 +1,26 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
+import { Icon } from 'react-native-elements/dist/icons/Icon';
 
 
-const RecipeCard = ({name, photoURL, title, question, replies, repliesAmount}) => {
+const RecipeCard = ({name, directions, ingredients, url}) => {
+    const [directionList, setDirectionList] = useState([]);
+    
     return (
         <View style={styles.Card}>
             <View style={styles.Title}>
-                <Image style={styles.Logo} source={require('../imgs/pfp1.jpg')}></Image>
-                <Text>{name}</Text>
-                <Text></Text>
+                <Text style={styles.recipeTitle}>{name}</Text>
+                <Image source={{uri: url}}
+                       style={{width: 320, height: 320}}
+                 />
+                 <View style={styles.directionsContainer}>
+                    
+                 </View>
             </View>
-            <View style={styles.Description}>
-                <Text style={styles.TitleText}>{title}</Text>
-                <Text>{repliesAmount} replies</Text>
+            <View style={styles.buttonContainer}>
+                <Icon style={styles.icon} size={30} name="favorite" type='material' color='#000'/>
+                <Icon style={styles.icon} size={30} name="question-answer" type='material' color='#000'/>
+                <Icon style={styles.icon} size={30} name="person" type='material' color='#000'/>
             </View>
         </View>
     )
@@ -20,18 +28,23 @@ const RecipeCard = ({name, photoURL, title, question, replies, repliesAmount}) =
 
 const styles = StyleSheet.create({
   Card: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#ddd',
     fontSize: 20,
-    marginBottom: 10,
+    marginBottom: 15,
     fontWeight: '600',
     width: 340,
-    height: 400,
+    height: 'auto',
     borderRadius: 10,
     padding: 10,
   },
+  recipeTitle: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
   Title: {
-    alignItems: 'center',
-    flexDirection: 'row',
+    flexDirection: 'column',
+    justifyContent: 'center'
   },
   Logo: {
     marginRight: 10,
@@ -50,6 +63,24 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#4D4D3D',
     fontWeight: 'bold',
+  },
+  buttonContainer: {
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      marginVertical: 10,
+  },
+  icon: {
+      marginRight: 20,
+  },
+  directionsContainer: {
+      marginVertical: 10,
+  },
+  directions: {
+      fontSize: 15,
+  },
+  directionTitle: {
+      fontSize: 18,
+      fontWeight: 'bold',
   }
 });
 

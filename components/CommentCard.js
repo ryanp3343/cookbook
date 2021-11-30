@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 
 
-const ForumCard = ({name, photoURL, title, question, replies, repliesAmount}) => {
+const CommentCard = ({name, comment}) => {
     return (
         <View style={styles.Card}>
             <View style={styles.Title}>
@@ -10,8 +10,7 @@ const ForumCard = ({name, photoURL, title, question, replies, repliesAmount}) =>
                 <Text>{name}</Text>
             </View>
             <View style={styles.Description}>
-                <Text style={styles.TitleText}>{title}</Text>
-                <Text>{repliesAmount ? repliesAmount : "no"} replies</Text>
+                <Text style={styles.TitleText}>{comment}</Text>
             </View>
         </View>
     )
@@ -52,4 +51,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default ForumCard;
+export default CommentCard;
