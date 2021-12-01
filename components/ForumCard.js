@@ -20,6 +20,7 @@ const ForumCard = ({name, photoURL, title, question, replies, repliesAmount}) =>
 const styles = StyleSheet.create({
   Card: {
     borderWidth: 1,
+    borderColor: '#D8d8d8',
     fontSize: 20,
     marginBottom: 10,
     fontWeight: '600',

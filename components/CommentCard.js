@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
+import { color } from 'react-native-reanimated';
 
 
 const CommentCard = ({name, comment}) => {
@@ -7,7 +8,7 @@ const CommentCard = ({name, comment}) => {
         <View style={styles.Card}>
             <View style={styles.Title}>
                 <Image style={styles.Logo} source={require('../imgs/pfp1.jpg')}></Image>
-                <Text>{name}</Text>
+                <Text style={styles.NameTitle}>{name}</Text>
             </View>
             <View style={styles.Description}>
                 <Text style={styles.TitleText}>{comment}</Text>
@@ -19,13 +20,13 @@ const CommentCard = ({name, comment}) => {
 const styles = StyleSheet.create({
   Card: {
     borderWidth: 1,
-    fontSize: 20,
+    borderColor: '#D8d8d8',
     marginBottom: 10,
     fontWeight: '600',
     width: 340,
-    height: 100,
     borderRadius: 10,
     padding: 10,
+    backgroundColor: 'white'
   },
   Title: {
     alignItems: 'center',
@@ -48,6 +49,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#4D4D3D',
     fontWeight: 'bold',
+  },
+  NameTitle: {
+    fontWeight: 'bold',
+    color: '#101010',
+    fontSize: 20,
   }
 });
 

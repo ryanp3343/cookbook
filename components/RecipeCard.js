@@ -28,7 +28,7 @@ const RecipeCard = ({name, directions, ingredients, url}) => {
 
 const styles = StyleSheet.create({
   Card: {
-    backgroundColor: '#ddd',
+    // backgroundColor: '#ddd',
     fontSize: 20,
     marginBottom: 15,
     fontWeight: '600',

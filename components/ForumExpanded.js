@@ -22,8 +22,8 @@ export default function ForumExpanded({navigation, route}) {
 
             <View>
                 <View style={styles.descriptionContainer}>
-                    <Text style={styles.title}>{JSON.stringify(title)}</Text>
-                    <Text style={styles.description}>{JSON.stringify(description)}</Text>
+                    <Text style={styles.title}>{title}</Text>
+                    <Text style={styles.description}>{description}</Text>
                 </View>
             </View>
 
@@ -76,17 +76,15 @@ text: {
     fontWeight: 'bold'
 },
 title: {
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: 'bold',
-    borderBottomColor: 'black',
-    borderBottomWidth: 1,
 },
 description: {
     marginTop: 10,
     fontSize: 20,
 },
 descriptionContainer: {
-    borderWidth: 1,
+    // borderWidth: 1,
     paddingHorizontal:10,
     paddingVertical: 10,
     borderRadius: 10,
