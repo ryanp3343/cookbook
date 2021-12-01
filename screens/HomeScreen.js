@@ -33,7 +33,7 @@ export default function HomeScreen({ navigation }) {
                     tabBarInactiveBackgroundColor: '#3f5c41',
                     tabBarLabelStyle: {
                       fontSize: 15,
-                      color: '#000',
+                      color: '#fff',
                     },
                     headerStyle: {
                       backgroundColor: '#3f5c41',
@@ -41,13 +41,13 @@ export default function HomeScreen({ navigation }) {
                     headerTintColor: "white"
     }}>
         <Tabs.Screen name="Forums" component={ForumScreen} options={{tabBarIcon: ({ tintColor }) => (
-                <Icon name="forum" type='material' color='#000'/>
+                <Icon name="forum" type='material' color='#fff'/>
             )}}/>
         <Tabs.Screen name="Recipes" component={RecipeStack} options={{tabBarIcon: ({ tintColor }) => (
-                <Icon name="book" type='material' color='#000'/>
+                <Icon name="book" type='material' color='#fff'/>
             )}}/>
         <Tabs.Screen name="Profile" component={ProfileScreen} options={{tabBarIcon: ({ tintColor }) => (
-                <Icon name="person" type='material' color='#000'/>
+                <Icon name="person" type='material' color='#fff'/>
             )}}/>
       </Tabs.Navigator>
   );

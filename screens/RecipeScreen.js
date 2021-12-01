@@ -41,9 +41,17 @@ export default function RecipeScreen({navigation}) {
             <Icon size={40} name="edit" type='material' color='#fff'/>
       </Pressable>
       </View>
-        <ScrollView style={styles.scroll}>
+        <ScrollView style={styles.Scroll}  showsVerticalScrollIndicator={false}
+                                           showsHorizontalScrollIndicator={false}>
         {recipes.map((recipe, index) => (
-          <RecipeCard key={index} name={recipe.name} directions={recipe.directions} url={recipe.photoURL} ingredients={recipe.ingredients}/>
+           <Pressable key={index} onPress={() => navigation.navigate('RecipeExpanded', {
+            name: recipe.name,
+            directions: recipe.directions,
+            photoURL: recipe.photoURL,
+            ingredients: recipe.ingredients
+          })}>
+              <RecipeCard key={index} name={recipe.name} directions={recipe.directions} url={recipe.photoURL} ingredients={recipe.ingredients}/>
+          </Pressable>
         ))}
          <RecipeCard key={1} name={"Spaghetti"} url={'https://www.eatthis.com/wp-content/uploads/sites/4/2019/01/healthy-spaghetti-spicy-tomato-sauce.jpg?fit=1200%2C879&ssl=1'} directions={"odk"} ingredients={"odk"}/>
         </ScrollView>
