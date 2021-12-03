@@ -18,7 +18,7 @@ export default function ForumList({navigation}) {
   const[loading, setLoading] = useState(false);
   const[editor, setEditor] = useState(true);
 
-  const ref = fireDB.collection('Forums');
+  const ref = fireDB.collection('newforums');
   
   const getForums = () => {
     setLoading(true);

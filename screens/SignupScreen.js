@@ -6,40 +6,14 @@ import { StyleSheet, Text, View,Image, Button as RNButton } from 'react-native';
 // import { cond } from 'react-native-reanimated';
 import { Button, InputField, ErrorMessage } from '../components';
 import Firebase from '../config/firebase';
-//import firestore from '@react-native-firebase/firestore'
-
-// class addUser extends Component {
-//   constructor() {
-//     super();
-//     this.db = firebase.firestore().collection('users');
-//     this.state = {
-//       username: '',
-//       email: '',
-//     };
-//   }
-//   inputValue = (val,prop) =>{
-//     const state = this.state;
-//     state[prop] = val;
-//     this.setState(state);
-//   }
-//   storeUser() {
-//     this.db.add({
-//       username:this.state.username,
-//       email:this.state.email
-//     }).then((res) =>{
-//       this.setState({
-//         username: '',
-//         email: ''
-//       })
-//     })
-//   }
-// }
 
 const auth = Firebase.auth();
+const db = Firebase.firestore()
 
 export default function SignupScreen({navigation}){
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [username, setUser] = useState('');
   const [passwordVisibility, setPasswordVisibility] = useState(true);
   const [rightIcon, setRightIcon] = useState('eye');
   const [signupError, setSignupError] = useState('');
@@ -47,7 +21,21 @@ export default function SignupScreen({navigation}){
   const onHandleSignup = async () => {
     try {
       if (email !== '' && password !== '') {
-        await auth.createUserWithEmailAndPassword(email, password);
+        await auth.createUserWithEmailAndPassword(email, password).then((cred) =>{
+          var user = auth.currentUser;
+          var uid;
+          if(user != null)
+          {
+              uid = user.uid;
+          }
+          console.log(uid)
+          db.collection("newuser").doc(uid)
+          .set({
+            username: username,
+            email: email,
+            password: password
+          })
+        })
       }
     } catch (error) {
       setSignupError(error.message);
@@ -73,6 +61,8 @@ export default function SignupScreen({navigation}){
         keyboardType='email-address'
         textContentType='emailAddress'
         autoFocus={true}
+        value={username}
+        onChangeText={text => setUser(text)}
       />
       <InputField
         inputStyle={{

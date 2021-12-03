@@ -1,11 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useContext, useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView, Pressable } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Pressable, TouchableOpacity} from 'react-native';
 import Firebase from '../config/firebase';
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
 import RecipeEditor from '../components/RecipeEditor';
 import RecipeCard from '../components/RecipeCard';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
+
 
 const fireDB = Firebase.firestore();
 
@@ -15,7 +16,8 @@ export default function RecipeScreen({navigation}) {
   const[loading, setLoading] = useState(false);
   const[editor, setEditor] = useState(true);
 
-  const ref = fireDB.collection('Recipes');
+
+  const ref = fireDB.collection('newrecipes');
   
   const getRecipes = () => {
     setLoading(true);
@@ -23,6 +25,7 @@ export default function RecipeScreen({navigation}) {
       const recipes = [];
       QuerySnapshot.forEach((doc) => {
         recipes.push(doc.data());
+        console.log(doc.data())
       });
       setRecipes(recipes);
       setLoading(false);
@@ -31,7 +34,7 @@ export default function RecipeScreen({navigation}) {
 
   useEffect(() => {
     getRecipes();
-  });
+  },[]);
 
   return (
     <View style={styles.container}>
@@ -45,12 +48,12 @@ export default function RecipeScreen({navigation}) {
                                            showsHorizontalScrollIndicator={false}>
         {recipes.map((recipe, index) => (
            <Pressable key={index} onPress={() => navigation.navigate('RecipeExpanded', {
-            name: recipe.name,
-            directions: recipe.directions,
-            photoURL: recipe.photoURL,
-            ingredients: recipe.ingredients
+            name: recipe.Title,
+            directions: recipe.Directions,
+            photoURL: recipe.Url,
+            ingredients: recipe.Ingredients
           })}>
-              <RecipeCard key={index} name={recipe.name} directions={recipe.directions} url={recipe.photoURL} ingredients={recipe.ingredients}/>
+              <RecipeCard key={index} name={recipe.Title} directions={recipe.directions} url={recipe.Url} ingredients={recipe.ingredients}/>
           </Pressable>
         ))}
          <RecipeCard key={1} name={"Spaghetti"} url={'https://www.eatthis.com/wp-content/uploads/sites/4/2019/01/healthy-spaghetti-spicy-tomato-sauce.jpg?fit=1200%2C879&ssl=1'} directions={"odk"} ingredients={"odk"}/>

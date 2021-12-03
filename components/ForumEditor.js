@@ -3,24 +3,39 @@ import React from 'react';
 import { StyleSheet, Text, View, TextInput, Button, Pressable } from 'react-native';
 import Firebase from '../config/firebase';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
-import { doc, setDoc } from "firebase/firestore"; 
-// import { Button, InputField, ErrorMessage } from '../components';
+import {onAuthStateChanged} from "firebase/auth";
+import { useState } from 'react';
 
-const createQuestion = (question, description) => {
-  Firebase.firestore()
-  .collection("Forums")
-  .add({Question: question,
-        Name: "DB SKINNER",
-        Description: description,
-        Replies: null
-      }).then((data) => addComplete(data))
-      .catch((error) => console.log(error));
-}
+const db = Firebase.firestore()
+const auth = Firebase.auth();
+
 
 export default function ForumEditor({navigation}) {
     
-const [Question, setQuestion] = React.useState('');
-const [Description, setDescription] = React.useState('');
+const [Question, setQuestion] = useState('');
+const [Description, setDescription] = useState('');
+
+const createQuestion = async () => {
+  var userName
+  await auth.onAuthStateChanged(user =>{
+    if(user){
+      db.collection("newusers").doc(user.uid).get().then((docRef) => {
+        const snapshot = docRef.data();
+
+        userName = snapshot["username"];
+        console.log(typeof(snapshot["username"]))
+        db.collection("newforums").doc(user.uid)
+        .set({
+          Question: Question,
+          Name: snapshot["username"],
+          Description: Description,
+          Replies: null
+        })
+      })
+    }
+  })
+
+};
 
     return (
       <View style={styles.backgroundImage}>
@@ -36,13 +51,13 @@ const [Description, setDescription] = React.useState('');
           <View style={styles.inputContaier}>
             <TextInput 
                 style={styles.Question}
-                onChangeText={setQuestion}
+                onChangeText={text => setQuestion(text)}
                 value={Question}
                 placeholder="Question"
             />
             <TextInput 
                 style={styles.Description}
-                onChangeText={setDescription}
+                onChangeText={text => setDescription(text)}
                 value={Description}
                 placeholder="Description"
                 multiline={true}
