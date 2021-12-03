@@ -29,7 +29,7 @@ export default function SignupScreen({navigation}){
               uid = user.uid;
           }
           console.log(uid)
-          db.collection("newuser").doc(uid)
+          db.collection("newusers").doc(uid)
           .set({
             username: username,
             email: email,
