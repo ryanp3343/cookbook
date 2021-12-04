@@ -22,7 +22,7 @@ export default function ForumExpanded({navigation, route}) {
           if(user){
             db.collection("newusers").doc(user.uid).get().then((docRef) => {
               const snapshot = docRef.data();
-              userName = snapshot["username"];
+              // userName = snapshot["username"];
               console.log(typeof(snapshot["username"]))
               Firebase.firestore()
                 .collection("forumComments")
