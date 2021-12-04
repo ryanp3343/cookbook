@@ -9,7 +9,7 @@ import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvide
 
 const auth = Firebase.auth();
 
-export default function ProfileScreen() {
+export default function ProfileScreen({navigation}) {
   const { user } = useContext(AuthenticatedUserContext);
   const [followers, setFollowers] = useState(300)
   const [following, setfollowing] = useState(400)
@@ -36,7 +36,7 @@ export default function ProfileScreen() {
             <View>
               <View style={styles.settingsName}>
                 <Text style={styles.userName}>{username}</Text>
-                <Pressable style={styles.button} onPress={() => navigation.navigate('Register')}>
+                <Pressable style={styles.button} onPress={() => navigation.navigate('ProfileEditor')}>
                   <Icon name="edit" type='material' color='#000'/>
                 </Pressable>
               </View>

@@ -6,7 +6,7 @@ import { StyleSheet, Text, View, Button } from 'react-native';
 import { IconButton } from '../components';
 import Firebase from '../config/firebase';
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
-import ProfileScreen from './ProfileScreen'
+import ProfileStack from './ProfileStack';
 import RecipeScreen from './RecipeScreen'
 import ForumScreen  from './ForumScreen'
 import RecipeStack from './RecipeStack';
@@ -48,13 +48,12 @@ export default function HomeScreen({ navigation }) {
         <Tabs.Screen name="Recipes" component={RecipeStack} options={{tabBarIcon: ({ tintColor }) => (
                 <Icon name="book" type='material' color='#fff'/>
             )}}/>
-        <Tabs.Screen name="Profile" component={ProfileScreen} options={{tabBarIcon: ({ tintColor }) => (
+        <Tabs.Screen name="Profile" component={ProfileStack} options={{tabBarIcon: ({ tintColor }) => (
                 <Icon name="person" type='material' color='#fff'/>
             ), headerRight: () => (
               <View
               style={{
                 flex: 1,
-                backgroundColor: Platform.OS === 'ios' ? '#e54b4d' : '',
                 alignItems: 'center',
                 flexDirection: 'row',
                 paddingHorizontal: 20,
