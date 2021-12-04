@@ -12,8 +12,8 @@ const fireDB = Firebase.firestore();
 
 export default function ProfileScreen({navigation}) {
   const { user } = useContext(AuthenticatedUserContext);
-  const [followers, setFollowers] = useState(300)
-  const [following, setfollowing] = useState(400)
+  const [followers, setFollowers] = useState(0)
+  const [following, setfollowing] = useState(0)
   const [username, setUsername] = useState('Username')
   const [userClass, setUserClass] = useState('professional chef')
   const [display, setDisplay] = useState(true)
@@ -27,9 +27,9 @@ export default function ProfileScreen({navigation}) {
       console.log(error);
     }
   };
-  const getProfile = () => {
+  const getProfile = async  () => {
     setLoading(true);
-    auth.onAuthStateChanged(user => {
+    await auth.onAuthStateChanged(user => {
       if(user){
         fireDB.collection('newusers').doc(user.uid).get().then((docRef) =>{
             const profile = [];
@@ -41,9 +41,7 @@ export default function ProfileScreen({navigation}) {
     })  
     
   }
-console.log(profile['profUrl'])
 var anotherurl = profile['profUrl']
-console.log(anotherurl)
 
   useEffect(() => {
     getProfile();
@@ -76,10 +74,10 @@ console.log(anotherurl)
 
         <View style={styles.navContainer}>
           <View style={styles.profileNav}>
-            <Pressable style={styles.button} onPress={() => setDisplay(true)}>
+            <Pressable style={styles.button} onPress={() => setDisplay(false)}>
               <Text style={styles.buttonText}>FORUMS</Text>
             </Pressable>
-            <Pressable style={styles.button} onPress={() => setDisplay(false)}>
+            <Pressable style={styles.button} onPress={() => setDisplay(true)}>
               <Text style={styles.buttonText}>RECIPES</Text>
             </Pressable>
           </View>
@@ -87,7 +85,8 @@ console.log(anotherurl)
 
         <View style={styles.contentContainer}>
           <ScrollView style={styles.Scroll}>
-            
+            {display ? <RecipeCard name={"Homade Doughnuts"} directions={"som"} ingredients={"som"} url={'https://firebasestorage.googleapis.com/v0/b/test2-7ed41.appspot.com/o/images%2FftXCcuNEJwUFx26SOd1JZWmmZ1Q2%2Frecipe.png?alt=media&token=c242e56d-9fa4-4d96-8997-568e56501691'}/> 
+                      : <ForumCard key={"index"} name={"poppmane"} title={"How to boil water?"}/>}
           </ScrollView>
         </View>
     </View>
