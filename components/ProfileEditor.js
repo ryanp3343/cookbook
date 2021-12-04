@@ -5,36 +5,56 @@ import Firebase from '../config/firebase';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import {onAuthStateChanged} from "firebase/auth";
 import { useState } from 'react';
+import "firebase/storage"
+import * as ImagePicker from 'expo-image-picker';
 
 const db = Firebase.firestore()
 const auth = Firebase.auth();
 
 
 export default function ProfileEditor({navigation}) {
-    
-const [Question, setQuestion] = useState('');
-const [Description, setDescription] = useState('');
-
-const createQuestion = async () => {
-  var userName
-  await auth.onAuthStateChanged(user =>{
-    if(user){
-      db.collection("newusers").doc(user.uid).get().then((docRef) => {
-        const snapshot = docRef.data();
-        userName = snapshot["username"];
-        Firebase.firestore()
-          .collection("newforums")
-          .add({Question: Question,
-                Description: Description,
-                Name: userName,
-                Replies: null
-              }).then((data) => addComplete(data))
-                .catch((error) => console.log(error));
-      })
+  
+  const [profUsername, setProfUsername] = useState('');
+  const [profTitle, setProfTitle] = useState('');
+  
+  var url
+  const onChooseImagePress = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync();
+    if (!result.cancelled) {
+      uploadImage(result.uri, "prof")
+        .then(() => {
+          Alert.alert("Success");
+        })
+        .catch((error) => {
+          Alert.alert(error);
+        });
     }
-  })
-
-};
+  }
+  const uploadImage = async (uri, imageName) => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    await auth.onAuthStateChanged(user =>{
+      if(user){
+        var ref = Firebase.storage().ref("images/" + user.uid + '/prof.png');
+        ref.put(blob);
+        Firebase.storage().ref("images/" + user.uid + '/prof.png').getDownloadURL().then(imgUrl =>{
+          url = imgUrl;
+        })
+      }
+    })
+  }
+  const updateProf = async () => {
+    await auth.onAuthStateChanged(user =>{
+      if(user){
+        var userRef = db.collection("newusers").doc(user.uid);
+        userRef.update({
+          profUsername: profUsername,
+          profTitle: profTitle,
+          profUrl: url
+        })
+      }
+    })
+  }
 
     return (
       <View style={styles.backgroundImage}>
@@ -50,26 +70,32 @@ const createQuestion = async () => {
           <View style={styles.inputContaier}>
             <TextInput 
                 style={styles.Question}
-                onChangeText={text => setQuestion(text)}
-                value={Question}
-                placeholder="Question"
+                onChangeText={text => setProfUsername(text)}
+                value={profUsername}
+                placeholder="Username"
                 maxLength = {40}
             />
             <TextInput 
-                style={styles.Description}
-                onChangeText={text => setDescription(text)}
-                value={Description}
-                placeholder="Description"
-                maxLength = {300}
-                multiline={true}
-                numberOfLines={3}
+                style={styles.Question}
+                onChangeText={text => setProfTitle(text)}
+                value={profTitle}
+                placeholder="Title"
+                maxLength = {40}
                 require={true}
             />
           </View>
          <View style={styles.Submit}>
              <Button
-                onPress={() => {createQuestion(Question, Description)}}
-                title="Submit Question"
+                onPress={() => {updateProf()}}
+                title="Update Your Profile"
+                color="#000"
+                accessibilityLabel="Learn more about this purple button"
+            />
+         </View>
+         <View style={styles.Submit}>
+             <Button
+                onPress={() => {onChooseImagePress()}}
+                title="Upload Picture"
                 color="#000"
                 accessibilityLabel="Learn more about this purple button"
             />

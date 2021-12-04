@@ -8,6 +8,7 @@ import { Icon } from 'react-native-elements/dist/icons/Icon';
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
 
 const auth = Firebase.auth();
+const fireDB = Firebase.firestore();
 
 export default function ProfileScreen({navigation}) {
   const { user } = useContext(AuthenticatedUserContext);
@@ -16,8 +17,9 @@ export default function ProfileScreen({navigation}) {
   const [username, setUsername] = useState('Username')
   const [userClass, setUserClass] = useState('professional chef')
   const [display, setDisplay] = useState(true)
-
-
+  const [loading, setLoading] = useState(false);
+  const [profile, setProfile] = useState([]);
+  
   const handleSignOut = async () => {
     try {
       await auth.signOut();
@@ -25,6 +27,27 @@ export default function ProfileScreen({navigation}) {
       console.log(error);
     }
   };
+  const getProfile = () => {
+    setLoading(true);
+    auth.onAuthStateChanged(user => {
+      if(user){
+        fireDB.collection('newusers').doc(user.uid).get().then((docRef) =>{
+            const profile = [];
+           // profile.push(docRef.data())
+            setProfile(docRef.data());
+            
+        })
+      }   
+    })  
+    
+  }
+console.log(profile['profUrl'])
+
+  useEffect(() => {
+    getProfile();
+  },[]);
+  
+  console.log(profile['profUrl'])
 
   return (
     <View style={styles.container}>
@@ -32,15 +55,15 @@ export default function ProfileScreen({navigation}) {
 
         <View  style={styles.profileHeader}>
           <View style={styles.profileInfo}>
-            <Image style={styles.Logo} source={require('../imgs/pfp1.jpg')}></Image>
+            <Image style={styles.Logo} url={profile['profUrl']}></Image>
             <View>
               <View style={styles.settingsName}>
-                <Text style={styles.userName}>{username}</Text>
+                <Text style={styles.userName}>{profile['profUsername']}</Text>
                 <Pressable style={styles.button} onPress={() => navigation.navigate('ProfileEditor')}>
                   <Icon name="edit" type='material' color='#000'/>
                 </Pressable>
               </View>
-              <Text style={styles.userDescription}>{userClass}</Text>
+              <Text style={styles.userDescription}>{profile['profTitle']}</Text>
               <View style={styles.profileFollowers}>
                 <Text style={styles.followers}>followers: {followers}</Text>
                 <Text style={styles.followers}>following: {following}</Text>
@@ -62,8 +85,7 @@ export default function ProfileScreen({navigation}) {
 
         <View style={styles.contentContainer}>
           <ScrollView style={styles.Scroll}>
-            {display ? <ForumCard name="Skinner" title="Cut my Finger!" repliesAmount={15}/> 
-                     : <RecipeCard name={"Spaghetti"} url={'https://www.eatthis.com/wp-content/uploads/sites/4/2019/01/healthy-spaghetti-spicy-tomato-sauce.jpg?fit=1200%2C879&ssl=1'} directions={"odk"} ingredients={"odk"}/>}
+            
           </ScrollView>
         </View>
     </View>

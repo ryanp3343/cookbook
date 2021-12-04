@@ -1,26 +1,70 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, Button, Pressable } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, Pressable, TouchableOpacity } from 'react-native';
 import Firebase from '../config/firebase';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import { doc, setDoc } from "firebase/firestore"; 
-// import { Button, InputField, ErrorMessage } from '../components';
+import "firebase/storage"
+import { useState } from 'react';
+import * as ImagePicker from 'expo-image-picker';
 
-const createRecipe = (question) => {
-  Firebase.firestore()
-  .collection("Forums")
-  .add({Question: question,
-        Name: "DB SKINNER",
-        Replies: 60
-      }).then((data) => addComplete(data))
-      .catch((error) => console.log(error));
-}
+const db = Firebase.firestore()
+const auth = Firebase.auth();
+
 
 export default function RecipeEditor({navigation}) {
-    
-const [Recipe, setRecipe] = React.useState('');
-const [Ingredients, setIngredients] = React.useState('');
-const [Directions, setDirections] = React.useState('');
+   
+  var url
+  const onChooseImagePress = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync();
+  
+    if (!result.cancelled) {
+      uploadImage(result.uri, "recipe")
+        .then(() => {
+          Alert.alert("Success");
+        })
+        .catch((error) => {
+          Alert.alert(error);
+        });
+    }
+  }
+  const uploadImage = async (uri, imageName) => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    await auth.onAuthStateChanged(user =>{
+      if(user){
+        var ref = Firebase.storage().ref("images/" + user.uid + '/recipe.png');
+        ref.put(blob);
+        Firebase.storage().ref("images/" + user.uid + '/recipe.png').getDownloadURL().then(imgUrl =>{
+          url = imgUrl;
+        })
+      }
+    })
+  
+  }
+  console.log(url)
+  
+  const [Recipe, setRecipe] = useState('');
+  const [Ingredients, setIngredients] = useState('');
+  const [Directions, setDirections] = useState('');
+  const createRecipe = async () => {
+  
+    await auth.onAuthStateChanged(user =>{
+      if(user){
+        db.collection("newusers").doc(user.uid).get().then((docRef) => {
+          const snapshot = docRef.data();
+          db.collection("newrecipes").doc(user.uid)
+          .set({
+            Name: snapshot["username"],
+            Title: Recipe,
+            Ingredients: Ingredients,
+            Directions: Directions,
+            Url: url
+          })
+        })
+      }
+    })
+  };
 
     return (
       <View style={styles.backgroundImage}>
@@ -36,13 +80,13 @@ const [Directions, setDirections] = React.useState('');
           <View style={styles.inputContaier}>
             <TextInput 
                 style={styles.Recipe}
-                onChangeText={setRecipe}
+                onChangeText={text => setRecipe(text)}
                 value={Recipe}
                 placeholder="Recipe Title"
             />
             <TextInput 
                 style={styles.Ingredients}
-                onChangeText={setIngredients}
+                onChangeText={text => setIngredients(text)}
                 value={Ingredients}
                 placeholder="Ingredients"
                 multiline={true}
@@ -51,7 +95,7 @@ const [Directions, setDirections] = React.useState('');
             />
             <TextInput 
                 style={styles.Directions}
-                onChangeText={setDirections}
+                onChangeText={text => setDirections(text)}
                 value={Directions}
                 placeholder="Directions"
                 multiline={true}
@@ -63,6 +107,14 @@ const [Directions, setDirections] = React.useState('');
              <Button
                 onPress={() => {createRecipe(Recipe)}}
                 title="Submit Recipe"
+                color="#000"
+                accessibilityLabel="Learn more about this purple button"
+            />
+         </View>
+         <View style={styles.Submit}>
+             <Button
+                onPress={() => {onChooseImagePress()}}
+                title="Upload Picture"
                 color="#000"
                 accessibilityLabel="Learn more about this purple button"
             />
