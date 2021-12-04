@@ -25,7 +25,9 @@ export default function ForumList({navigation}) {
     ref.onSnapshot((QuerySnapshot) => {
       const forums = [];
       QuerySnapshot.forEach((doc) => {
-        forums.push(doc.data());
+        let currentID = doc.id
+        let appObj = { ...doc.data(), ['id']: currentID }
+        forums.push(appObj)
       });
       setForums(forums);
       setLoading(false);
@@ -52,7 +54,8 @@ export default function ForumList({navigation}) {
             name: forum.Name,
             title: forum.Question,
             repliesAmount: forum.Replies,
-            description: forum.Description
+            description: forum.Description,
+            id: forum.id
           })}>
               <ForumCard key={index} name={forum.Name} title={forum.Question} repliesAmount={forum.Replies}/>
           </Pressable>

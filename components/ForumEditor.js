@@ -21,16 +21,15 @@ const createQuestion = async () => {
     if(user){
       db.collection("newusers").doc(user.uid).get().then((docRef) => {
         const snapshot = docRef.data();
-
         userName = snapshot["username"];
-        console.log(typeof(snapshot["username"]))
-        db.collection("newforums").doc(user.uid)
-        .set({
-          Question: Question,
-          Name: snapshot["username"],
-          Description: Description,
-          Replies: null
-        })
+        Firebase.firestore()
+          .collection("newforums")
+          .add({Question: Question,
+                Description: Description,
+                Name: userName,
+                Replies: null
+              }).then((data) => addComplete(data))
+                .catch((error) => console.log(error));
       })
     }
   })
@@ -54,12 +53,14 @@ const createQuestion = async () => {
                 onChangeText={text => setQuestion(text)}
                 value={Question}
                 placeholder="Question"
+                maxLength = {40}
             />
             <TextInput 
                 style={styles.Description}
                 onChangeText={text => setDescription(text)}
                 value={Description}
                 placeholder="Description"
+                maxLength = {300}
                 multiline={true}
                 numberOfLines={3}
                 require={true}
