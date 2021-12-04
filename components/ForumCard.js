@@ -6,12 +6,12 @@ const ForumCard = ({name, photoURL, title, question, replies, repliesAmount}) =>
     return (
         <View style={styles.Card}>
             <View style={styles.Title}>
-                <Image style={styles.Logo} source={require('../imgs/pfp1.jpg')}></Image>
-                <Text>{name}</Text>
+                <Image style={styles.Logo} source={require('../imgs/pfp1.png')}></Image>
+                <Text style={styles.nameText}>{name}</Text>
             </View>
             <View style={styles.Description}>
                 <Text style={styles.TitleText}>{title}</Text>
-                <Text>{repliesAmount ? repliesAmount : "no"} replies</Text>
+                {/* <Text>{repliesAmount ? repliesAmount : "no"} replies</Text> */}
             </View>
         </View>
     )
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontWeight: '600',
     width: 340,
-    height: 100,
+    // height: 100,
     borderRadius: 10,
     padding: 10,
   },
@@ -45,10 +45,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingRight: 10,
+    marginTop: 10,
   },
   TitleText: {
     fontSize: 20,
     color: '#4D4D3D',
+    fontWeight: 'bold',
+  },
+  nameText: {
+    fontSize: 15,
     fontWeight: 'bold',
   }
 });
