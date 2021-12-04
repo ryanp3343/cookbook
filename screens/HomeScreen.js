@@ -44,10 +44,32 @@ export default function HomeScreen({ navigation }) {
     }}>
         <Tabs.Screen name="Forums" component={ForumScreen} options={{tabBarIcon: ({ tintColor }) => (
                 <Icon name="forum" type='material' color='#fff'/>
-            )}}/>
+            ), headerRight: () => (
+              <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                flexDirection: 'row',
+                paddingHorizontal: 20,
+                height: StatusBar.currentHeight,
+              }}>
+              <Icon name="logout" type='material' color='#fff' onPress={() => handleSignOut() }/>
+              </View>
+            ), }}/>
         <Tabs.Screen name="Recipes" component={RecipeStack} options={{tabBarIcon: ({ tintColor }) => (
                 <Icon name="book" type='material' color='#fff'/>
-            )}}/>
+            ), headerRight: () => (
+              <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                flexDirection: 'row',
+                paddingHorizontal: 20,
+                height: StatusBar.currentHeight,
+              }}>
+              <Icon name="logout" type='material' color='#fff' onPress={() => handleSignOut() }/>
+              </View>
+            ), }}/>
         <Tabs.Screen name="Profile" component={ProfileStack} options={{tabBarIcon: ({ tintColor }) => (
                 <Icon name="person" type='material' color='#fff'/>
             ), headerRight: () => (
