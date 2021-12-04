@@ -66,13 +66,6 @@ export default function ProfileScreen() {
                      : <RecipeCard name={"Spaghetti"} url={'https://www.eatthis.com/wp-content/uploads/sites/4/2019/01/healthy-spaghetti-spicy-tomato-sauce.jpg?fit=1200%2C879&ssl=1'} directions={"odk"} ingredients={"odk"}/>}
           </ScrollView>
         </View>
-
-        <View style={styles.logOut}>
-            <Pressable style={styles.button} onPress={handleSignOut}>
-              <Text style={styles.buttonText}>Log out</Text>
-            </Pressable>
-        </View>
-
     </View>
   );
 }

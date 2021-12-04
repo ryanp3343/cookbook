@@ -38,7 +38,9 @@ export default function HomeScreen({ navigation }) {
                     headerStyle: {
                       backgroundColor: '#3f5c41',
                     },
-                    headerTintColor: "white"
+                    headerTitleAlign: 'center',
+                    headerTintColor: "white",
+                
     }}>
         <Tabs.Screen name="Forums" component={ForumScreen} options={{tabBarIcon: ({ tintColor }) => (
                 <Icon name="forum" type='material' color='#fff'/>
@@ -48,7 +50,19 @@ export default function HomeScreen({ navigation }) {
             )}}/>
         <Tabs.Screen name="Profile" component={ProfileScreen} options={{tabBarIcon: ({ tintColor }) => (
                 <Icon name="person" type='material' color='#fff'/>
-            )}}/>
+            ), headerRight: () => (
+              <View
+              style={{
+                flex: 1,
+                backgroundColor: Platform.OS === 'ios' ? '#e54b4d' : '',
+                alignItems: 'center',
+                flexDirection: 'row',
+                paddingHorizontal: 20,
+                height: StatusBar.currentHeight,
+              }}>
+              <Icon name="logout" type='material' color='#fff' onPress={() => handleSignOut() }/>
+              </View>
+            ), }}/>
       </Tabs.Navigator>
   );
 }
