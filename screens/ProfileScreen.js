@@ -42,12 +42,14 @@ export default function ProfileScreen({navigation}) {
     
   }
 console.log(profile['profUrl'])
+var anotherurl = profile['profUrl']
+console.log(anotherurl)
 
   useEffect(() => {
     getProfile();
   },[]);
   
-  console.log(profile['profUrl'])
+
 
   return (
     <View style={styles.container}>
@@ -55,10 +57,10 @@ console.log(profile['profUrl'])
 
         <View  style={styles.profileHeader}>
           <View style={styles.profileInfo}>
-            <Image style={styles.Logo} url={profile['profUrl']}></Image>
+            <Image style={styles.Logo} source={{uri: anotherurl}}></Image>
             <View>
               <View style={styles.settingsName}>
-                <Text style={styles.userName}>{profile['profUsername']}</Text>
+                <Text style={styles.userName}>{profile['username']}</Text>
                 <Pressable style={styles.button} onPress={() => navigation.navigate('ProfileEditor')}>
                   <Icon name="edit" type='material' color='#000'/>
                 </Pressable>
