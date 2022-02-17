@@ -27,23 +27,40 @@ export default function HomeScreen({ navigation }) {
   };
   return (
     <Tabs.Navigator screenOptions={{
-                    tabBarStyle: { position: 'absolute' },
+                    tabBarStyle: { 
+                      position: 'absolute',
+                      elevation: 1,
+                      backgroundColor: '#ffff',
+                      height: 60, 
+                    }, 
+                    tabBarShowLabel: false,  
                     tabBarActiveTintColor: '#fff',
-                    tabBarActiveBackgroundColor: '#84a186',
-                    tabBarInactiveBackgroundColor: '#3f5c41',
-                    tabBarLabelStyle: {
-                      fontSize: 15,
-                      color: '#fff',
-                    },
+                    tabBarActiveBackgroundColor: '#fff',
                     headerStyle: {
                       backgroundColor: '#3f5c41',
                     },
                     headerTitleAlign: 'center',
                     headerTintColor: "white",
+
                 
-    }}>
-        <Tabs.Screen name="Forums" component={ForumScreen} options={{tabBarIcon: ({ tintColor }) => (
-                <Icon name="forum" type='material' color='#fff'/>
+    }}
+     >
+        <Tabs.Screen name="Forums" component={ForumScreen} options={{tabBarIcon: ({ focused }) => (
+                <Icon name="message-square" type='feather' size={focused ? 45 : 40} color={focused ? "#3f5c41" : "#bbb"}/>
+            ), headerRight: () => (
+              <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                flexDirection: 'row',
+                paddingHorizontal: 20,
+                height: StatusBar.currentHeight,
+              }}>
+              <Icon name="log-out" type='feather' color='#fff' onPress={() => handleSignOut() }/>
+              </View>
+            ), }}/>
+        <Tabs.Screen name="Recipes" component={RecipeStack} options={{tabBarIcon: ({ focused }) => (
+                <Icon name="book" type='feather' size={focused ? 45 : 40} color={focused ? "#3f5c41" : "#bbb"}/>
             ), headerRight: () => (
               <View
               style={{
@@ -56,8 +73,8 @@ export default function HomeScreen({ navigation }) {
               <Icon name="logout" type='material' color='#fff' onPress={() => handleSignOut() }/>
               </View>
             ), }}/>
-        <Tabs.Screen name="Recipes" component={RecipeStack} options={{tabBarIcon: ({ tintColor }) => (
-                <Icon name="book" type='material' color='#fff'/>
+        <Tabs.Screen name="Profile" component={ProfileStack} options={{tabBarIcon: ({ focused }) => (
+                <Icon name="user" type='feather' size={focused ? 45 : 40} color={focused ? "#3f5c41" : "#bbb"}/>
             ), headerRight: () => (
               <View
               style={{
@@ -67,21 +84,7 @@ export default function HomeScreen({ navigation }) {
                 paddingHorizontal: 20,
                 height: StatusBar.currentHeight,
               }}>
-              <Icon name="logout" type='material' color='#fff' onPress={() => handleSignOut() }/>
-              </View>
-            ), }}/>
-        <Tabs.Screen name="Profile" component={ProfileStack} options={{tabBarIcon: ({ tintColor }) => (
-                <Icon name="person" type='material' color='#fff'/>
-            ), headerRight: () => (
-              <View
-              style={{
-                flex: 1,
-                alignItems: 'center',
-                flexDirection: 'row',
-                paddingHorizontal: 20,
-                height: StatusBar.currentHeight,
-              }}>
-              <Icon name="logout" type='material' color='#fff' onPress={() => handleSignOut() }/>
+              <Icon name="logout" type='material'  color='#fff' onPress={() => handleSignOut() }/>
               </View>
             ), }}/>
       </Tabs.Navigator>
