@@ -24,7 +24,9 @@ export default function RecipeScreen({navigation}) {
     ref.onSnapshot((QuerySnapshot) => {
       const recipes = [];
       QuerySnapshot.forEach((doc) => {
-        recipes.push(doc.data());
+        let currentID = doc.id
+        let appObj = { ...doc.data(), ['id']: currentID }
+        recipes.push(appObj);
         console.log(doc.data())
       });
       setRecipes(recipes);
@@ -58,12 +60,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: 10,
+    paddingTop: 0,
     paddingHorizontal: 0,
     paddingBottom: 60
   },
   Scroll: {
-    marginTop: 10,
+    marginTop: 0,
    },
   title: {
     fontSize: 24,
