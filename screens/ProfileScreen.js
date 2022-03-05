@@ -60,7 +60,7 @@ var anotherurl = profile['profUrl']
               <View style={styles.settingsName}>
                 <Text style={styles.userName}>{profile['username']}</Text>
                 <Pressable style={styles.button} onPress={() => navigation.navigate('ProfileEditor')}>
-                  <Icon name="edit" type='material' color='#000'/>
+                  <Icon name="edit" type='feather' color='#000'/>
                 </Pressable>
               </View>
               <Text style={styles.userDescription}>{profile['profTitle']}</Text>
@@ -79,6 +79,9 @@ var anotherurl = profile['profUrl']
             </Pressable>
             <Pressable style={styles.button} onPress={() => setDisplay(true)}>
               <Text style={styles.buttonText}>RECIPES</Text>
+            </Pressable>
+            <Pressable style={styles.button} onPress={() => setDisplay(true)}>
+              <Text style={styles.buttonText}>LIKED</Text>
             </Pressable>
           </View>
         </View>
@@ -102,9 +105,11 @@ const styles = StyleSheet.create({
   },
   profileHeader: {
     paddingLeft: 15,
-    backgroundColor: '#eee',
     flexDirection: 'column',
     justifyContent: 'space-between',
+    paddingBottom: 20,
+    borderBottomWidth: 1,
+    borderColor: '#D8d8d8',
   },
   profileInfo: {
     flexDirection: 'row',
@@ -144,24 +149,22 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
   },
-  navContainer: {
-    height: 'auto',
-    paddingTop: 15,
-    alignItems: 'center',
-  },
   contentContainer: {
-    alignItems: 'center',
-    marginBottom: 250
+    // alignItems: 'center',
+    marginBottom: 250,
+    width: '100%',
   },
   profileNav: {
     flexDirection: 'row',
     marginTop: 20,
     marginBottom: 20,
+    paddingHorizontal: 15,
     justifyContent: 'space-between',
-    width: 300,
+    width: "100%",
   },
   button: {
     marginTop: 5,
+    backgroundColor: '#fff'
   },
   buttonText: {
     fontSize: 20,
