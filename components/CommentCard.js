@@ -19,12 +19,11 @@ const CommentCard = ({name, comment}) => {
 
 const styles = StyleSheet.create({
   Card: {
-    borderWidth: 1,
+    borderBottomWidth: 1,
     borderColor: '#D8d8d8',
     marginBottom: 10,
     fontWeight: '600',
-    width: 340,
-    borderRadius: 10,
+    width: '100%',
     padding: 10,
     backgroundColor: 'white'
   },
@@ -39,7 +38,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   Description: {
-    height:40,
+    marginTop: 5,
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',

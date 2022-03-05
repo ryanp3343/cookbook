@@ -6,7 +6,7 @@ const ForumCard = ({name, photoURL, title, question, replies, repliesAmount}) =>
     return (
         <View style={styles.Card}>
             <View style={styles.Title}>
-                <Image style={styles.Logo} source={require('../imgs/pfp1.png')}></Image>
+                <Image style={styles.Logo} source={require('../imgs/pfp1.jpg')}></Image>
                 <Text style={styles.nameText}>{name}</Text>
             </View>
             <View style={styles.Description}>
@@ -19,15 +19,13 @@ const ForumCard = ({name, photoURL, title, question, replies, repliesAmount}) =>
 
 const styles = StyleSheet.create({
   Card: {
-    borderWidth: 1,
+    borderBottomWidth: 1,
     borderColor: '#D8d8d8',
     fontSize: 20,
-    marginBottom: 10,
     fontWeight: '600',
-    width: 340,
-    // height: 100,
-    borderRadius: 10,
+    width: '100%',
     padding: 10,
+    alignSelf: 'center'
   },
   Title: {
     alignItems: 'center',
@@ -35,9 +33,10 @@ const styles = StyleSheet.create({
   },
   Logo: {
     marginRight: 10,
-    width: 40,
-    height: 40,
-    borderRadius: 50,
+    width: 50,
+    height: 50,
+    borderRadius: 100,
+    resizeMode: 'contain'
   },
   Description: {
     height:40,
@@ -53,7 +52,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   nameText: {
-    fontSize: 15,
+    fontSize: 20,
     fontWeight: 'bold',
   }
 });

@@ -59,16 +59,14 @@ export default function ForumExpanded({navigation, route}) {
       }, []);
 
     return (
-        <ScrollView style={styles.Scroll}>
-            <View style={styles.Container}>
-      
-           <Pressable onPress={() => navigation.navigate('List')}>
-                <View style={styles.backButton}>
-                    <Icon size={40} name="arrow-left" type='material' color='#000'/>
-                    <Text style={styles.text}>Back</Text>
-                </View>
-            </Pressable>
-
+      <View style={styles.Container}>
+        <Pressable onPress={() => navigation.navigate('List')}>
+            <View style={styles.backButton}>
+                <Icon size={40} name="arrow-left" type='feather' color='#000'/>
+            </View>
+        </Pressable>
+        <ScrollView>
+          <View>
             <View>
                 <View style={styles.descriptionContainer}>
                     <Text style={styles.title}>{title}</Text>
@@ -84,7 +82,7 @@ export default function ForumExpanded({navigation, route}) {
                 style={styles.Coment}
                 onChangeText={setComment}
                 value={Comment}
-                placeholder="Add a comment"
+                placeholder="Reply"
                 multiline={true}
                 numberOfLines={3}
                 require={true}
@@ -96,62 +94,67 @@ export default function ForumExpanded({navigation, route}) {
                 </Pressable>
             </View>
 
-            <View style={styles.commentContainer}>
-                {Comments.map((com, index) => (
-                  <CommentCard key={index} name={com.Name} comment={com.Comment}/>
-                ))} 
+            <View>
+              <View style={styles.commentContainer}>
+                  {Comments.map((com, index) => (
+                    <CommentCard key={index} name={com.Name} comment={com.Comment}/>
+                  ))} 
+              </View>
             </View>
-            </View>
+          </View>
         </ScrollView>
+      </View>
     );
 }
 
 const styles = StyleSheet.create({
-    Container: {
+  Container: {
     flex : 1,
     flexDirection: "column",
     justifyContent: 'flex-start',
+    paddingBottom: 60,
+    backgroundColor: "#fff",
     paddingHorizontal: 10,
-    paddingBottom: 60
   },
   backButton: {
     flexDirection:'row',
     justifyContent: 'flex-start',
-    alignItems: 'center',
-    fontSize: 30
-},
-text: {
+    paddingTop: 10,
+  },
+  text: {
     fontSize: 20,
     fontWeight: 'bold'
-},
-title: {
+  },
+  title: {
     fontSize: 25,
     fontWeight: 'bold',
-},
-description: {
+  },
+  description: {
     marginTop: 10,
     fontSize: 20,
-},
-descriptionContainer: {
-    // borderWidth: 1,
+  },
+  descriptionContainer: {
+    borderBottomWidth: 1,
     paddingHorizontal:10,
+    borderColor: "#ccc",
     paddingVertical: 10,
     borderRadius: 10,
     marginBottom: 10,
-},
-replies: {
+  },
+  replies: {
     fontSize: 17,
     fontWeight: 'bold',
     color: 'black',
-},
-Coment: {
+  },
+  Coment: {
     height: 40,
     marginTop: 10,
     marginBottom: 10,
-    borderWidth: 1,
-    borderRadius: 5,
+    borderBottomWidth: 2,
+    borderColor: "#ccc",
     paddingHorizontal: 10,
     backgroundColor: "#fff",
+    fontSize: 20,
   },
   submit: {
       alignItems: 'center',
@@ -167,10 +170,9 @@ Coment: {
       color: '#3f5c41',
       fontWeight: 'bold'
   },
-  Scroll: {
-    marginTop: 10,
-   },
    commentContainer: {
-       marginTop: 10
-   }
+       marginTop: 10,
+       height: 300,
+       marginBottom: 50,
+   },
 });

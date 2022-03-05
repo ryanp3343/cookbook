@@ -14,7 +14,7 @@ const fireDB = Firebase.firestore();
 export default function ForumList({navigation}) {
   const { user } = useContext(AuthenticatedUserContext);
   const[forums, setForums] = useState([]);
-  const [text, onChangeText] = React.useState("");
+  const [searchText, onChangeText] = React.useState("");
   const[loading, setLoading] = useState(false);
   const[editor, setEditor] = useState(true);
 
@@ -34,6 +34,10 @@ export default function ForumList({navigation}) {
     });
   }
 
+  const filterForums = () => {
+    alert("filtered " + searchText)
+  }
+
   useEffect(() => {
     getForums();
   }, []);
@@ -41,13 +45,17 @@ export default function ForumList({navigation}) {
   return (
       <View style={styles.container}>
       <StatusBar style='dark-content'/>
-      <TextInput style={styles.input}  placeholder="Search" value={text}/>
-      <View style={styles.editorButton}>
-      <Pressable onPress={() => navigation.navigate('Editor')}>
-            <Icon size={40} name="edit" type='material' color='#fff'/>
-      </Pressable>
+      <View style={styles.searchBar}>
+        <TextInput style={styles.input}  placeholder="Search" value={searchText} onChangeText={onChangeText}/>
+        <Pressable onPress={() => filterForums()}>
+          <Icon size={40} name="search" type='feather' color='#aaa'/>
+        </Pressable>
       </View>
-      <Text>Filter by:</Text>
+      <View style={styles.editorButton}>
+        <Pressable onPress={() => navigation.navigate('Editor')}>
+            <Icon size={40} name="edit" type='feather' color='#fff'/>
+        </Pressable>
+      </View>
       <ScrollView style={styles.Scroll}>
         {forums.map((forum, index) => (
           <Pressable key={index} onPress={() => navigation.navigate('ForumExpand', {
@@ -78,19 +86,29 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     paddingTop: 10,
-    paddingHorizontal: 8,
+    paddingHorizontal: 0,
     paddingBottom: 60
   },
    Scroll: {
     marginTop: 10,
+    marginHorizontal: 5,
    },
+   searchBar: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingRight: 10,
+    backgroundColor: '#0000',
+   }, 
    input: {
     backgroundColor: '#fff',
-    height: 40,
     marginBottom: 10,
-    borderWidth: 1,
+    marginHorizontal: 10,
+    borderBottomWidth: 2,
+    borderColor: "#ccc",
     padding: 10,
-    borderRadius: 10
+    fontSize: 20,
+    flex: 5,
   },
   editorButton: {
       position: 'absolute',
