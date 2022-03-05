@@ -55,7 +55,7 @@ var anotherurl = profile['profUrl']
 
         <View  style={styles.profileHeader}>
           <View style={styles.profileInfo}>
-            <Image style={styles.Logo} source={{uri: anotherurl}}></Image>
+            <Image resizeMode='cover' style={styles.Logo} source={{uri: anotherurl}}></Image>
             <View>
               <View style={styles.settingsName}>
                 <Text style={styles.userName}>{profile['username']}</Text>
@@ -98,10 +98,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     paddingTop: 15,
-    paddingHorizontal: 8,
+    flexDirection: 'column',
   },
   profileHeader: {
-    flexDirection: 'column'
+    paddingLeft: 15,
+    backgroundColor: '#eee',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
   },
   profileInfo: {
     flexDirection: 'row',
@@ -126,6 +129,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 50,
+    
   },
   profileFollowers: {
     marginTop: 10,
