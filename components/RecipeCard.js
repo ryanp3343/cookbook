@@ -11,7 +11,7 @@ const RecipeCard = ({name, directions, ingredients, url, recipe}) => {
     const navigation = useNavigation();
     
     const likeRecipe = () => {
-      alert("you liked " + recipe.Title)
+      alert("you liked " + recipe.id)
     }
 
     const commentRecipe = () => {
