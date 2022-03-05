@@ -8,7 +8,7 @@ import CommentCard from "../components/CommentCard"
 // import { Button, InputField, ErrorMessage } from '../components';
 
 export default function RecipeExpanded({navigation, route}) {
-    const { name, directions, photoURL, ingredients } = route.params;
+    const { name, directions, photoURL, ingredients, id } = route.params;
     return (
       <View style={styles.Container}>
           <ScrollView showsVerticalScrollIndicator={false}
@@ -22,6 +22,7 @@ export default function RecipeExpanded({navigation, route}) {
 
             <View>
                 <View style={styles.descriptionContainer}>
+                    <Text>{id}</Text>
                     <Text style={styles.title}>{name}</Text>
                     <Image source={{uri: photoURL}}
                        style={{width: 320, height: 320, borderRadius: 15, marginBottom: 10}}

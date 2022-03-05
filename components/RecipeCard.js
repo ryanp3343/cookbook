@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 
 const RecipeCard = ({name, directions, ingredients, url, recipe}) => {
     const [directionList, setDirectionList] = useState([]);
+    const [liked, setLiked] = useState(false)
     const navigation = useNavigation();
     
     const likeRecipe = () => {
@@ -27,7 +28,8 @@ const RecipeCard = ({name, directions, ingredients, url, recipe}) => {
             name: recipe.Title,
             directions: recipe.Directions,
             photoURL: recipe.Url,
-            ingredients: recipe.Ingredients
+            ingredients: recipe.Ingredients,
+            id: recipe.id
           })}>
             <View style={styles.Title}>
                 <Text style={styles.recipeTitle}>{name}</Text>
@@ -41,7 +43,7 @@ const RecipeCard = ({name, directions, ingredients, url, recipe}) => {
           </Pressable>
             <View style={styles.buttonContainer}>
               <TouchableOpacity onPress={() => likeRecipe()}>
-                <Icon style={styles.icon} size={40} name="heart" type='feather' color='#000'/>
+                <Icon style={styles.icon} size={40} color={liked ? "#f22" : "#000"} name="heart" type='feather' color='#000'/>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => commentRecipe()}>
                 <Icon style={styles.icon} size={40} name="message-square" type='feather' color='#000'/>
