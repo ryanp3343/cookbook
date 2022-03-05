@@ -11,6 +11,7 @@ const RecipeCard = ({name, directions, ingredients, url, recipe}) => {
     const navigation = useNavigation();
     
     const likeRecipe = () => {
+      setLiked(!liked)
       alert("you liked " + recipe.id)
     }
 
@@ -43,7 +44,7 @@ const RecipeCard = ({name, directions, ingredients, url, recipe}) => {
           </Pressable>
             <View style={styles.buttonContainer}>
               <TouchableOpacity onPress={() => likeRecipe()}>
-                <Icon style={styles.icon} size={40} color={liked ? "#f22" : "#000"} name="heart" type='feather' color='#000'/>
+                <Icon style={styles.icon} size={40} color={liked ? '#f22' : '#000'} name="heart" type='feather'/>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => commentRecipe()}>
                 <Icon style={styles.icon} size={40} name="message-square" type='feather' color='#000'/>
