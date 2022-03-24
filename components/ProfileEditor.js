@@ -11,7 +11,6 @@ import * as ImagePicker from 'expo-image-picker';
 const db = Firebase.firestore()
 const auth = Firebase.auth();
 
-
 export default function ProfileEditor({navigation}) {
   
   const [profUsername, setProfUsername] = useState('');

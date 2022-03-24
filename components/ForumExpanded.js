@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useContext, useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, Pressable, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, Pressable, ScrollView, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import Firebase from '../config/firebase';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import { doc, setDoc } from "firebase/firestore"; 
@@ -65,7 +65,7 @@ export default function ForumExpanded({navigation, route}) {
                 <Icon size={40} name="arrow-left" type='feather' color='#000'/>
             </View>
         </Pressable>
-        <ScrollView>
+        <ScrollView style={styles.Scroll}>
           <View>
             <View>
                 <View style={styles.descriptionContainer}>
@@ -77,7 +77,7 @@ export default function ForumExpanded({navigation, route}) {
             <View>
                 <Text style={styles.replies}>Replies:</Text>
             </View>
-
+            <KeyboardAvoidingView  behavior={Platform.OS === "ios" ? "padding" : "height"}>
             <TextInput 
                 style={styles.Coment}
                 onChangeText={setComment}
@@ -89,13 +89,14 @@ export default function ForumExpanded({navigation, route}) {
             />
 
             <View style={styles.submit}>
-                <Pressable  onPress={() => (createComment())}>
+                <TouchableOpacity  onPress={() => (createComment())}>
                     <Text style={styles.submitText}>Comment</Text>
-                </Pressable>
+                </TouchableOpacity>
             </View>
 
+            </KeyboardAvoidingView >
             <View>
-              <View style={styles.commentContainer}>
+              <View>
                   {Comments.map((com, index) => (
                     <CommentCard key={index} name={com.Name} comment={com.Comment}/>
                   ))} 
@@ -127,7 +128,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 25,
-    fontWeight: 'bold',
+    fontWeight: '500',
   },
   description: {
     marginTop: 10,
@@ -135,10 +136,9 @@ const styles = StyleSheet.create({
   },
   descriptionContainer: {
     borderBottomWidth: 1,
-    paddingHorizontal:10,
+    paddingHorizontal: 5,
     borderColor: "#ccc",
     paddingVertical: 10,
-    borderRadius: 10,
     marginBottom: 10,
   },
   replies: {
@@ -147,7 +147,8 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   Coment: {
-    height: 40,
+    // height: 40,
+    textAlignVertical: 'top',
     marginTop: 10,
     marginBottom: 10,
     borderBottomWidth: 2,
@@ -159,20 +160,18 @@ const styles = StyleSheet.create({
   submit: {
       alignItems: 'center',
       justifyContent: 'center',
-      borderColor: '#3f5c41',
+      borderColor: '#949D7E',
+      marginBottom: 10,
       borderWidth: 2,
       width: 100,
-      height: 30,
-      borderRadius: 8,
+      borderRadius: 5,
   },
   submitText: {
-      fontSize: 16,
-      color: '#3f5c41',
+      fontSize: 15,
+      color: '#949D7E',
       fontWeight: 'bold'
   },
-   commentContainer: {
-       marginTop: 10,
-       height: 300,
-       marginBottom: 50,
+   Scroll: {
+    paddingHorizontal: 5,
    },
 });

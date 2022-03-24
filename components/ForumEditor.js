@@ -28,7 +28,10 @@ const createQuestion = async () => {
                 Description: Description,
                 Name: userName,
                 Replies: null
-              }).then((data) => addComplete(data))
+              }).then((data) => {
+                console.log("here")
+                console.log(data)                    
+              })
                 .catch((error) => console.log(error));
       })
     }

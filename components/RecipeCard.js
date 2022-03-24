@@ -3,16 +3,24 @@ import { StyleSheet, Text, View, Image, Pressable } from 'react-native';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
+import Firebase from '../config/firebase';
 
 
-const RecipeCard = ({name, directions, ingredients, url, recipe}) => {
+const RecipeCard = ({name, directions, ingredients, url, recipe, id}) => {
     const [directionList, setDirectionList] = useState([]);
     const [liked, setLiked] = useState(false)
     const navigation = useNavigation();
     
-    const likeRecipe = () => {
+    const db = Firebase.firestore()
+    const auth = Firebase.auth();
+
+    const saveRecipe = (id) => {
+      auth.onAuthStateChanged(user =>{
+      if(user){
+        console.log("=================", id)
       setLiked(!liked)
-      alert("you liked " + recipe.id)
+      db.collection("newusers").doc(user.uid).update({ profTitle: "Professional"})
+      }})
     }
 
     const commentRecipe = () => {
@@ -30,10 +38,11 @@ const RecipeCard = ({name, directions, ingredients, url, recipe}) => {
             directions: recipe.Directions,
             photoURL: recipe.Url,
             ingredients: recipe.Ingredients,
-            id: recipe.id
+            recipeid: recipe.id
           })}>
             <View style={styles.Title}>
                 <Text style={styles.recipeTitle}>{name}</Text>
+                <Text>Name of User</Text>
                 <Image source={{uri: url}}
                        style={{width: "100%", height: 320}}
                  />
@@ -42,15 +51,16 @@ const RecipeCard = ({name, directions, ingredients, url, recipe}) => {
                  </View>
             </View>
           </Pressable>
+          <Text>{id}</Text>
             <View style={styles.buttonContainer}>
-              <TouchableOpacity onPress={() => likeRecipe()}>
-                <Icon style={styles.icon} size={40} color={liked ? '#f22' : '#000'} name="heart" type='feather'/>
+              <TouchableOpacity onPress={() => saveRecipe(id)}>
+                <Icon style={styles.icon} size={40} color={liked ? 'green' : '#000'} name="bookmark" type='feather'/>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => commentRecipe()}>
                 <Icon style={styles.icon} size={40} name="message-square" type='feather' color='#000'/>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => visitProfile()}>
-                <Icon style={styles.icon} size={40} name="user" type='feather' color='#000'/>
+                <Image style={styles.stretch} source={require("../imgs/cooked.png")} size={40}></Image>
               </TouchableOpacity>
             </View>
         </View>
@@ -69,6 +79,11 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     borderBottomWidth: 1,
     borderColor: '#D8d8d8',
+  },
+  stretch: {
+    width: 45,
+    height: 45,
+    resizeMode: 'stretch',
   },
   recipeTitle: {
     fontSize: 30,

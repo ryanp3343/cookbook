@@ -48,12 +48,12 @@ const styles = StyleSheet.create({
   },
   TitleText: {
     fontSize: 20,
-    color: '#4D4D3D',
-    fontWeight: 'bold',
+    color: '#333',
+    fontWeight: '400',
   },
   nameText: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: '500',
   }
 });
 

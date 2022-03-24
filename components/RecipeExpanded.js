@@ -10,19 +10,16 @@ import CommentCard from "../components/CommentCard"
 export default function RecipeExpanded({navigation, route}) {
     const { name, directions, photoURL, ingredients, id } = route.params;
     return (
-      <View style={styles.Container}>
-          <ScrollView showsVerticalScrollIndicator={false}
-                      showsHorizontalScrollIndicator={false}>
-           <Pressable onPress={() => navigation.navigate('RecipesList')}>
+        <View style={styles.Container}>
+            <Pressable onPress={() => navigation.navigate('RecipesList')}>
                 <View style={styles.backButton}>
-                <Icon size={40} name="arrow-left" type='material' color='#000'/>
-                    <Text style={styles.text}>Back</Text>
+                    <Icon size={40} name="arrow-left" type='feather' color='#000'/>
                 </View>
             </Pressable>
-
+            <ScrollView showsVerticalScrollIndicator={false}
+                      showsHorizontalScrollIndicator={false}>
             <View>
                 <View style={styles.descriptionContainer}>
-                    <Text>{id}</Text>
                     <Text style={styles.title}>{name}</Text>
                     <Image source={{uri: photoURL}}
                        style={{width: 320, height: 320, borderRadius: 15, marginBottom: 10}}
@@ -38,7 +35,7 @@ export default function RecipeExpanded({navigation, route}) {
                 </View>
             </View>
             </ScrollView>
-      </View>
+        </View>
     );
 }
 
@@ -48,13 +45,15 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: 'flex-start',
     paddingHorizontal: 10,
-    paddingBottom: 60
+    paddingBottom: 60,
+    backgroundColor: '#fff'
   },
   backButton: {
     flexDirection:'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    fontSize: 30
+    fontSize: 30,
+    marginVertical: 10,
 },
 text: {
     fontSize: 20,

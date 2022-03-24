@@ -1,15 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useContext, useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView, TextInput, Button, Pressable } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TextInput, Button, TouchableOpacity, Pressable } from 'react-native';
 import ForumCard from '../components/ForumCard';
-import ForumEditor from '../components/ForumEditor';
-import Firebase from '../config/firebase';
-import { NavigationContainer } from '@react-navigation/native';
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
-
-const auth = Firebase.auth();
-const fireDB = Firebase.firestore();
+import FilterLabel from './FilterLabel';
+import { getForums } from '../backend/Crud';
 
 export default function ForumList({navigation}) {
   const { user } = useContext(AuthenticatedUserContext);
@@ -18,20 +14,11 @@ export default function ForumList({navigation}) {
   const[loading, setLoading] = useState(false);
   const[editor, setEditor] = useState(true);
 
-  const ref = fireDB.collection('newforums');
-  
-  const getForums = () => {
+  const getFor = () => {
     setLoading(true);
-    ref.onSnapshot((QuerySnapshot) => {
-      const forums = [];
-      QuerySnapshot.forEach((doc) => {
-        let currentID = doc.id
-        let appObj = { ...doc.data(), ['id']: currentID }
-        forums.push(appObj)
-      });
-      setForums(forums);
-      setLoading(false);
-    });
+    let forums = getForums()
+    setForums(forums);
+    setLoading(false);
   }
 
   const filterForums = () => {
@@ -39,7 +26,7 @@ export default function ForumList({navigation}) {
   }
 
   useEffect(() => {
-    getForums();
+    getFor();
   }, []);
 
   return (
@@ -50,6 +37,12 @@ export default function ForumList({navigation}) {
         <Pressable onPress={() => filterForums()}>
           <Icon size={40} name="search" type='feather' color='#aaa'/>
         </Pressable>
+      </View>
+      <View style={styles.filterList}>
+        <FilterLabel name={"desert"} />
+        <FilterLabel name={"drinks"} />
+        <FilterLabel name={"dinner"} />
+        <FilterLabel name={"lunch"} />
       </View>
       <View style={styles.editorButton}>
         <Pressable onPress={() => navigation.navigate('Editor')}>
@@ -117,7 +110,7 @@ const styles = StyleSheet.create({
       width: 80,
       height: 80,
       borderRadius: 50,
-      backgroundColor: "#3f5c41",
+      backgroundColor: "#949D7E",
       zIndex: 10,
       justifyContent: 'center',
       alignItems: 'center'
@@ -125,5 +118,10 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 80,
     color: "white"
+  },
+  filterList: {
+    display: 'flex',
+    flexDirection: 'row',
+    paddingHorizontal: 10,
   },
 });
