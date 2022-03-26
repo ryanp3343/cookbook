@@ -3,12 +3,10 @@ import React, { useContext, useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, Pressable, ScrollView } from 'react-native';
 import ForumCard from '../components/ForumCard';
 import RecipeCard from '../components/RecipeCard';
-import Firebase from '../config/firebase';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
+import { auth, db } from '../config/firebase';
 
-const auth = Firebase.auth();
-const fireDB = Firebase.firestore();
 
 export default function ProfileScreen({navigation}) {
   const { user } = useContext(AuthenticatedUserContext);
@@ -22,14 +20,14 @@ export default function ProfileScreen({navigation}) {
   
   const handleSignOut = async () => {
     try {
-      await auth.signOut();
+      await signOut(auth);
     } catch (error) {
       console.log(error);
     }
   };
   const getProfile = async  () => {
     setLoading(true);
-    await auth.onAuthStateChanged(user => {
+    await onAuthStateChanged(auth,user => {
       if(user){
         fireDB.collection('newusers').doc(user.uid).get().then((docRef) =>{
             const profile = [];

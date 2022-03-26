@@ -3,13 +3,13 @@ import React from 'react';
 import { Component } from 'react';
 import { useState } from 'react';
 import { StyleSheet, View,Image} from 'react-native';
+import { auth } from '../config/firebase';
 
 import { Button, InputField, ErrorMessage } from '../components';
-import Firebase from '../config/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 
 
-const auth = Firebase.auth();
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -31,7 +31,7 @@ export default function LoginScreen({ navigation }) {
   const onLogin = async () => {
     try {
       if (email !== '' && password !== '') {
-        await auth.signInWithEmailAndPassword(email, password);
+        await signInWithEmailAndPassword(auth,email, password);
       }
     } catch (error) {
       setLoginError(error.message);

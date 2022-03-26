@@ -3,11 +3,10 @@ import React, { useContext, useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, Pressable, ScrollView } from 'react-native';
 import ForumCard from '../components/ForumCard';
 import { IconButton, InputField } from '../components';
-import Firebase from '../config/firebase';
+import {auth} from '../config/firebase';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
 
-const auth = Firebase.auth();
 
 export default function profileHeader({username, userClass, followers, following}) {
   const { user } = useContext(AuthenticatedUserContext);

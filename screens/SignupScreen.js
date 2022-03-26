@@ -5,10 +5,8 @@ import { useState } from 'react';
 import { StyleSheet, Text, View,Image, Button as RNButton } from 'react-native';
 // import { cond } from 'react-native-reanimated';
 import { Button, InputField, ErrorMessage } from '../components';
-import Firebase from '../config/firebase';
-
-const auth = Firebase.auth();
-const db = Firebase.firestore()
+import {auth, db} from '../config/firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 export default function SignupScreen({navigation}){
   const [email, setEmail] = useState('');
@@ -21,7 +19,7 @@ export default function SignupScreen({navigation}){
   const onHandleSignup = async () => {
     try {
       if (email !== '' && password !== '') {
-        await auth.createUserWithEmailAndPassword(email, password).then((cred) =>{
+        await createUserWithEmailAndPassword(auth,email, password).then((cred) =>{
           var user = auth.currentUser;
           var uid;
           if(user != null)

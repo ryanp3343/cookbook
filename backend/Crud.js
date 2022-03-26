@@ -1,11 +1,10 @@
 import React, { useContext, useState, useEffect } from 'react';
-import Firebase from '../config/firebase';
+import { db } from '../config/firebase';
 
-const fireDB = Firebase.firestore();
 
 // Gets all recipes
 export const getRecipes = () => {
-    const ref = fireDB.collection('newrecipes');
+    const ref = db.collection('newrecipes');
     ref.onSnapshot((QuerySnapshot) => {
         const recipes = [];
         QuerySnapshot.forEach((doc) => {
@@ -20,7 +19,7 @@ export const getRecipes = () => {
 
 // Gets all forums
 export const getForums = () => {
-    const ref = fireDB.collection('newForums');
+    const ref = db.collection('newForums');
     ref.onSnapshot((QuerySnapshot) => {
         const forums = [];
         QuerySnapshot.forEach((doc) => {

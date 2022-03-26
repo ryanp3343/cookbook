@@ -1,23 +1,25 @@
-import firebase from 'firebase/app';
-import 'firebase/auth';
-import 'firebase/firestore';
-import Constants from 'expo-constants';
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
+import { getAuth } from "firebase/auth";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
-// Initialize Firebase
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: Constants.manifest.extra.apiKey,
-  authDomain: Constants.manifest.extra.authDomain,
-  projectId: Constants.manifest.extra.projectId,
+  apiKey: "AIzaSyASRvqTbBV61Va8I4boRyOU5yvY942tsFQ",
+  authDomain: "test2-7ed41.firebaseapp.com",
   databaseURL: "https://test2-7ed41-default-rtdb.firebaseio.com",
-  storageBucket: Constants.manifest.extra.storageBucket,
-  messagingSenderId: Constants.manifest.extra.messagingSenderId,
-  appId: Constants.manifest.extra.appId
+  projectId: "test2-7ed41",
+  storageBucket: "test2-7ed41.appspot.com",
+  messagingSenderId: "458106844118",
+  appId: "1:458106844118:web:b1c9e9afb9120617d7ea77"
 };
 
-let Firebase;
+// Initialize Firebase
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getFirestore();
+const storage = getStorage(firebaseApp);
+const auth = getAuth(firebaseApp);
 
-if (firebase.apps.length === 0) {
-  Firebase = firebase.initializeApp(firebaseConfig);
-}
-
-export default Firebase;
+export {db, storage, auth};

@@ -4,15 +4,15 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useContext } from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { IconButton } from '../components';
-import Firebase from '../config/firebase';
+import { signOut } from 'firebase/auth';
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
 import ProfileStack from './ProfileStack';
 import RecipeScreen from './RecipeScreen'
 import ForumScreen  from './ForumScreen'
 import RecipeStack from './RecipeStack';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
+import { auth } from '../config/firebase';
 
-const auth = Firebase.auth();
 const Tabs = createBottomTabNavigator();
 
 
@@ -20,7 +20,7 @@ export default function HomeScreen({ navigation }) {
   const { user } = useContext(AuthenticatedUserContext);
   const handleSignOut = async () => {
     try {
-      await auth.signOut();
+      await signOut(auth);
     } catch (error) {
       console.log(error);
     }

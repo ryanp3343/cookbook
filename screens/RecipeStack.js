@@ -2,7 +2,6 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useContext} from 'react';
 import { StyleSheet } from 'react-native';
 import ForumEditor from '../components/ForumEditor';
-import Firebase from '../config/firebase';
 import { createStackNavigator } from '@react-navigation/stack';
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
 import ForumList from '../components/ForumList';
@@ -10,7 +9,6 @@ import RecipeScreen from './RecipeScreen';
 import RecipeEditor from '../components/RecipeEditor';
 import RecipeExpanded from '../components/RecipeExpanded';
 
-const auth = Firebase.auth();
 const Stack = createStackNavigator();
 
 export default function RecipeStack() {

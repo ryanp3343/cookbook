@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Image, Pressable } from 'react-native';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
-import Firebase from '../config/firebase';
+import { auth , db } from '../config/firebase';
 
 
 const RecipeCard = ({name, directions, ingredients, url, recipe, id}) => {
@@ -11,11 +11,10 @@ const RecipeCard = ({name, directions, ingredients, url, recipe, id}) => {
     const [liked, setLiked] = useState(false)
     const navigation = useNavigation();
     
-    const db = Firebase.firestore()
-    const auth = Firebase.auth();
+
 
     const saveRecipe = (id) => {
-      auth.onAuthStateChanged(user =>{
+      onAuthStateChanged(auth,user =>{
       if(user){
         console.log("=================", id)
       setLiked(!liked)

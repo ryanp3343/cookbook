@@ -1,14 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useContext, useState, useEffect } from 'react';
 import { StyleSheet, Text, View, ScrollView, Pressable, TouchableOpacity} from 'react-native';
-import Firebase from '../config/firebase';
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
 import RecipeEditor from '../components/RecipeEditor';
 import RecipeCard from '../components/RecipeCard';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
+import { db } from '../config/firebase';
 
 
-const fireDB = Firebase.firestore();
 
 export default function RecipeScreen({navigation}) {
   const[recipes, setRecipes] = useState([]);
@@ -17,7 +16,7 @@ export default function RecipeScreen({navigation}) {
   const[editor, setEditor] = useState(true);
 
 
-  const ref = fireDB.collection('newrecipes');
+  const ref = db.collection('newrecipes');
   
   const getRecipes = () => {
     setLoading(true);

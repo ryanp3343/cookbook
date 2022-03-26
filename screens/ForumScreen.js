@@ -2,14 +2,13 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useContext} from 'react';
 import { StyleSheet } from 'react-native';
 import ForumEditor from '../components/ForumEditor';
-import Firebase from '../config/firebase';
+import auth from '../config/firebase';
 import { createStackNavigator } from '@react-navigation/stack';
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
 import ForumList from '../components/ForumList';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import ForumExpanded from '../components/ForumExpanded';
 
-const auth = Firebase.auth();
 const Stack = createStackNavigator();
 
 export default function ForumScreen() {

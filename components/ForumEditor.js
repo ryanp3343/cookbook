@@ -1,13 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View, TextInput, Button, Pressable } from 'react-native';
-import Firebase from '../config/firebase';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import {onAuthStateChanged} from "firebase/auth";
 import { useState } from 'react';
+import { db,auth } from '../config/firebase';
 
-const db = Firebase.firestore()
-const auth = Firebase.auth();
+
 
 
 export default function ForumEditor({navigation}) {
@@ -17,12 +16,12 @@ const [Description, setDescription] = useState('');
 
 const createQuestion = async () => {
   var userName
-  await auth.onAuthStateChanged(user =>{
+  await onAuthStateChanged(auth,user =>{
     if(user){
       db.collection("newusers").doc(user.uid).get().then((docRef) => {
         const snapshot = docRef.data();
         userName = snapshot["username"];
-        Firebase.firestore()
+        db.firestore()
           .collection("newforums")
           .add({Question: Question,
                 Description: Description,

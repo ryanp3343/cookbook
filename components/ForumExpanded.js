@@ -1,14 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useContext, useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, Pressable, ScrollView, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
-import Firebase from '../config/firebase';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import { doc, setDoc } from "firebase/firestore"; 
 import CommentCard from "../components/CommentCard"
 // import { Button, InputField, ErrorMessage } from '../components';
+import { auth, db } from '../config/firebase';
 
-const db = Firebase.firestore()
-const auth = Firebase.auth();
 
 export default function ForumExpanded({navigation, route}) {
     const [Comment, setComment] = useState('');
@@ -18,13 +16,13 @@ export default function ForumExpanded({navigation, route}) {
 
     const createComment = async () => {
         var userName
-        await auth.onAuthStateChanged(user =>{
+        await onAuthStateChanged(auth, user =>{
           if(user){
             db.collection("newusers").doc(user.uid).get().then((docRef) => {
               const snapshot = docRef.data();
               // userName = snapshot["username"];
               console.log(typeof(snapshot["username"]))
-              Firebase.firestore()
+              db.firestore()
                 .collection("forumComments")
                 .add({Comment: Comment,
                     Name: snapshot["username"],

@@ -1,15 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View, TextInput, Button, Pressable } from 'react-native';
-import Firebase from '../config/firebase';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import {onAuthStateChanged} from "firebase/auth";
 import { useState } from 'react';
 import "firebase/storage"
+import { auth, db } from '../config/firebase';
 import * as ImagePicker from 'expo-image-picker';
 
-const db = Firebase.firestore()
-const auth = Firebase.auth();
+
 
 export default function ProfileEditor({navigation}) {
   
@@ -32,18 +31,18 @@ export default function ProfileEditor({navigation}) {
   const uploadImage = async (uri, imageName) => {
     const response = await fetch(uri);
     const blob = await response.blob();
-    await auth.onAuthStateChanged(user =>{
+    await onAuthStateChanged(auth,user =>{
       if(user){
-        var ref = Firebase.storage().ref("images/" + user.uid + '/prof.png');
+        var ref = db.storage().ref("images/" + user.uid + '/prof.png');
         ref.put(blob);
-        Firebase.storage().ref("images/" + user.uid + '/prof.png').getDownloadURL().then(imgUrl =>{
+        db.storage().ref("images/" + user.uid + '/prof.png').getDownloadURL().then(imgUrl =>{
           url = imgUrl;
         })
       }
     })
   }
   const updateProf = async () => {
-    await auth.onAuthStateChanged(user =>{
+    await onAuthStateChanged(auth,user =>{
       if(user){
         var userRef = db.collection("newusers").doc(user.uid);
         userRef.update({
