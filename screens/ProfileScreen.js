@@ -58,7 +58,7 @@ var anotherurl = profile['profUrl']
             <Image resizeMode='cover' style={styles.Logo} source={{uri: anotherurl}}></Image>
             <View>
               <View style={styles.settingsName}>
-                <Text style={styles.userName}>{profile['username']}</Text>
+                <Text style={styles.userName}>{profile['profUsername']}</Text>
                 <Pressable style={styles.button} onPress={() => navigation.navigate('ProfileEditor')}>
                   <Icon name="edit" type='feather' color='#000'/>
                 </Pressable>

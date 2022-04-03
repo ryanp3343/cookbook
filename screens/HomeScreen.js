@@ -31,13 +31,13 @@ export default function HomeScreen({ navigation }) {
                       position: 'absolute',
                       elevation: 1,
                       backgroundColor: '#ffff',
-                      height: 70, 
+                      height: 60, 
                     }, 
                     tabBarShowLabel: false,  
                     tabBarActiveTintColor: '#fff',
                     tabBarActiveBackgroundColor: '#fff',
                     headerStyle: {
-                      backgroundColor: '#3f5c41',
+                      backgroundColor: '#949D7E',
                     },
                     headerTitleAlign: 'center',
                     headerTintColor: "white",
@@ -46,7 +46,7 @@ export default function HomeScreen({ navigation }) {
     }}
      >
         <Tabs.Screen name="Forums" component={ForumScreen} options={{tabBarIcon: ({ focused }) => (
-                <Icon name="message-square" type='feather' size={40} color={focused ? "#3f5c41" : "#bbb"}/>
+                <Icon name="message-square" type='feather' size={40} color={focused ? "#949D7E" : "#bbb"}/>
             ), headerRight: () => (
               <View
               style={{
@@ -60,7 +60,7 @@ export default function HomeScreen({ navigation }) {
               </View>
             ), }}/>
         <Tabs.Screen name="Recipes" component={RecipeStack} options={{tabBarIcon: ({ focused }) => (
-                <Icon name="book" type='feather' size={40} color={focused ? "#3f5c41" : "#bbb"}/>
+                <Icon name="book" type='feather' size={40} color={focused ? "#949D7E" : "#bbb"}/>
             ), headerRight: () => (
               <View
               style={{
@@ -74,7 +74,7 @@ export default function HomeScreen({ navigation }) {
               </View>
             ), }}/>
         <Tabs.Screen name="Profile" component={ProfileStack} options={{tabBarIcon: ({ focused }) => (
-                <Icon name="user" type='feather' size={40} color={focused ? "#3f5c41" : "#bbb"}/>
+                <Icon name="user" type='feather' size={40} color={focused ? "#949D7E" : "#bbb"}/>
             ), headerRight: () => (
               <View
               style={{

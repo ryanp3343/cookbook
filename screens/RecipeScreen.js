@@ -7,32 +7,25 @@ import RecipeEditor from '../components/RecipeEditor';
 import RecipeCard from '../components/RecipeCard';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 
-
-const fireDB = Firebase.firestore();
-
 export default function RecipeScreen({navigation}) {
   const[recipes, setRecipes] = useState([]);
   const [text, onChangeText] = React.useState("");
   const[loading, setLoading] = useState(false);
   const[editor, setEditor] = useState(true);
 
-
-  const ref = fireDB.collection('newrecipes');
-  
   const getRecipes = () => {
-    setLoading(true);
+    const fireDB = Firebase.firestore();
+    const ref = fireDB.collection('newrecipes');
     ref.onSnapshot((QuerySnapshot) => {
-      const recipes = [];
-      QuerySnapshot.forEach((doc) => {
-        let currentID = doc.id
-        let appObj = { ...doc.data(), ['id']: currentID }
-        recipes.push(appObj);
-        console.log(doc.data())
-      });
-      setRecipes(recipes);
-      setLoading(false);
-    });
-  }
+        const recipes = [];
+        QuerySnapshot.forEach((doc) => {
+          let currentID = doc.id
+          let appObj = { ...doc.data(), ['id']: currentID }
+          recipes.push(appObj);
+        });
+        setRecipes(recipes)
+    })
+}
 
   useEffect(() => {
     getRecipes();
@@ -49,7 +42,7 @@ export default function RecipeScreen({navigation}) {
         <ScrollView style={styles.Scroll}  showsVerticalScrollIndicator={false}
                                            showsHorizontalScrollIndicator={false}>
         {recipes.map((recipe, index) => (
-              <RecipeCard key={index} recipe={recipe} name={recipe.Title} directions={recipe.directions} url={recipe.Url} ingredients={recipe.ingredients}/>
+              <RecipeCard key={index} id = {recipe.id} recipe={recipe} name={recipe.Title} directions={recipe.directions} url={recipe.Url} ingredients={recipe.ingredients}/>
         ))}
         </ScrollView>
     </View>
@@ -84,7 +77,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 50,
-    backgroundColor: "#3f5c41",
+    backgroundColor: "#949D7E",
     zIndex: 10,
     justifyContent: 'center',
     alignItems: 'center'
