@@ -13,6 +13,7 @@ const auth = Firebase.auth();
 export default function ForumExpanded({navigation, route}) {
     const [Comment, setComment] = useState('');
     const [Comments, setComments] = useState([]);
+    const [height, setHeight] = useState(40);
     const[loading, setLoading] = useState(false);
     const { name, title, repliesAmount, description, id } = route.params;
 
@@ -58,6 +59,10 @@ export default function ForumExpanded({navigation, route}) {
         getComments();
       }, []);
 
+      const updateSize = (height) => {
+        setHeight(height)
+      }
+
     return (
       <View style={styles.Container}>
         <Pressable onPress={() => navigation.navigate('List')}>
@@ -83,8 +88,9 @@ export default function ForumExpanded({navigation, route}) {
                 onChangeText={setComment}
                 value={Comment}
                 placeholder="Reply"
-                multiline={true}
-                numberOfLines={3}
+                multiline
+                numberOfLines={1}
+                onContentSizeChange={(e) => updateSize(e.nativeEvent.contentSize.height)}
                 require={true}
             />
 

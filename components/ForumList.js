@@ -5,29 +5,65 @@ import ForumCard from '../components/ForumCard';
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import FilterLabel from './FilterLabel';
-import { getForums } from '../backend/Crud';
+import Firebase from '../config/firebase.js'
+import DropDownPicker from 'react-native-dropdown-picker';
+
 
 export default function ForumList({navigation}) {
   const { user } = useContext(AuthenticatedUserContext);
   const[forums, setForums] = useState([]);
+  const[newForums, setNewForums] = useState([]);
   const [searchText, onChangeText] = React.useState("");
   const[loading, setLoading] = useState(false);
-  const[editor, setEditor] = useState(true);
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null);
+  const [items, setItems] = useState([
+    {label: 'All', value: 'All'},
+    {label: 'Breakfast', value: 'Breakfast'},
+    {label: 'Lunch', value: 'Lunch'},
+    {label: 'Dinner', value: 'Dinner'},
+    {label: 'Desert', value: 'Desert'},
+    {label: 'Snack', value: 'Snack'},
+    {label: 'Drink', value: 'Drink'},
+    {label: 'Other', value: 'Other'}
+  ]);
 
-  const getFor = () => {
-    setLoading(true);
-    let forums = getForums()
-    setForums(forums);
-    setLoading(false);
-  }
+  const getForums = async () => {
+    const fireDB = Firebase.firestore();
+    const ref = fireDB.collection('newforums');
+    await ref.onSnapshot((QuerySnapshot) => {
+        const temp = [];
+        QuerySnapshot.forEach((doc) => {
+          let currentID = doc.id
+          let appObj = { ...doc.data(), ['id']: currentID }
+          temp.push(appObj);
+        });
+        setForums(temp)
+        setNewForums(temp)
+    })
+}
 
   const filterForums = () => {
-    alert("filtered " + searchText)
+    const temp = [];
+    if (value == "All") {
+      setNewForums(forums)
+    } else {
+      for (let x of forums) {
+        if(x.Tag == value) {
+          temp.push(x)
+        }
+      }
+      setNewForums(temp)
+    }
   }
 
   useEffect(() => {
-    getFor();
+    getForums();
   }, []);
+
+  useEffect(() => {
+    filterForums();
+  }, [value]);
 
   return (
       <View style={styles.container}>
@@ -39,10 +75,15 @@ export default function ForumList({navigation}) {
         </Pressable>
       </View>
       <View style={styles.filterList}>
-        <FilterLabel name={"desert"} />
-        <FilterLabel name={"drinks"} />
-        <FilterLabel name={"dinner"} />
-        <FilterLabel name={"lunch"} />
+      <DropDownPicker
+              placeholder='Select Type'
+              open={open}
+              value={value}
+              items={items}
+              setOpen={setOpen}
+              setValue={setValue}
+              setItems={setItems}
+            />
       </View>
       <View style={styles.editorButton}>
         <Pressable onPress={() => navigation.navigate('Editor')}>
@@ -50,7 +91,7 @@ export default function ForumList({navigation}) {
         </Pressable>
       </View>
       <ScrollView style={styles.Scroll}>
-        {forums.map((forum, index) => (
+        {newForums.map((forum, index) => (
           <Pressable key={index} onPress={() => navigation.navigate('ForumExpand', {
             name: forum.Name,
             title: forum.Question,
@@ -61,14 +102,6 @@ export default function ForumList({navigation}) {
               <ForumCard key={index} name={forum.Name} title={forum.Question} repliesAmount={forum.Replies}/>
           </Pressable>
         ))}
-        {/* <ForumCard name="Skinner" title="Cut my Finger!" repliesAmount={15}/>
-        <ForumCard name="Skinner" title="Chicken undercooked?" repliesAmount={5}/>
-        <ForumCard name="Skinner" title="Freeze milk?" repliesAmount={20}/>
-        <ForumCard name="Skinner" title="Best Cheese?" repliesAmount={3}/>
-        <ForumCard name="Skinner" title="Beef Steak Dry?" repliesAmount={23}/>
-        <ForumCard name="Skinner" title="Spork or Foon?" repliesAmount={121}/>
-        <ForumCard name="Skinner" title="Cut my Finger!" repliesAmount={15}/>
-        <ForumCard name="Skinner" title="Cut my Finger!" repliesAmount={15}/> */}
       </ScrollView>
     </View>
   );

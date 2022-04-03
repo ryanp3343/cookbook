@@ -5,6 +5,8 @@ import Firebase from '../config/firebase';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import {onAuthStateChanged} from "firebase/auth";
 import { useState } from 'react';
+import { ScrollView } from 'react-native-gesture-handler';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 const db = Firebase.firestore()
 const auth = Firebase.auth();
@@ -14,6 +16,17 @@ export default function ForumEditor({navigation}) {
     
 const [Question, setQuestion] = useState('');
 const [Description, setDescription] = useState('');
+const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null);
+  const [items, setItems] = useState([
+    {label: 'Breakfast', value: 'Breakfast'},
+    {label: 'Lunch', value: 'Lunch'},
+    {label: 'Dinner', value: 'Dinner'},
+    {label: 'Desert', value: 'Desert'},
+    {label: 'Snack', value: 'Snack'},
+    {label: 'Drink', value: 'Drink'},
+    {label: 'Other', value: 'Other'}
+  ]);
 
 const createQuestion = async () => {
   var userName
@@ -27,7 +40,8 @@ const createQuestion = async () => {
           .add({Question: Question,
                 Description: Description,
                 Name: userName,
-                Replies: null
+                Replies: null,
+                Tag: value,
               }).then((data) => {
                 console.log("here")
                 console.log(data)                    
@@ -42,15 +56,13 @@ const createQuestion = async () => {
     return (
       <View style={styles.backgroundImage}>
           <View style={styles.HeaderContainer}>
-            <Text style={styles.Header}>Forum Creator</Text>
-                <Pressable onPress={() => navigation.navigate('List')}>
-                    <View style={styles.backButton}>
-                    <Icon size={40} name="arrow-left" type='material' color='#000'/>
-                    <Text style={styles.text}>Exit</Text>
-                    </View>
-                </Pressable>
+            <Pressable onPress={() => navigation.navigate('List')}>
+              <View style={styles.backButton}>
+                <Icon size={40} name="arrow-left" type='feather' color='#000'/>
+              </View>
+            </Pressable>
           </View>
-          <View style={styles.inputContaier}>
+          <ScrollView contentContainerStyle={{alignItems: 'center'}} style={styles.inputContaier}>
             <TextInput 
                 style={styles.Question}
                 onChangeText={text => setQuestion(text)}
@@ -67,16 +79,26 @@ const createQuestion = async () => {
                 multiline={true}
                 numberOfLines={3}
                 require={true}
+                textAlignVertical={'top'}
             />
-          </View>
-         <View style={styles.Submit}>
+            <DropDownPicker
+              placeholder='Select Type'
+              open={open}
+              value={value}
+              items={items}
+              setOpen={setOpen}
+              setValue={setValue}
+              setItems={setItems}
+            />
+            <View style={styles.Submit}>
              <Button
                 onPress={() => {createQuestion(Question, Description)}}
                 title="Submit Question"
-                color="#000"
+                color="#949D7E"
                 accessibilityLabel="Learn more about this purple button"
             />
          </View>
+          </ScrollView>
         
       </View>
     );
@@ -87,6 +109,14 @@ const styles = StyleSheet.create({
     flex : 1,
     flexDirection: "column",
     justifyContent: 'flex-start',
+    paddingBottom: 60,
+    backgroundColor: "#fff",
+    paddingTop: 10,
+  },
+  backButton: {
+    flexDirection:'row',
+    justifyContent: 'flex-start',
+    paddingTop: 10,
   },
   HeaderContainer: {
     flexDirection: 'row',
@@ -100,16 +130,15 @@ const styles = StyleSheet.create({
   },
   Question: {
     height: 40,
-    width: 300,
+    width: '100%',
     margin: 12,
-    borderWidth: 1,
-    borderRadius: 5,
+    borderBottomWidth: 1,
     padding: 10,
     backgroundColor: "#fff",
   },
   Description: {
     height: 400,
-    width: 300,
+    width: '100%',
     margin: 12,
     borderWidth: 1,
     borderRadius: 5,
@@ -119,11 +148,12 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
   inputContaier: {
-    alignItems: 'center'
+    paddingHorizontal: 20,
   },
   Submit: {
     margin: 8,
-    paddingHorizontal:80,
+    marginTop: 20,
+    width: '60%',
     color: "white",
   },
   backButton: {

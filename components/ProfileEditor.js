@@ -20,7 +20,7 @@ export default function ProfileEditor({navigation}) {
   const onChooseImagePress = async () => {
     let result = await ImagePicker.launchImageLibraryAsync();
     if (!result.cancelled) {
-      uploadImage(result.uri, "prof")
+      uploadImage(result.uri)
         .then(() => {
           Alert.alert("Success");
         })
@@ -29,8 +29,8 @@ export default function ProfileEditor({navigation}) {
         });
     }
   }
-  const uploadImage = async (uri, imageName) => {
-    const response = await fetch(uri);
+  const uploadImage = async (uri) => {
+    const response = await fetch(uri, "profile");
     const blob = await response.blob();
     await auth.onAuthStateChanged(user =>{
       if(user){
@@ -49,7 +49,7 @@ export default function ProfileEditor({navigation}) {
         userRef.update({
           profUsername: profUsername,
           profTitle: profTitle,
-          profUrl: url
+          // profUrl: url
         })
       }
     })
@@ -58,27 +58,25 @@ export default function ProfileEditor({navigation}) {
     return (
       <View style={styles.backgroundImage}>
           <View style={styles.HeaderContainer}>
-            <Text style={styles.Header}>Edit Profile</Text>
-                <Pressable onPress={() => navigation.navigate('ProfileScreen')}>
-                    <View style={styles.backButton}>
-                    <Icon size={40} name="arrow-left" type='material' color='#000'/>
-                    <Text style={styles.text}>Exit</Text>
-                    </View>
-                </Pressable>
+            <Pressable onPress={() => navigation.navigate('ProfileScreen')}>
+              <View style={styles.backButton}>
+                <Icon size={40} name="arrow-left" type='feather' color='#000'/>
+              </View>
+            </Pressable>
           </View>
           <View style={styles.inputContaier}>
             <TextInput 
                 style={styles.Question}
                 onChangeText={text => setProfUsername(text)}
                 value={profUsername}
-                placeholder="Username"
+                placeholder="New username"
                 maxLength = {40}
             />
             <TextInput 
                 style={styles.Question}
                 onChangeText={text => setProfTitle(text)}
                 value={profTitle}
-                placeholder="Title"
+                placeholder="New title"
                 maxLength = {40}
                 require={true}
             />
@@ -109,6 +107,9 @@ const styles = StyleSheet.create({
     flex : 1,
     flexDirection: "column",
     justifyContent: 'flex-start',
+    paddingBottom: 60,
+    backgroundColor: "#fff",
+    paddingTop: 10,
   },
   HeaderContainer: {
     flexDirection: 'row',
