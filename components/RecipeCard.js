@@ -8,6 +8,7 @@ import firebase from 'firebase'
 import 'firebase/firestore';
 
 const arrayUnion = firebase.firestore.FieldValue.arrayUnion;
+const arrayRemove = firebase.firestore.FieldValue.arrayRemove;
 
 const RecipeCard = ({name, directions, ingredients, url, recipe, id}) => {
     const [directionList, setDirectionList] = useState([]);
@@ -20,12 +21,17 @@ const RecipeCard = ({name, directions, ingredients, url, recipe, id}) => {
     const saveRecipe = (id) => {
       auth.onAuthStateChanged(user =>{
       if(user){
-        console.log("=================", id)
+        // console.log("=================", id)
         console.log(user.uid)
-      db.collection("newusers").doc(user.uid).update({
-        savedRecipes: arrayUnion(id)
-       });
-       setLiked(!liked)
+        if(!liked){
+          console.log("=================added to saved", id)
+          db.collection("newusers").doc(user.uid).update({ savedRecipes: arrayUnion(id) });
+          setLiked(true)
+        } else if(liked){
+          console.log("=================removed from saved", id)
+          db.collection("newusers").doc(user.uid).update({ savedRecipes: arrayRemove(id) });
+          setLiked(false)
+        }
       }})
     }
 
@@ -72,7 +78,7 @@ const RecipeCard = ({name, directions, ingredients, url, recipe, id}) => {
                 <Icon style={styles.icon} size={40} name="message-square" type='feather' color='#000'/>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => visitProfile()}>
-                <Image style={styles.stretch} source={require("../imgs/cooked.png")} size={40}></Image>
+                <Image style={styles.stretch} source={require("../imgs/LOGO.png")} size={40}></Image>
               </TouchableOpacity>
             </View>
         </View>
