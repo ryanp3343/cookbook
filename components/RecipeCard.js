@@ -1,11 +1,14 @@
 import React, {useState, useEffect} from 'react';
 import { StyleSheet, Text, View, Image, Pressable } from 'react-native';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
+import { BlurView } from 'expo-blur';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import Firebase from '../config/firebase';
 import firebase from 'firebase'
+import { Rating } from 'react-native-ratings';
 import 'firebase/firestore';
+
 
 const arrayUnion = firebase.firestore.FieldValue.arrayUnion;
 const arrayRemove = firebase.firestore.FieldValue.arrayRemove;
@@ -36,15 +39,7 @@ const RecipeCard = ({name, directions, ingredients, url, recipe, id}) => {
     }
 
     const commentRecipe = () => {
-      auth.onAuthStateChanged(user =>{
-        if(user){
-          console.log("=================", id)
-          console.log(user.uid)
-        db.collection("newusers").doc(user.uid).update({
-          savedRecipes: arrayUnion(id)
-         });
-         setLiked(!liked)
-        }})
+    
     }
 
     const visitProfile = () => {
@@ -61,25 +56,50 @@ const RecipeCard = ({name, directions, ingredients, url, recipe, id}) => {
             recipeid: recipe.id
           })}>
             <View style={styles.Title}>
+            <Pressable onPress={() => navigation.navigate('Profile')}>
+            {/* This is all the profile information of postee */}
+            <View style={styles.profileHeader}>
+              <Image source={{uri: 'https://i.natgeofe.com/n/46b07b5e-1264-42e1-ae4b-8a021226e2d0/domestic-cat_thumb_square.jpg'}}
+                         style={styles.profilePhoto}
+              />
+              <Text style={styles.username}>{"Poppmane"}</Text>
+            </View>
+          </Pressable>
+              <BlurView intensity={120} tint="light" style={styles.Blur}>
                 <Text style={styles.recipeTitle}>{name}</Text>
+              </BlurView>
                 <Image source={{uri: url}}
                        style={{width: "100%", height: 320}}
                  />
-                 <View style={styles.directionsContainer}>
-                    
-                 </View>
             </View>
           </Pressable>
             <View style={styles.buttonContainer}>
-              <TouchableOpacity onPress={() => saveRecipe(id)}>
-                <Icon style={styles.icon} size={40} color={liked ? '#949D7E' : '#000'} name="bookmark" type='feather'/>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => commentRecipe()}>
-                <Icon style={styles.icon} size={40} name="message-square" type='feather' color='#000'/>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => visitProfile()}>
-                <Image style={styles.stretch} source={require("../imgs/LOGO.png")} size={40}></Image>
-              </TouchableOpacity>
+               {/* These are all the user interactions */}
+              <View style={styles.buttons}>
+                <TouchableOpacity onPress={() => saveRecipe(id)}>
+                  <Icon style={styles.icon} size={40} color={liked ? '#949D7E' : '#000'} name="bookmark" type='feather'/>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => commentRecipe()}>
+                  <Icon style={styles.icon} size={40} name="message-square" type='feather' color='#000'/>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => visitProfile()}>
+                  <Image style={styles.stretch} source={require("../imgs/cooked.png")} size={40}></Image>
+                </TouchableOpacity>
+              </View>
+
+              {/* This is the rating Component */}
+              <Rating
+                  type='star'
+                  ratingCount={5}
+                  imageSize={25}
+                  style={styles.rating}
+                  onFinishRating={3}
+                  defaultRating={0}
+                />
+
+            </View>
+            <View style={styles.date}>
+              <Text style={styles.dateText}>{'12/12/12'}</Text>
             </View>
         </View>
     )
@@ -87,26 +107,51 @@ const RecipeCard = ({name, directions, ingredients, url, recipe, id}) => {
 
 const styles = StyleSheet.create({
   Card: {
-    // backgroundColor: '#ddd',
     fontSize: 20,
-    marginBottom: 30,
     fontWeight: '600',
     width: '100%',
     height: 'auto',
-    paddingBottom: 10,
-    borderBottomWidth: 1,
-    borderColor: '#D8d8d8',
+    marginBottom: 20,
+  },
+  profileHeader: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 5,
+    paddingLeft: 10,
+  }, 
+  profilePhoto: {
+    height: 40,
+    width: 40,
+    borderRadius: 50,
+  },  
+  username: {
+    fontSize: 20,
+    marginLeft: 5,
+    fontWeight: 'bold',
   },
   stretch: {
+    marginTop: 2,
     width: 45,
-    height: 45,
-    resizeMode: 'stretch',
+    height: 35,
+    resizeMode: 'stretch'
+  },
+  rating: {
+  },
+  Blur: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    zIndex: 2,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
   },
   recipeTitle: {
-    fontSize: 30,
-    fontWeight: '600',
-    marginBottom: 10,
-    paddingLeft: 10,
+    fontSize: 20,
+    fontWeight: 'bold',
   },
   Title: {
     flexDirection: 'column',
@@ -132,9 +177,14 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
       flexDirection: 'row',
-      justifyContent: 'flex-start',
+      justifyContent: 'space-between',
+      alignItems: 'center',
       marginVertical: 5,
-      paddingLeft: 10,
+      paddingHorizontal: 10,
+  },
+  buttons: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
   },
   icon: {
       marginRight: 25,
@@ -148,6 +198,13 @@ const styles = StyleSheet.create({
   directionTitle: {
       fontSize: 18,
       fontWeight: 'bold',
+  },
+  date: {
+    marginLeft: 10,
+  },
+  dateText: {
+    fontSize: 15,
+    color: '#aaa',
   }
 });
 
