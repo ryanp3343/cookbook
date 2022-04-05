@@ -2,7 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StatusBar } from 'expo-status-bar';
 import React, { useContext } from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, Image } from 'react-native';
 import { IconButton } from '../components';
 import Firebase from '../config/firebase';
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
@@ -58,7 +58,18 @@ export default function HomeScreen({ navigation }) {
               }}>
               <Icon name="log-out" type='feather' color='#fff' onPress={() => handleSignOut() }/>
               </View>
-            ), }}/>
+            ), headerLeft: () => (
+              <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                flexDirection: 'row',
+                paddingHorizontal: 20,
+                height: StatusBar.currentHeight,
+              }}>
+                 <Image style={styles.stretch} source={require("../imgs/cooked_white.png")} size={40}></Image>
+              </View>
+            ),}}/>
         <Tabs.Screen name="Recipes" component={RecipeStack} options={{tabBarIcon: ({ focused }) => (
                 <Icon name="book" type='feather' size={40} color={focused ? "#949D7E" : "#bbb"}/>
             ), headerRight: () => (
@@ -72,7 +83,18 @@ export default function HomeScreen({ navigation }) {
               }}>
               <Icon name="logout" type='material' color='#fff' onPress={() => handleSignOut() }/>
               </View>
-            ), }}/>
+            ), headerLeft: () => (
+              <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                flexDirection: 'row',
+                paddingHorizontal: 20,
+                height: StatusBar.currentHeight,
+              }}>
+                 <Image style={styles.stretch} source={require("../imgs/cooked_white.png")} size={40}></Image>
+              </View>
+            ),}}/>
         <Tabs.Screen name="Profile" component={ProfileStack} options={{tabBarIcon: ({ focused }) => (
                 <Icon name="user" type='feather' size={40} color={focused ? "#949D7E" : "#bbb"}/>
             ), headerRight: () => (
@@ -86,7 +108,18 @@ export default function HomeScreen({ navigation }) {
               }}>
               <Icon name="logout" type='material'  color='#fff' onPress={() => handleSignOut() }/>
               </View>
-            ), }}/>
+            ), headerLeft: () => (
+              <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                flexDirection: 'row',
+                paddingHorizontal: 20,
+                height: StatusBar.currentHeight,
+              }}>
+                 <Image style={styles.stretch} source={require("../imgs/cooked_white.png")} size={40}></Image>
+              </View>
+            ),}}/>
       </Tabs.Navigator>
   );
 }
@@ -113,5 +146,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'normal',
     color: '#fff'
+  },
+  stretch: {
+    width: 30,
+    height: 23,
+    resizeMode: 'stretch'
   }
 });
