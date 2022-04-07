@@ -39,7 +39,14 @@ const RecipeCard = ({name, directions, ingredients, url, recipe, id}) => {
     }
 
     const commentRecipe = () => {
-    
+      navigation.navigate('RecipeExpanded', {
+        name: recipe.Title,
+        directions: recipe.Directions,
+        photoURL: recipe.Url,
+        ingredients: recipe.Ingredients,
+        recipeid: recipe.id
+      })
+      console.log(recipe.id)
     }
 
     const visitProfile = () => {
@@ -181,6 +188,15 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       marginVertical: 5,
       paddingHorizontal: 10,
+  },
+  submit: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderColor: '#949D7E',
+    marginBottom: 10,
+    borderWidth: 2,
+    width: 100,
+    borderRadius: 5,
   },
   buttons: {
     flexDirection: 'row',

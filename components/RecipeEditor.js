@@ -59,7 +59,8 @@ export default function RecipeEditor({navigation}) {
             Title: Recipe,
             Ingredients: Ingredients,
             Directions: Directions,
-            Url: url
+            Url: url,
+            Comments: []
           })
         })
       }
