@@ -13,9 +13,11 @@ import 'firebase/firestore';
 const arrayUnion = firebase.firestore.FieldValue.arrayUnion;
 const arrayRemove = firebase.firestore.FieldValue.arrayRemove;
 
-const RecipeCard = ({name, directions, ingredients, url, recipe, id}) => {
+const RecipeCard = ({name, directions, ingredients, url, recipe, id, userRef, cooked, cookedScore, cookedVal, username, date}) => {
     const [directionList, setDirectionList] = useState([]);
     const [liked, setLiked] = useState(false)
+    const [score, setScore] = useState(0)
+    const [datePrint, setDatePrint] = useState(0)
     const navigation = useNavigation();
     
     const db = Firebase.firestore()
@@ -24,34 +26,65 @@ const RecipeCard = ({name, directions, ingredients, url, recipe, id}) => {
     const saveRecipe = (id) => {
       auth.onAuthStateChanged(user =>{
       if(user){
-        // console.log("=================", id)
-        console.log(user.uid)
         if(!liked){
-          console.log("=================added to saved", id)
           db.collection("newusers").doc(user.uid).update({ savedRecipes: arrayUnion(id) });
           setLiked(true)
         } else if(liked){
-          console.log("=================removed from saved", id)
           db.collection("newusers").doc(user.uid).update({ savedRecipes: arrayRemove(id) });
           setLiked(false)
         }
       }})
     }
 
-    const commentRecipe = () => {
-      navigation.navigate('RecipeExpanded', {
-        name: recipe.Title,
-        directions: recipe.Directions,
-        photoURL: recipe.Url,
-        ingredients: recipe.Ingredients,
-        recipeid: recipe.id
-      })
-      console.log(recipe.id)
+    const commentRecipe = async () => {
+      await auth.onAuthStateChanged(user =>{
+        if(user){
+          if(!liked){
+            db.collection("newusers").doc(user.uid).update({ savedRecipes: arrayUnion(id) });
+            setLiked(true)
+          } else if(liked){
+            db.collection("newusers").doc(user.uid).update({ savedRecipes: arrayRemove(id) });
+            setLiked(false)
+          }
+        }})
     }
 
-    const visitProfile = () => {
-      alert("you visited user for " + recipe.Title)
+    const cookedRecipe = async () => {
+      await auth.onAuthStateChanged(user =>{
+        if(user){
+          let _cookedScore = cookedScore
+          let _cookedVal = cookedVal
+          let _cooked = cooked
+
+          _cookedVal = _cookedVal + score
+          _cooked = _cooked + 1
+          _cookedScore = cookedVal / cooked
+          
+          db.collection("newusers").doc(user.uid).update(
+            { 
+              CookedScore: _cookedScore,
+              CookedVal: _cookedVal,
+              Cooked:  _cooked,
+            });
+        }})
     }
+
+    const updateCard = async () => {
+      var currentDate = new Date(date.seconds*1000).toLocaleDateString()
+      setDatePrint(currentDate)
+      let liked = userRef.savedRecipes
+      for (let i in liked) {
+        if (liked[i] == id) {
+          return setLiked(true)
+        } else {
+          setLiked(false)
+        }
+      }
+    }
+
+    useEffect(() => {
+      updateCard()
+    }, [])
 
     return (
         <View style={styles.Card}>
@@ -66,10 +99,10 @@ const RecipeCard = ({name, directions, ingredients, url, recipe, id}) => {
             <Pressable onPress={() => navigation.navigate('Profile')}>
             {/* This is all the profile information of postee */}
             <View style={styles.profileHeader}>
-              <Image source={{uri: 'https://i.natgeofe.com/n/46b07b5e-1264-42e1-ae4b-8a021226e2d0/domestic-cat_thumb_square.jpg'}}
+              <Image source={{uri: url}}
                          style={styles.profilePhoto}
               />
-              <Text style={styles.username}>{"Poppmane"}</Text>
+              <Text style={styles.username}>{username}</Text>
             </View>
           </Pressable>
               <BlurView intensity={120} tint="light" style={styles.Blur}>
@@ -89,24 +122,28 @@ const RecipeCard = ({name, directions, ingredients, url, recipe, id}) => {
                 <TouchableOpacity onPress={() => commentRecipe()}>
                   <Icon style={styles.icon} size={40} name="message-square" type='feather' color='#000'/>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => visitProfile()}>
+                <TouchableOpacity onPress={() => cookedRecipe()}>
                   <Image style={styles.stretch} source={require("../imgs/cooked.png")} size={40}></Image>
                 </TouchableOpacity>
               </View>
 
-              {/* This is the rating Component */}
+              {/* This is the rating Component
               <Rating
                   type='star'
                   ratingCount={5}
                   imageSize={25}
                   style={styles.rating}
-                  onFinishRating={3}
-                  defaultRating={0}
-                />
-
+                  onFinishRating={4}
+                  defaultRating={5}
+                  showRating={2}
+                /> */}
+            <View style={styles.rating}>
+              <Text style={styles.ratingFont}>{cooked}</Text>
+              <Text style={styles.ratingFontConstant}>/5</Text>
+            </View>
             </View>
             <View style={styles.date}>
-              <Text style={styles.dateText}>{'12/12/12'}</Text>
+              <Text style={styles.dateText}>{datePrint}</Text>
             </View>
         </View>
     )
@@ -143,8 +180,6 @@ const styles = StyleSheet.create({
     height: 35,
     resizeMode: 'stretch'
   },
-  rating: {
-  },
   Blur: {
     position: 'absolute',
     bottom: 0,
@@ -157,7 +192,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   recipeTitle: {
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: 'bold',
   },
   Title: {
@@ -189,15 +224,6 @@ const styles = StyleSheet.create({
       marginVertical: 5,
       paddingHorizontal: 10,
   },
-  submit: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderColor: '#949D7E',
-    marginBottom: 10,
-    borderWidth: 2,
-    width: 100,
-    borderRadius: 5,
-  },
   buttons: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
@@ -221,7 +247,21 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 15,
     color: '#aaa',
-  }
+  },
+  ratingFont: {
+    fontSize: 30,
+    color: "#FDCC0D"
+  },
+  ratingFontConstant: {
+    fontSize: 20,
+    color: "#FDCC0D"
+  },
+  rating: {
+    display: 'flex',
+    flexDirection: 'row',
+    fontSize: 20,
+    alignItems: 'center'
+  },
 });
 
 export default RecipeCard;

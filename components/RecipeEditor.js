@@ -7,6 +7,7 @@ import { doc, setDoc } from "firebase/firestore";
 import "firebase/storage"
 import { useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const db = Firebase.firestore()
 const auth = Firebase.auth();
@@ -56,11 +57,15 @@ export default function RecipeEditor({navigation}) {
           db.collection("newrecipes").doc(user.uid)
           .set({
             Name: snapshot["username"],
+            Uid: user.uid,
             Title: Recipe,
             Ingredients: Ingredients,
             Directions: Directions,
             Url: url,
-            Comments: []
+            CookedScore: 0,
+            CookedVal: 0,
+            Cooked: 0,
+            Date:  Firebase.firestore.FieldValue.serverTimestamp(),
           })
         })
       }
@@ -70,15 +75,13 @@ export default function RecipeEditor({navigation}) {
     return (
       <View style={styles.backgroundImage}>
           <View style={styles.HeaderContainer}>
-            <Text style={styles.Header}>Recipe Creator</Text>
-                <Pressable onPress={() => navigation.navigate('RecipesList')}>
-                    <View style={styles.backButton}>
-                    <Icon size={40} name="arrow-left" type='material' color='#000'/>
-                    <Text style={styles.text}>Exit</Text>
-                    </View>
-                </Pressable>
+            <Pressable onPress={() => navigation.navigate('List')}>
+              <View style={styles.backButton}>
+                <Icon size={40} name="arrow-left" type='feather' color='#000'/>
+              </View>
+            </Pressable>
           </View>
-          <View style={styles.inputContaier}>
+          <ScrollView contentContainerStyle={{alignItems: 'center'}} style={styles.inputContaier}>
             <TextInput 
                 style={styles.Recipe}
                 onChangeText={text => setRecipe(text)}
@@ -93,6 +96,7 @@ export default function RecipeEditor({navigation}) {
                 multiline={true}
                 numberOfLines={3}
                 require={true}
+                textAlignVertical={'top'}
             />
             <TextInput 
                 style={styles.Directions}
@@ -102,25 +106,23 @@ export default function RecipeEditor({navigation}) {
                 multiline={true}
                 numberOfLines={3}
                 require={true}
+                textAlignVertical={'top'}
             />
-          </View>
-         <View style={styles.Submit}>
-             <Button
-                onPress={() => {createRecipe(Recipe)}}
-                title="Submit Recipe"
-                color="#000"
-                accessibilityLabel="Learn more about this purple button"
-            />
-         </View>
-         <View style={styles.Submit}>
-             <Button
-                onPress={() => {onChooseImagePress()}}
-                title="Upload Picture"
-                color="#000"
-                accessibilityLabel="Learn more about this purple button"
-            />
-         </View>
-        
+            <View style={styles.Submit}>
+                <Button
+                   onPress={() => {onChooseImagePress()}}
+                   title="Upload Picture"
+                   color="#000"
+               />
+            </View>
+            <View style={styles.Submit}>
+                <Button
+                   onPress={() => {createRecipe(Recipe)}}
+                   title="Submit Recipe"
+                   color="#000"
+               />
+            </View>
+         </ScrollView>
       </View>
     );
 }
@@ -130,6 +132,9 @@ const styles = StyleSheet.create({
     flex : 1,
     flexDirection: "column",
     justifyContent: 'flex-start',
+    paddingBottom: 60,
+    backgroundColor: "#fff",
+    paddingTop: 10,
   },
   HeaderContainer: {
     flexDirection: 'row',
@@ -143,34 +148,37 @@ const styles = StyleSheet.create({
   },
   Recipe: {
     height: 40,
-    width: 300,
+    width: '100%',
     margin: 12,
-    borderWidth: 1,
-    padding: 10,
+    fontSize: 20,
+    borderBottomWidth: 1,
+    paddingLeft: 10,
     backgroundColor: "#fff",
   },
   Ingredients: {
-    height: 200,
-    width: 300,
+    height: 400,
+    width: '100%',
     margin: 12,
     borderWidth: 1,
+    borderRadius: 5,
     padding: 10,
     backgroundColor: "#fff",
     paddingTop: 10,
     textAlign: 'left',
   },
   Directions: {
-    height: 200,
-    width: 300,
+    height: 400,
+    width: '100%',
     margin: 12,
     borderWidth: 1,
+    borderRadius: 5,
     padding: 10,
     backgroundColor: "#fff",
     paddingTop: 10,
     textAlign: 'left',
   },
   inputContaier: {
-    alignItems: 'center'
+    paddingHorizontal: 20,
   },
   Submit: {
     margin: 8,

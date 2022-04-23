@@ -68,12 +68,6 @@ export default function ForumList({navigation}) {
   return (
       <View style={styles.container}>
       <StatusBar style='dark-content'/>
-      <View style={styles.searchBar}>
-        <TextInput style={styles.input}  placeholder="Search" value={searchText} onChangeText={onChangeText}/>
-        <Pressable onPress={() => filterForums()}>
-          <Icon size={40} name="search" type='feather' color='#aaa'/>
-        </Pressable>
-      </View>
       <View style={styles.filterList}>
       <DropDownPicker
               placeholder='Select Type'
