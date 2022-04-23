@@ -47,89 +47,94 @@ export default function SignupScreen({navigation}){
     }
   };
     return (
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
-        {<Image style={styles.Logo} source={require('../imgs/LOGO_BLACK.png')} />}
-      <StatusBar style='dark-content' />
-      <InputField
-        inputStyle={{
-          fontSize: 20
-        }}
-        containerStyle={{
-          backgroundColor: 'transparent',
-          marginBottom: 20,
-          borderBottomColor: 'black',
-          borderBottomWidth: 2,
-          borderRadius: 0,
-        }}
-        placeholder='USERNAME'
-        placeholderTextColor='#bbb'
-        autoCapitalize='none'
-        keyboardType='email-address'
-        textContentType='emailAddress'
-        autoFocus={true}
-        value={username}
-        onChangeText={text => setUser(text)}
-      />
-      <InputField
-        inputStyle={{
-          fontSize: 20
-        }}
-        containerStyle={{
-          backgroundColor: 'transparent',
-          marginBottom: 20,
-          borderBottomColor: 'black',
-          borderBottomWidth: 2,
-          borderRadius: 0,
-        }}
-        placeholder='EMAIL'
-        placeholderTextColor='#bbb'
-        autoCapitalize='none'
-        keyboardType='email-address'
-        textContentType='emailAddress'
-        autoFocus={true}
-        value={email}
-        onChangeText={text => setEmail(text)}
-      />
-      <InputField
-        inputStyle={{
-          fontSize: 20
-        }}
-        containerStyle={{
-          backgroundColor: '#fff',
-          marginBottom: 20,
-          borderBottomColor: 'black',
-          borderBottomWidth: 2,
-          borderRadius: 0,
-        }}
-        placeholder='PASSWORD'
-        placeholderTextColor='#bbb'
-        autoCapitalize='none'
-        autoCorrect={false}
-        secureTextEntry={passwordVisibility}
-        textContentType='password'
-        value={password}
-        onChangeText={text => setPassword(text)}
-        //handlePasswordVisibility={handlePasswordVisibility}
-      />
-    
-      {signupError ? <ErrorMessage error={signupError} visible={true} /> : null}
-      <View style={styles.buttonContainer}>
-      <Button
-        onPress={onHandleSignup}
-        backgroundColor='#000'
-        title='REGISTER'
-        titleSize={25}
-      />
-      </View>
-      <View style = {styles.alternateButton}>
-      <Button
-        onPress={() => navigation.navigate('Login')}
-        title='back to login'
-        titleSize={13}
-        backgroundColor='transparent'
-        titleColor='#555'
-      />
-      </View>
+      <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={{ flex: 1 }}
+      >
+        <View style={styles.container}>
+            {<Image style={styles.Logo} source={require('../imgs/LOGO_BLACK.png')} />}
+          <StatusBar style='dark-content' />
+          <InputField
+            inputStyle={{
+              fontSize: 20
+            }}
+            containerStyle={{
+              backgroundColor: 'transparent',
+              marginBottom: 20,
+              borderBottomColor: 'black',
+              borderBottomWidth: 2,
+              borderRadius: 0,
+            }}
+            placeholder='USERNAME'
+            placeholderTextColor='#bbb'
+            autoCapitalize='none'
+            keyboardType='email-address'
+            textContentType='emailAddress'
+            autoFocus={true}
+            value={username}
+            onChangeText={text => setUser(text)}
+          />
+          <InputField
+            inputStyle={{
+              fontSize: 20
+            }}
+            containerStyle={{
+              backgroundColor: 'transparent',
+              marginBottom: 20,
+              borderBottomColor: 'black',
+              borderBottomWidth: 2,
+              borderRadius: 0,
+            }}
+            placeholder='EMAIL'
+            placeholderTextColor='#bbb'
+            autoCapitalize='none'
+            keyboardType='email-address'
+            textContentType='emailAddress'
+            autoFocus={true}
+            value={email}
+            onChangeText={text => setEmail(text)}
+          />
+          <InputField
+            inputStyle={{
+              fontSize: 20
+            }}
+            containerStyle={{
+              backgroundColor: '#fff',
+              marginBottom: 20,
+              borderBottomColor: 'black',
+              borderBottomWidth: 2,
+              borderRadius: 0,
+            }}
+            placeholder='PASSWORD'
+            placeholderTextColor='#bbb'
+            autoCapitalize='none'
+            autoCorrect={false}
+            secureTextEntry={passwordVisibility}
+            textContentType='password'
+            value={password}
+            onChangeText={text => setPassword(text)}
+            //handlePasswordVisibility={handlePasswordVisibility}
+          />
+
+          {signupError ? <ErrorMessage error={signupError} visible={true} /> : null}
+          <View style={styles.buttonContainer}>
+          <Button
+            onPress={onHandleSignup}
+            backgroundColor='#000'
+            title='REGISTER'
+            titleSize={25}
+          />
+          </View>
+          <View style = {styles.alternateButton}>
+          <Button
+            onPress={() => navigation.navigate('Login')}
+            title='back to login'
+            titleSize={13}
+            backgroundColor='transparent'
+            titleColor='#555'
+          />
+          </View>
+        </View>
     </KeyboardAvoidingView>
     );
       }

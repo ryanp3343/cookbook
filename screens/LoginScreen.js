@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { Component } from 'react';
 import { useState } from 'react';
-import { StyleSheet, View,Image} from 'react-native';
+import { StyleSheet, View,Image, KeyboardAvoidingView} from 'react-native';
 
 import { Button, InputField, ErrorMessage } from '../components';
 import Firebase from '../config/firebase';
@@ -39,6 +39,10 @@ export default function LoginScreen({ navigation }) {
   };
 
   return (
+    <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={{ flex: 1 }}
+      >
     <View style={styles.container}>
       <StatusBar style='dark-content' />
       {<Image style={styles.Logo} source={require('../imgs/LOGO_BLACK.png')} />}
@@ -102,6 +106,7 @@ export default function LoginScreen({ navigation }) {
       />
       </View>
     </View>
+    </KeyboardAvoidingView>
   );
 }
 
