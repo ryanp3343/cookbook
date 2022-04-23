@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useContext, useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, Pressable, ScrollView, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, Pressable, ScrollView, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import Firebase from '../config/firebase';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import { doc, setDoc } from "firebase/firestore"; 

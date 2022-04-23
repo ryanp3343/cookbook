@@ -77,6 +77,7 @@ export default function ForumList({navigation}) {
               setOpen={setOpen}
               setValue={setValue}
               setItems={setItems}
+              style={{elevation: 10}}
             />
       </View>
       <View style={styles.editorButton}>
