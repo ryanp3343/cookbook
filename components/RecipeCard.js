@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, View, Image, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Image, Pressable,  } from 'react-native';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import { BlurView } from 'expo-blur';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -8,6 +8,7 @@ import Firebase from '../config/firebase';
 import firebase from 'firebase'
 import { Rating } from 'react-native-ratings';
 import 'firebase/firestore';
+ 
 
 
 const arrayUnion = firebase.firestore.FieldValue.arrayUnion;
@@ -98,32 +99,30 @@ const RecipeCard = ({name, directions, ingredients, url, recipe, id, userRef, co
             <View style={styles.Title}>
             <Pressable onPress={() => navigation.navigate('Profile')}>
             {/* This is all the profile information of postee */}
-            <View style={styles.profileHeader}>
-              <Image source={{uri: url}}
-                         style={styles.profilePhoto}
-              />
-              <Text style={styles.username}>{username}</Text>
-            </View>
+            <Text style={styles.recipeTitle}>{name}</Text>
           </Pressable>
-              <BlurView intensity={120} tint="light" style={styles.Blur}>
-                <Text style={styles.recipeTitle}>{name}</Text>
-              </BlurView>
                 <Image source={{uri: url}}
                        style={{width: "100%", height: 320}}
                  />
+              <View style={styles.profileHeader}>
+                <Image source={{uri: url}}
+                  style={styles.profilePhoto}
+                />
+                <Text style={styles.username}>{username}</Text>
+              </View>
             </View>
           </Pressable>
             <View style={styles.buttonContainer}>
                {/* These are all the user interactions */}
               <View style={styles.buttons}>
                 <TouchableOpacity onPress={() => saveRecipe(id)}>
-                  <Icon style={styles.icon} size={40} color={liked ? '#949D7E' : '#000'} name="bookmark" type='feather'/>
+                  <Icon style={styles.icon} size={30} color={liked ? '#949D7E' : '#000'} name="bookmark" type='feather'/>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => commentRecipe()}>
-                  <Icon style={styles.icon} size={40} name="message-square" type='feather' color='#000'/>
+                  <Icon style={styles.icon} size={30} name="message-square" type='feather' color='#000'/>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => cookedRecipe()}>
-                  <Image style={styles.stretch} source={require("../imgs/cooked.png")} size={40}></Image>
+                  <Image style={styles.stretch} source={require("../imgs/cooked.png")} size={20}></Image>
                 </TouchableOpacity>
               </View>
 
@@ -160,9 +159,15 @@ const styles = StyleSheet.create({
   profileHeader: {
     display: 'flex',
     flexDirection: 'row',
-    alignItems: 'center',
     paddingVertical: 5,
     paddingLeft: 10,
+    alignItems: 'center',
+    position: 'absolute',
+    backgroundColor: '#fffa',
+    borderTopLeftRadius: 10,
+    padding: 10,
+    bottom: 0,
+    right: 0,
   }, 
   profilePhoto: {
     height: 40,
@@ -176,8 +181,8 @@ const styles = StyleSheet.create({
   },
   stretch: {
     marginTop: 2,
-    width: 45,
-    height: 35,
+    width: 30,
+    height: 27,
     resizeMode: 'stretch'
   },
   Blur: {
@@ -192,7 +197,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   recipeTitle: {
-    fontSize: 25,
+    fontSize: 20,
+    paddingHorizontal: 10,
+    
     fontWeight: 'bold',
   },
   Title: {
@@ -250,18 +257,26 @@ const styles = StyleSheet.create({
   },
   ratingFont: {
     fontSize: 30,
-    color: "#FDCC0D"
+    color: "#D4AF37"
+    
   },
   ratingFontConstant: {
     fontSize: 20,
-    color: "#FDCC0D"
+    color: "#D4AF37"
   },
   rating: {
     display: 'flex',
     flexDirection: 'row',
     fontSize: 20,
-    alignItems: 'center'
+    alignItems: 'center',
+    textShadowOffset: {
+      width: 1,
+      height: 1
+    },
+    textShadowColor: "black",
+    textShadowRadius: 1
   },
 });
+
 
 export default RecipeCard;

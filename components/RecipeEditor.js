@@ -75,7 +75,7 @@ export default function RecipeEditor({navigation}) {
     return (
       <View style={styles.backgroundImage}>
           <View style={styles.HeaderContainer}>
-            <Pressable onPress={() => navigation.navigate('List')}>
+            <Pressable onPress={() => navigation.navigate('RecipesList')}>
               <View style={styles.backButton}>
                 <Icon size={40} name="arrow-left" type='feather' color='#000'/>
               </View>
