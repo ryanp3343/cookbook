@@ -19,8 +19,34 @@ export default function ProfileScreen({navigation}) {
   const [userClass, setUserClass] = useState('professional chef')
   const [display, setDisplay] = useState(true)
   const [loading, setLoading] = useState(false);
+  const [userRef, setUserRef] = useState({});
   const [profile, setProfile] = useState([]);
+  const [recipes, setRecipes] = useState([]);
   
+  const getSavedRecipes = async () => {
+    const fireDB = Firebase.firestore();
+    const ref = fireDB.collection('newrecipes');
+    await auth.onAuthStateChanged(user => {
+      if(user){
+        fireDB.collection('newusers').doc(user.uid).get().then((docRef) =>{
+          ref.onSnapshot((QuerySnapshot) => {
+            const recipes = [];
+            QuerySnapshot.forEach((doc) => {
+              if(docRef.data()["savedRecipes"].includes(doc.id)){
+                let currentID = doc.id
+                let appObj = { ...doc.data(), ['id']: currentID }
+                recipes.push(appObj);
+                // console.log(recipes)
+              }
+            });
+            console.log(recipes)
+            setRecipes(recipes)
+          })
+        })
+      }   
+    }) 
+  }
+
   const handleSignOut = async () => {
     try {
       await auth.signOut();
@@ -40,7 +66,12 @@ export default function ProfileScreen({navigation}) {
             
         })
       }   
-    })  
+    }) 
+    await auth.onAuthStateChanged(user =>{
+      fireDB.collection('newusers').doc(user.uid).get().then((docRef) =>{
+        setUserRef(docRef.data());    
+    })
+    }) 
     
   }
 var anotherurl = profile['profUrl']
@@ -49,6 +80,9 @@ var anotherurl = profile['profUrl']
     getProfile();
   },[]);
   
+  useEffect(() => {
+    getSavedRecipes();
+  },[]);
 
 
   return (
@@ -90,8 +124,28 @@ var anotherurl = profile['profUrl']
 
         <View style={styles.contentContainer}>
           <ScrollView style={styles.Scroll}>
-            {display ? <LikedRecipeList /> 
-                      : <ForumCard key={"index"} name={"poppmane"} title={"How to boil water?"}/>}
+            {display ?
+              <ScrollView style={styles.Scroll}  showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}>
+              {recipes.map((recipe, index) => (
+                <RecipeCard 
+                  key={index} 
+                  userRef={userRef} 
+                  id = {recipe.id} 
+                  recipe={recipe} 
+                  name={recipe.Title} 
+                  directions={recipe.directions} 
+                  url={recipe.Url} 
+                  ingredients={recipe.ingredients}
+                  cookedScore={recipe.CookedScore}
+                  cookedVal={recipe.CookedVal}
+                  cooked={recipe.Cooked}
+                  username={recipe.Name}
+                  date={recipe.Date}
+                /> ))}
+              </ScrollView>
+                      :<ForumCard key={"index"} name={"poppmane"} title={"How to boil water?"}/>}
+            {/* {display ? <RecipeCard name={"Homade Doughnuts"} directions={"som"} ingredients={"som"} url={'https://firebasestorage.googleapis.com/v0/b/test2-7ed41.appspot.com/o/images%2FftXCcuNEJwUFx26SOd1JZWmmZ1Q2%2Frecipe.png?alt=media&token=c242e56d-9fa4-4d96-8997-568e56501691'}/> 
+            : <ForumCard key={"index"} name={"poppmane"} title={"How to boil water?"}/>} */}
           </ScrollView>
         </View>
     </View>
