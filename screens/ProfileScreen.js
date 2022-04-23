@@ -6,6 +6,7 @@ import RecipeCard from '../components/RecipeCard';
 import Firebase from '../config/firebase';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
+import LikedRecipeList from '../components/LikedRecipeList';
 
 const auth = Firebase.auth();
 const fireDB = Firebase.firestore();
@@ -33,6 +34,7 @@ export default function ProfileScreen({navigation}) {
       if(user){
         fireDB.collection('newusers').doc(user.uid).get().then((docRef) =>{
             const profile = [];
+            console.log(docRef.data())
            // profile.push(docRef.data())
             setProfile(docRef.data());
             
@@ -55,15 +57,15 @@ var anotherurl = profile['profUrl']
 
         <View  style={styles.profileHeader}>
           <View style={styles.profileInfo}>
-            <Image resizeMode='cover' style={styles.Logo} source={{uri: anotherurl}}></Image>
+            <Image resizeMode='cover' style={styles.Logo} source={{uri: profile.profUrl}}></Image>
             <View>
               <View style={styles.settingsName}>
-                <Text style={styles.userName}>{profile['profUsername']}</Text>
+                <Text style={styles.userName}>{profile.username}</Text>
                 <Pressable style={styles.button} onPress={() => navigation.navigate('ProfileEditor')}>
                   <Icon name="edit" type='feather' color='#000'/>
                 </Pressable>
               </View>
-              <Text style={styles.userDescription}>{profile['profTitle']}</Text>
+              <Text style={styles.userDescription}>{profile.profTitle}</Text>
               <View style={styles.profileFollowers}>
                 <Text style={styles.followers}>followers: {followers}</Text>
                 <Text style={styles.followers}>following: {following}</Text>
@@ -88,7 +90,7 @@ var anotherurl = profile['profUrl']
 
         <View style={styles.contentContainer}>
           <ScrollView style={styles.Scroll}>
-            {display ? <RecipeCard name={"Homade Doughnuts"} directions={"som"} ingredients={"som"} url={'https://firebasestorage.googleapis.com/v0/b/test2-7ed41.appspot.com/o/images%2FftXCcuNEJwUFx26SOd1JZWmmZ1Q2%2Frecipe.png?alt=media&token=c242e56d-9fa4-4d96-8997-568e56501691'}/> 
+            {display ? <LikedRecipeList /> 
                       : <ForumCard key={"index"} name={"poppmane"} title={"How to boil water?"}/>}
           </ScrollView>
         </View>

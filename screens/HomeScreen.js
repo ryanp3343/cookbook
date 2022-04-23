@@ -31,7 +31,7 @@ export default function HomeScreen({ navigation }) {
                       position: 'absolute',
                       elevation: 1,
                       backgroundColor: '#ffff',
-                      height: 60, 
+                      height: 70, 
                     }, 
                     tabBarShowLabel: false,  
                     tabBarActiveTintColor: '#fff',

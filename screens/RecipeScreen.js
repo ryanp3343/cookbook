@@ -10,10 +10,15 @@ import { Icon } from 'react-native-elements/dist/icons/Icon';
 export default function RecipeScreen({navigation}) {
   const[recipes, setRecipes] = useState([]);
   const [text, onChangeText] = React.useState("");
+  const [userRef, setUserRef] = useState({});
   const[loading, setLoading] = useState(false);
   const[editor, setEditor] = useState(true);
 
-  const getRecipes = () => {
+  const db = Firebase.firestore()
+  const auth = Firebase.auth();
+
+
+  const getRecipes = async () => {
     const fireDB = Firebase.firestore();
     const ref = fireDB.collection('newrecipes');
     ref.onSnapshot((QuerySnapshot) => {
@@ -24,6 +29,11 @@ export default function RecipeScreen({navigation}) {
           recipes.push(appObj);
         });
         setRecipes(recipes)
+    })
+    await auth.onAuthStateChanged(user =>{
+      fireDB.collection('newusers').doc(user.uid).get().then((docRef) =>{
+        setUserRef(docRef.data());    
+    })
     })
 }
 
@@ -42,7 +52,21 @@ export default function RecipeScreen({navigation}) {
         <ScrollView style={styles.Scroll}  showsVerticalScrollIndicator={false}
                                            showsHorizontalScrollIndicator={false}>
         {recipes.map((recipe, index) => (
-              <RecipeCard key={index} id = {recipe.id} recipe={recipe} name={recipe.Title} directions={recipe.directions} url={recipe.Url} ingredients={recipe.ingredients}/>
+              <RecipeCard 
+                key={index} 
+                userRef={userRef} 
+                id = {recipe.id} 
+                recipe={recipe} 
+                name={recipe.Title} 
+                directions={recipe.directions} 
+                url={recipe.Url} 
+                ingredients={recipe.ingredients}
+                cookedScore={recipe.CookedScore}
+                cookedVal={recipe.CookedVal}
+                cooked={recipe.Cooked}
+                username={recipe.Name}
+                date={recipe.Date}
+              />
         ))}
         </ScrollView>
     </View>
