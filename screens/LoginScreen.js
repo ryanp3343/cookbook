@@ -120,11 +120,11 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
       margin:2,
-      paddingHorizontal:30
+      paddingHorizontal:10
   },
   alternateButton: {
     margin: 5,
-    paddingHorizontal:50,
+    paddingHorizontal:10,
     color: "white"
   },
 });
