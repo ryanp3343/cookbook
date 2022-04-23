@@ -50,7 +50,8 @@ export default function LoginScreen({ navigation }) {
           backgroundColor: 'transparent',
           marginBottom: 20,
           borderBottomColor: 'black',
-          borderBottomWidth: 2
+          borderBottomWidth: 2,
+          borderRadius: 0,
         }}
         placeholder='EMAIL'
         placeholderTextColor='#bbb'
@@ -69,7 +70,8 @@ export default function LoginScreen({ navigation }) {
           backgroundColor: 'transparent',
           marginBottom: 20,
           borderBottomColor: 'black',
-          borderBottomWidth: 2
+          borderBottomWidth: 2,
+          borderRadius: 0,
         }}
         placeholder='PASSWORD'
         placeholderTextColor='#bbb'
@@ -93,7 +95,7 @@ export default function LoginScreen({ navigation }) {
       <View style = {styles.alternateButton}>
       <Button
         onPress={() => navigation.navigate('Signup')}
-        title='REGISTER'
+        title={`Don't have an account? Sign up`}
         titleSize={13}
         backgroundColor='transparent'
         titleColor='#000'

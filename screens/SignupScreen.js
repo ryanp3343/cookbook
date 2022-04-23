@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { Component } from 'react';
 import { useState } from 'react';
-import { StyleSheet, Text, View,Image, Button as RNButton } from 'react-native';
+import { StyleSheet, Text, View,Image, Button as RNButton, KeyboardAvoidingView, Platform } from 'react-native';
 // import { cond } from 'react-native-reanimated';
 import { Button, InputField, ErrorMessage } from '../components';
 import Firebase from '../config/firebase';
@@ -47,7 +47,7 @@ export default function SignupScreen({navigation}){
     }
   };
     return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
         {<Image style={styles.Logo} source={require('../imgs/LOGO_BLACK.png')} />}
       <StatusBar style='dark-content' />
       <InputField
@@ -58,7 +58,8 @@ export default function SignupScreen({navigation}){
           backgroundColor: 'transparent',
           marginBottom: 20,
           borderBottomColor: 'black',
-          borderBottomWidth: 2
+          borderBottomWidth: 2,
+          borderRadius: 0,
         }}
         placeholder='USERNAME'
         placeholderTextColor='#bbb'
@@ -77,7 +78,8 @@ export default function SignupScreen({navigation}){
           backgroundColor: 'transparent',
           marginBottom: 20,
           borderBottomColor: 'black',
-          borderBottomWidth: 2
+          borderBottomWidth: 2,
+          borderRadius: 0,
         }}
         placeholder='EMAIL'
         placeholderTextColor='#bbb'
@@ -96,7 +98,8 @@ export default function SignupScreen({navigation}){
           backgroundColor: '#fff',
           marginBottom: 20,
           borderBottomColor: 'black',
-          borderBottomWidth: 2
+          borderBottomWidth: 2,
+          borderRadius: 0,
         }}
         placeholder='PASSWORD'
         placeholderTextColor='#bbb'
@@ -127,7 +130,7 @@ export default function SignupScreen({navigation}){
         titleColor='#555'
       />
       </View>
-    </View>
+    </KeyboardAvoidingView>
     );
       }
 

@@ -41,8 +41,6 @@ export default function HomeScreen({ navigation }) {
                     },
                     headerTitleAlign: 'center',
                     headerTintColor: "white",
-
-                
     }}
      >
         <Tabs.Screen name="Forums" component={ForumScreen} options={{tabBarIcon: ({ focused }) => (
