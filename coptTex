@@ -5,3 +5,7 @@ size={24}
 color='#000000'
 onPress={handleSignOut}
 />
+
+username: josh 
+email: josh@admin.com
+pw: admin12
