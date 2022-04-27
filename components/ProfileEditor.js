@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, Button, Pressable } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, Pressable, TouchableOpacity } from 'react-native';
 import Firebase from '../config/firebase';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import {onAuthStateChanged} from "firebase/auth";
@@ -17,18 +17,7 @@ export default function ProfileEditor({navigation}) {
   const [profTitle, setProfTitle] = useState('');
   
   var url
-  const onChooseImagePress = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync();
-    if (!result.cancelled) {
-      uploadImage(result.uri)
-        .then(() => {
-          Alert.alert("Success");
-        })
-        .catch((error) => {
-          Alert.alert(error);
-        });
-    }
-  }
+
   const uploadImage = async (uri) => {
     const response = await fetch(uri, "profile");
     const blob = await response.blob();
@@ -42,14 +31,30 @@ export default function ProfileEditor({navigation}) {
       }
     })
   }
+
+  const onChooseImagePress = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync();
+    if (!result.cancelled) {
+      uploadImage(result.uri)
+        .then(() => {
+          console.log("Success");
+        })
+        .catch((error) => {
+          console.log("error");
+          console.log(error);
+        });
+    }
+  }
+
   const updateProf = async () => {
     await auth.onAuthStateChanged(user =>{
       if(user){
+        console.log(user.uid)
         var userRef = db.collection("newusers").doc(user.uid);
         userRef.update({
           profUsername: profUsername,
           profTitle: profTitle,
-          // profUrl: url
+          profUrl: url
         })
       }
     })
@@ -81,22 +86,22 @@ export default function ProfileEditor({navigation}) {
                 require={true}
             />
           </View>
-         <View style={styles.Submit}>
+         <TouchableOpacity style={styles.Submit}>
              <Button
                 onPress={() => {updateProf()}}
                 title="Update Your Profile"
                 color="#000"
                 accessibilityLabel="Learn more about this purple button"
             />
-         </View>
-         <View style={styles.Submit}>
+         </TouchableOpacity>
+         <TouchableOpacity style={styles.Submit} >
              <Button
                 onPress={() => {onChooseImagePress()}}
                 title="Upload Picture"
                 color="#000"
                 accessibilityLabel="Learn more about this purple button"
             />
-         </View>
+         </TouchableOpacity>
         
       </View>
     );
