@@ -66,6 +66,7 @@ export default function RecipeEditor({navigation}) {
             CookedVal: 0,
             Cooked: 0,
             Date:  Firebase.firestore.FieldValue.serverTimestamp(),
+            Comments: []
           })
         })
       }

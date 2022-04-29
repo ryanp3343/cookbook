@@ -38,16 +38,14 @@ const RecipeCard = ({name, directions, ingredients, url, recipe, id, userRef, co
     }
 
     const commentRecipe = async () => {
-      await auth.onAuthStateChanged(user =>{
-        if(user){
-          if(!liked){
-            db.collection("newusers").doc(user.uid).update({ savedRecipes: arrayUnion(id) });
-            setLiked(true)
-          } else if(liked){
-            db.collection("newusers").doc(user.uid).update({ savedRecipes: arrayRemove(id) });
-            setLiked(false)
-          }
-        }})
+      navigation.navigate('RecipeExpanded', {
+        name: recipe.Title,
+        directions: recipe.Directions,
+        photoURL: recipe.Url,
+        ingredients: recipe.Ingredients,
+        recipeid: recipe.id
+      })
+      console.log(recipe.id)
     }
 
     const cookedRecipe = async () => {
@@ -184,6 +182,15 @@ const styles = StyleSheet.create({
     width: 30,
     height: 27,
     resizeMode: 'stretch'
+  },
+  submit: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderColor: '#949D7E',
+    marginBottom: 10,
+    borderWidth: 2,
+    width: 100,
+    borderRadius: 5,
   },
   Blur: {
     position: 'absolute',
