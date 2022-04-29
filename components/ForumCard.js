@@ -1,14 +1,21 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, Pressable } from 'react-native';
 
 
-const ForumCard = ({name, photoURL, title, question, replies, repliesAmount}) => {
+const ForumCard = ({name, photoURL, title, question, replies, repliesAmount, id}) => {
+  const navigation = useNavigation()
+
     return (
         <View style={styles.Card}>
+          <Pressable onPress={() => navigation.navigate("ProfileExpanded", {
+            id: id
+          })}>
             <View style={styles.Title}>
-                <Image style={styles.Logo} source={require('../imgs/pfp1.jpg')}></Image>
+                <Image style={styles.Logo} source={{uri: photoURL}}></Image>
                 <Text style={styles.nameText}>{name}</Text>
             </View>
+          </Pressable>
             <View style={styles.Description}>
                 <Text style={styles.TitleText}>{title}</Text>
                 {/* <Text>{repliesAmount ? repliesAmount : "no"} replies</Text> */}
@@ -35,7 +42,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     width: 50,
     height: 50,
-    borderRadius: 100,
+    borderRadius: 200,
     resizeMode: 'contain'
   },
   Description: {

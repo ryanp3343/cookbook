@@ -52,7 +52,7 @@ export default function ProfileEditor({navigation}) {
         console.log(user.uid)
         var userRef = db.collection("newusers").doc(user.uid);
         userRef.update({
-          profUsername: profUsername,
+          username: profUsername,
           profTitle: profTitle,
           profUrl: url
         })

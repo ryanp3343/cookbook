@@ -24,12 +24,12 @@ export default function ForumExpanded({navigation, route}) {
             db.collection("newusers").doc(user.uid).get().then((docRef) => {
               const snapshot = docRef.data();
               // userName = snapshot["username"];
-              console.log(typeof(snapshot["username"]))
               Firebase.firestore()
                 .collection("forumComments")
                 .add({Comment: Comment,
-                    Name: snapshot["username"],
+                    Name: snapshot.username,
                     Forum: JSON.stringify(id),
+                    pfpPhoto: snapshot.profUrl,
                     Time: Date.now()
                      }).then((data) => addComplete(data))
                        .catch((error) => console.log(error));
@@ -104,7 +104,7 @@ export default function ForumExpanded({navigation, route}) {
             <View>
               <View>
                   {Comments.map((com, index) => (
-                    <CommentCard key={index} name={com.Name} comment={com.Comment}/>
+                    <CommentCard key={index} profilePhoto={com.pfpPhoto} name={com.Name} comment={com.Comment}/>
                   ))} 
               </View>
             </View>

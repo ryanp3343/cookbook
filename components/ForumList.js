@@ -27,6 +27,7 @@ export default function ForumList({navigation}) {
     {label: 'Drink', value: 'Drink'},
     {label: 'Other', value: 'Other'}
   ]);
+  const placeHolder = "https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png"
 
   const getForums = async () => {
     const fireDB = Firebase.firestore();
@@ -79,11 +80,6 @@ export default function ForumList({navigation}) {
               setItems={setItems}
             />
       </View>
-      <View style={styles.editorButton}>
-        <Pressable onPress={() => navigation.navigate('Editor')}>
-            <Icon size={40} name="edit" type='feather' color='#fff'/>
-        </Pressable>
-      </View>
       <ScrollView style={styles.Scroll}>
         {newForums.map((forum, index) => (
           <Pressable key={index} onPress={() => navigation.navigate('ForumExpand', {
@@ -91,9 +87,10 @@ export default function ForumList({navigation}) {
             title: forum.Question,
             repliesAmount: forum.Replies,
             description: forum.Description,
-            id: forum.id
+            id: forum.id,
+            ProfileURL: forum.ProfUrl
           })}>
-              <ForumCard key={index} name={forum.Name} title={forum.Question} repliesAmount={forum.Replies}/>
+              <ForumCard key={index} photoURL={forum.ProfUrl ? forum.ProfUrl : placeHolder} name={forum.Name} title={forum.Question} id={forum.Uid} repliesAmount={forum.Replies}/>
           </Pressable>
         ))}
       </ScrollView>

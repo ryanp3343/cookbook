@@ -36,6 +36,7 @@ export default function RecipeExpanded({navigation, route}) {
             Firebase.firestore()
                 .collection("recipeComments")
                 .add({Comment: Comment,
+                    pfpURL: snapshot["profUrl"],
                     Name: snapshot["username"],
                     Recipe_id: JSON.stringify(recipeid),
                     Time: Date.now()
@@ -45,6 +46,7 @@ export default function RecipeExpanded({navigation, route}) {
                     }).catch((error) => {
                         console.error("Error adding document: ", error);
                     });
+
             })
             setComment('');
           }
@@ -76,7 +78,6 @@ export default function RecipeExpanded({navigation, route}) {
     useEffect(() => {
         getComments();
         }, []);
-
 
     return (
         <View style={styles.Container}>
@@ -129,8 +130,8 @@ export default function RecipeExpanded({navigation, route}) {
                 </View>
 
                 <View>
-                    {Comments.map((com, index) => (
-                        <CommentCard key={index} name={com.Name} comment={com.Comment}/>
+                    {Comments?.map((com, index) => (
+                        <CommentCard key={index} name={com.Name} comment={com.Comment} profilePhoto={com.pfpURL}/>
                     ))} 
                 </View>
             </View>
@@ -178,15 +179,6 @@ replies: {
     fontSize: 17,
     fontWeight: 'bold',
     color: 'black',
-},
-submit: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderColor: '#949D7E',
-    marginBottom: 10,
-    borderWidth: 2,
-    width: 100,
-    borderRadius: 5,
 },
 Coment: {
     height: 40,

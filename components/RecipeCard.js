@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, View, Image, Pressable,  } from 'react-native';
+import { StyleSheet, Text, View, Image, Pressable, TextInput, Modal,  } from 'react-native';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import { BlurView } from 'expo-blur';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -14,11 +14,13 @@ import 'firebase/firestore';
 const arrayUnion = firebase.firestore.FieldValue.arrayUnion;
 const arrayRemove = firebase.firestore.FieldValue.arrayRemove;
 
-const RecipeCard = ({name, directions, ingredients, url, recipe, id, userRef, cooked, cookedScore, cookedVal, username, date}) => {
+const RecipeCard = ({pfpUrl, name, directions, ingredients, url, recipe, id, userRef, cooked, cookedScore, cookedVal, username, date}) => {
     const [directionList, setDirectionList] = useState([]);
     const [liked, setLiked] = useState(false)
+    const [userScore, setUserScore] = useState(0)
     const [score, setScore] = useState(0)
     const [datePrint, setDatePrint] = useState(0)
+    const [showCooked, setShowCooked] = useState(false)
     const navigation = useNavigation();
     
     const db = Firebase.firestore()
@@ -103,7 +105,7 @@ const RecipeCard = ({name, directions, ingredients, url, recipe, id, userRef, co
                        style={{width: "100%", height: 320}}
                  />
               <View style={styles.profileHeader}>
-                <Image source={{uri: url}}
+                <Image source={{uri: pfpUrl}}
                   style={styles.profilePhoto}
                 />
                 <Text style={styles.username}>{username}</Text>
@@ -119,7 +121,7 @@ const RecipeCard = ({name, directions, ingredients, url, recipe, id, userRef, co
                 <TouchableOpacity onPress={() => commentRecipe()}>
                   <Icon style={styles.icon} size={30} name="message-square" type='feather' color='#000'/>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => cookedRecipe()}>
+                <TouchableOpacity onPress={() => setShowCooked(!showCooked)}>
                   <Image style={styles.stretch} source={require("../imgs/cooked.png")} size={20}></Image>
                 </TouchableOpacity>
               </View>
@@ -177,20 +179,18 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     fontWeight: 'bold',
   },
+  Question: {
+    width: '40%',
+    fontSize: 30,
+    borderBottomWidth: 1,
+    padding: 10,
+    backgroundColor: "transparent",
+  },
   stretch: {
     marginTop: 2,
     width: 30,
     height: 27,
     resizeMode: 'stretch'
-  },
-  submit: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderColor: '#949D7E',
-    marginBottom: 10,
-    borderWidth: 2,
-    width: 100,
-    borderRadius: 5,
   },
   Blur: {
     position: 'absolute',
@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
   recipeTitle: {
     fontSize: 20,
     paddingHorizontal: 10,
-    
+    marginVertical: 10,
     fontWeight: 'bold',
   },
   Title: {

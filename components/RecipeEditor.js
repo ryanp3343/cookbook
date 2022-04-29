@@ -1,5 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
+import firebase from 'firebase';
 import { StyleSheet, Text, View, TextInput, Button, Pressable, TouchableOpacity } from 'react-native';
 import Firebase from '../config/firebase';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
@@ -14,23 +15,13 @@ const auth = Firebase.auth();
 
 
 export default function RecipeEditor({navigation}) {
+  const [Recipe, setRecipe] = useState('');
+  const [Ingredients, setIngredients] = useState('');
+  const [Directions, setDirections] = useState('');
    
   var url
-  const onChooseImagePress = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync();
-  
-    if (!result.cancelled) {
-      uploadImage(result.uri, "recipe")
-        .then(() => {
-          Alert.alert("Success");
-        })
-        .catch((error) => {
-          Alert.alert(error);
-        });
-    }
-  }
-  const uploadImage = async (uri, imageName) => {
-    const response = await fetch(uri);
+  const uploadImage = async (uri) => {
+    const response = await fetch(uri, "recipe");
     const blob = await response.blob();
     await auth.onAuthStateChanged(user =>{
       if(user){
@@ -41,32 +32,41 @@ export default function RecipeEditor({navigation}) {
         })
       }
     })
-  
   }
-  console.log(url)
+
+  const onChooseImagePress = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync();
+    if (!result.cancelled) {
+      uploadImage(result.uri)
+        .then(() => {
+          console.log("Success");
+        })
+        .catch((error) => {
+          console.log("error");
+          console.log(error);
+        });
+    }
+  }
   
-  const [Recipe, setRecipe] = useState('');
-  const [Ingredients, setIngredients] = useState('');
-  const [Directions, setDirections] = useState('');
   const createRecipe = async () => {
-  
     await auth.onAuthStateChanged(user =>{
       if(user){
         db.collection("newusers").doc(user.uid).get().then((docRef) => {
           const snapshot = docRef.data();
-          db.collection("newrecipes").doc(user.uid)
+          db.collection("newrecipes").doc()
           .set({
-            Name: snapshot["username"],
+            Name: snapshot.username,
             Uid: user.uid,
             Title: Recipe,
             Ingredients: Ingredients,
             Directions: Directions,
             Url: url,
+            pfpUrl: snapshot.profUrl,
             CookedScore: 0,
             CookedVal: 0,
             Cooked: 0,
-            Date:  Firebase.firestore.FieldValue.serverTimestamp(),
-            Comments: []
+            Date: firebase.firestore.Timestamp.now(),
+            Comments: [],
           })
         })
       }

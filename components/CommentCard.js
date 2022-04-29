@@ -3,11 +3,11 @@ import { StyleSheet, Text, View, Image } from 'react-native';
 import { color } from 'react-native-reanimated';
 
 
-const CommentCard = ({name, comment}) => {
+const CommentCard = ({name, comment, profilePhoto}) => {
     return (
         <View style={styles.Card}>
             <View style={styles.Title}>
-                <Image style={styles.Logo} source={require('../imgs/pfp1.jpg')}></Image>
+                <Image style={styles.Logo} source={{uri: profilePhoto}}></Image>
                 <Text style={styles.NameTitle}>{name}</Text>
             </View>
             <View style={styles.Description}>

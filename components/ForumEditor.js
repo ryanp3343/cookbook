@@ -34,7 +34,8 @@ const createQuestion = async () => {
     if(user){
       db.collection("newusers").doc(user.uid).get().then((docRef) => {
         const snapshot = docRef.data();
-        userName = snapshot["username"];
+        userName = snapshot.username
+        pfpURL = snapshot.profUrl
         Firebase.firestore()
           .collection("newforums")
           .add({Question: Question,
@@ -42,6 +43,8 @@ const createQuestion = async () => {
                 Name: userName,
                 Replies: null,
                 Tag: value,
+                ProfUrl: pfpURL,
+                Uid: user.uid,
               }).then((data) => {
                 console.log("here")
                 console.log(data)                    
