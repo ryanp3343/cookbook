@@ -8,6 +8,7 @@ import RecipeCard from '../components/RecipeCard';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 
 export default function RecipeScreen({navigation}) {
+  const placeHolder = "https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png"
   const[recipes, setRecipes] = useState([]);
   const [text, onChangeText] = React.useState("");
   const [userRef, setUserRef] = useState({});
@@ -44,11 +45,6 @@ export default function RecipeScreen({navigation}) {
   return (
     <View style={styles.container}>
       <StatusBar style='dark-content' />
-      <View style={styles.editorButton}>
-      <Pressable onPress={() => navigation.navigate('RecipeEditor')}>
-            <Icon size={40} name="edit" type='material' color='#fff'/>
-      </Pressable>
-      </View>
         <ScrollView style={styles.Scroll}  showsVerticalScrollIndicator={false}
                                            showsHorizontalScrollIndicator={false}>
         {recipes.map((recipe, index) => (
@@ -66,6 +62,7 @@ export default function RecipeScreen({navigation}) {
                 cooked={recipe.Cooked}
                 username={recipe.Name}
                 date={recipe.Date}
+                pfpUrl={recipe.pfpUrl ? recipe.pfpUrl : placeHolder}
               />
         ))}
         </ScrollView>

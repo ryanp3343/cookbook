@@ -38,7 +38,9 @@ export default function SignupScreen({navigation}){
             profTitle: 'sous chef',
             savedRecipes: [],
             userRecipes: [],
-            userForums: []
+            userForums: [],
+            following: [],
+            followers: [],
           })
         })
       }

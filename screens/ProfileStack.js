@@ -10,6 +10,7 @@ import RecipeScreen from './RecipeScreen';
 import RecipeEditor from '../components/RecipeEditor';
 import ProfileScreen from './ProfileScreen';
 import ProfileEditor from '../components/ProfileEditor';
+import ProfileExpanded from './ProfileExpanded';
 
 const auth = Firebase.auth();
 const Stack = createStackNavigator();

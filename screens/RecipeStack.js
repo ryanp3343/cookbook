@@ -9,6 +9,7 @@ import ForumList from '../components/ForumList';
 import RecipeScreen from './RecipeScreen';
 import RecipeEditor from '../components/RecipeEditor';
 import RecipeExpanded from '../components/RecipeExpanded';
+import ProfileExpanded from './ProfileExpanded';
 
 const auth = Firebase.auth();
 const Stack = createStackNavigator();
@@ -23,6 +24,7 @@ export default function RecipeStack() {
       <Stack.Screen name='RecipesList' component={RecipeScreen} />
       <Stack.Screen name='RecipeEditor' component={RecipeEditor} />
       <Stack.Screen name='RecipeExpanded' component={RecipeExpanded} />
+      <Stack.Screen name='ProfileExpanded' component={ProfileExpanded} />
     </Stack.Navigator>
   );
 }

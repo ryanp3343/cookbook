@@ -41,21 +41,11 @@ export default function HomeScreen({ navigation }) {
                     },
                     headerTitleAlign: 'center',
                     headerTintColor: "white",
+                    headerShown: true
     }}
      >
         <Tabs.Screen name="Forums" component={ForumScreen} options={{tabBarIcon: ({ focused }) => (
                 <Icon name="message-square" type='feather' size={40} color={focused ? "#949D7E" : "#bbb"}/>
-            ), headerRight: () => (
-              <View
-              style={{
-                flex: 1,
-                alignItems: 'center',
-                flexDirection: 'row',
-                paddingHorizontal: 20,
-                height: StatusBar.currentHeight,
-              }}>
-              <Icon name="log-out" type='feather' color='#fff' onPress={() => handleSignOut() }/>
-              </View>
             ), headerLeft: () => (
               <View
               style={{
@@ -67,20 +57,21 @@ export default function HomeScreen({ navigation }) {
               }}>
                  <Image style={styles.stretch} source={require("../imgs/cooked_white.png")} size={40}></Image>
               </View>
+            ),  headerRight: () => (
+              <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                flexDirection: 'row',
+                paddingHorizontal: 20,
+                height: StatusBar.currentHeight,
+              }}>
+                <Icon name="plus-square" size={30} type='feather'  color='#fff' onPress={() => navigation.navigate("Editor") }/>
+              </View>
             ),}}/>
+
         <Tabs.Screen name="Recipes" component={RecipeStack} options={{tabBarIcon: ({ focused }) => (
                 <Icon name="book" type='feather' size={40} color={focused ? "#949D7E" : "#bbb"}/>
-            ), headerRight: () => (
-              <View
-              style={{
-                flex: 1,
-                alignItems: 'center',
-                flexDirection: 'row',
-                paddingHorizontal: 20,
-                height: StatusBar.currentHeight,
-              }}>
-              <Icon name="logout" type='material' color='#fff' onPress={() => handleSignOut() }/>
-              </View>
             ), headerLeft: () => (
               <View
               style={{
@@ -92,7 +83,19 @@ export default function HomeScreen({ navigation }) {
               }}>
                  <Image style={styles.stretch} source={require("../imgs/cooked_white.png")} size={40}></Image>
               </View>
+            ), headerRight: () => (
+              <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                flexDirection: 'row',
+                paddingHorizontal: 20,
+                height: StatusBar.currentHeight,
+              }}>
+                <Icon name="plus-square" size={30} type='feather'  color='#fff' onPress={() => navigation.navigate("RecipeEditor") }/>
+              </View>
             ),}}/>
+
         <Tabs.Screen name="Profile" component={ProfileStack} options={{tabBarIcon: ({ focused }) => (
                 <Icon name="user" type='feather' size={40} color={focused ? "#949D7E" : "#bbb"}/>
             ), headerRight: () => (

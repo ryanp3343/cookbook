@@ -7,16 +7,19 @@ import Firebase from '../config/firebase';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
 import LikedRecipeList from '../components/LikedRecipeList';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const auth = Firebase.auth();
 const fireDB = Firebase.firestore();
 
-export default function ProfileScreen({navigation}) {
+export default function ProfileExpanded({navigation, route}) {
+    const { id } = route.params;
   const { user } = useContext(AuthenticatedUserContext);
   const [followers, setFollowers] = useState(0)
   const [following, setfollowing] = useState(0)
   const [username, setUsername] = useState('Username')
   const [userClass, setUserClass] = useState('professional chef')
+  const [follow, setFollow] = useState(false)
   const [display, setDisplay] = useState(true)
   const [loading, setLoading] = useState(false);
   const [userRef, setUserRef] = useState({});
@@ -28,7 +31,7 @@ export default function ProfileScreen({navigation}) {
     const ref = fireDB.collection('newrecipes');
     await auth.onAuthStateChanged(user => {
       if(user){
-        fireDB.collection('newusers').doc(user.uid).get().then((docRef) =>{
+        fireDB.collection('newusers').doc(id).get().then((docRef) =>{
           ref.onSnapshot((QuerySnapshot) => {
             const recipes = [];
             QuerySnapshot.forEach((doc) => {
@@ -47,18 +50,20 @@ export default function ProfileScreen({navigation}) {
     }) 
   }
 
-  const handleSignOut = async () => {
-    try {
-      await auth.signOut();
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const followUser = async () => {
+    const fireDB = Firebase.firestore();
+    const ref = fireDB.collection('newrecipes');
+    await auth.onAuthStateChanged(user => {
+      if(user){
+      }   
+    }) 
+  }
+
   const getProfile = async  () => {
     setLoading(true);
     await auth.onAuthStateChanged(user => {
       if(user){
-        fireDB.collection('newusers').doc(user.uid).get().then((docRef) =>{
+        fireDB.collection('newusers').doc(id).get().then((docRef) =>{
             const profile = [];
             console.log(docRef.data())
            // profile.push(docRef.data())
@@ -68,13 +73,11 @@ export default function ProfileScreen({navigation}) {
       }   
     }) 
     await auth.onAuthStateChanged(user =>{
-      fireDB.collection('newusers').doc(user.uid).get().then((docRef) =>{
+      fireDB.collection('newusers').doc(id).get().then((docRef) =>{
         setUserRef(docRef.data());    
     })
     }) 
-    
   }
-var anotherurl = profile['profUrl']
 
   useEffect(() => {
     getProfile();
@@ -102,10 +105,7 @@ var anotherurl = profile['profUrl']
             <Image resizeMode='cover' style={styles.Logo} source={{uri: profile.profUrl}}></Image>
             <View>
               <View style={styles.settingsName}>
-                <Text style={styles.userName}>{profile.username}</Text>
-                <Pressable style={styles.button} onPress={() => navigation.navigate('ProfileEditor')}>
-                  <Icon name="edit" type='feather' color='#000'/>
-                </Pressable>
+                <Text style={styles.userName}>{profile.profUsername}</Text>
               </View>
               <Text style={styles.userDescription}>{profile.profTitle}</Text>
               <View style={styles.profileFollowers}>
@@ -113,6 +113,11 @@ var anotherurl = profile['profUrl']
                 <Text style={styles.followers}>following: {following}</Text>
               </View>
             </View>
+          </View>
+          <View style={styles.profileFollowers}>
+              <TouchableOpacity style={styles.followButton} onPress={() => {setFollow(!follow)}}>
+                <Text style={styles.followText}>{follow ? "unfollow" : "follow"}</Text>
+              </TouchableOpacity>
           </View>
         </View>
 
@@ -123,9 +128,6 @@ var anotherurl = profile['profUrl']
             </Pressable>
             <Pressable style={styles.button} onPress={() => setDisplay(true)}>
               <Text style={styles.buttonText}>RECIPES</Text>
-            </Pressable>
-            <Pressable style={styles.button} onPress={() => setDisplay(true)}>
-              <Text style={styles.buttonText}>LIKED</Text>
             </Pressable>
           </View>
         </View>
@@ -152,7 +154,8 @@ var anotherurl = profile['profUrl']
                 /> ))}
               </ScrollView>
                       :<ForumCard key={"index"} name={"poppmane"} title={"How to boil water?"}/>}
-      
+            {/* {display ? <RecipeCard name={"Homade Doughnuts"} directions={"som"} ingredients={"som"} url={'https://firebasestorage.googleapis.com/v0/b/test2-7ed41.appspot.com/o/images%2FftXCcuNEJwUFx26SOd1JZWmmZ1Q2%2Frecipe.png?alt=media&token=c242e56d-9fa4-4d96-8997-568e56501691'}/> 
+            : <ForumCard key={"index"} name={"poppmane"} title={"How to boil water?"}/>} */}
           </ScrollView>
         </View>
     </View>
@@ -166,6 +169,16 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     flexDirection: 'column',
   },
+  followButton: {
+    backgroundColor: "#000",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
+  },
+  followText: {
+    fontSize: 15,
+    color: '#fff'
+},
   profileHeader: {
     paddingLeft: 15,
     flexDirection: 'column',
