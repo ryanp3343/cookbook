@@ -6,17 +6,20 @@ import { Icon } from 'react-native-elements/dist/icons/Icon';
 import { doc, setDoc } from "firebase/firestore"; 
 import CommentCard from "../components/CommentCard"
 import firebase from 'firebase'
+import { AVPlaybackStatus, Video } from 'expo-av';
 import 'firebase/firestore';
 // import { Button, InputField, ErrorMessage } from '../components';
 
 const arrayUnion = firebase.firestore.FieldValue.arrayUnion;
 
 export default function RecipeExpanded({navigation, route}) {
-    const { name, directions, photoURL, ingredients, recipeid } = route.params;
+    const { name, directions, photoURL, ingredients, recipeid, vidurl } = route.params;
     const [Comment, setComment] = useState('');
     const [Comments, setComments] = useState([]);
     const [loading, setLoading] = useState(false);
     const [height, setHeight] = useState(40);
+    const video = React.useRef(null);
+    const [status, setStatus] = useState({});
 
     const db = Firebase.firestore()
     const auth = Firebase.auth();
@@ -91,9 +94,22 @@ export default function RecipeExpanded({navigation, route}) {
             <View>
                 <View style={styles.descriptionContainer}>
                     <Text style={styles.title}>{name}</Text>
+                    <ScrollView horizontal={true}>
                         <Image source={{uri: photoURL}}
                            style={{width: 320, height: 320, borderRadius: 15, marginBottom: 10, marginRight: 15}}
                         />
+                        <Video
+                            ref={video} 
+                            style={styles.video}
+                            source={{
+                                uri: vidurl,
+                            }}
+                            useNativeControls
+                            resizeMode='contain'
+                            isLooping
+                            onPlaybackStatusUpdate={status => setStatus(() => status)}
+                        />
+                    </ScrollView>
                     <View style={styles.directionContainer}>
                         <Text style={styles.header}>Ingredients:</Text>
                         <Text style={styles.description}>{ingredients}</Text>
@@ -201,5 +217,16 @@ Coment: {
    },
    directionContainer: {
         marginBottom: 10,
-   }
+   },
+   video: {
+       alignSelf:'center',
+       width: 320,
+       height: 320,
+   },
+   buttons: {
+       flexDirection: 'row',
+       justifyContent: 'center',
+       alignItems: 'center',
+   },
+
 });

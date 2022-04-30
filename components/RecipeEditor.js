@@ -1,45 +1,64 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import firebase from 'firebase';
-import { StyleSheet, Text, View, TextInput, Button, Pressable, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, Pressable, TouchableOpacity, Alert } from 'react-native';
 import Firebase from '../config/firebase';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import { doc, setDoc } from "firebase/firestore"; 
 import "firebase/storage"
 import { useState } from 'react';
+import { LogBox } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { ScrollView } from 'react-native-gesture-handler';
 
 const db = Firebase.firestore()
 const auth = Firebase.auth();
 
+LogBox.ignoreAllLogs()
 
 export default function RecipeEditor({navigation}) {
   const [Recipe, setRecipe] = useState('');
   const [Ingredients, setIngredients] = useState('');
-  const [finished, setFinished] = useState(false)
-  const [url, setUrl] = useState('')
   const [Directions, setDirections] = useState('');
+  const [imgUrl,  setimgUrl] = useState('');
+  const [vidUrl , setVidUrl] = useState('');
    
   const uploadImage = async (uri) => {
-    const response = await fetch(uri, "recipe");
+    const response = await fetch(uri,'recipe');
     const blob = await response.blob();
-    await auth.onAuthStateChanged(user =>{
+    await auth.onAuthStateChanged(user => {
       if(user){
-        var ref = Firebase.storage().ref("images/" + user.uid + '/recipe.png');
-        ref.put(blob);
-        Firebase.storage().ref("images/" + user.uid + '/recipe.png').getDownloadURL().then(imgUrl =>{
-          setUrl(imgUrl);
-        })
+            const uploadTask = Firebase.storage().ref("images/" + user.uid + '/recipe.png').put(blob);
+            uploadTask.on('state_changed',
+            (snapshot)=>{
+              var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              console.log("upload is " + progress + '% done');
+              switch(snapshot.state){
+                case 'paused':
+                  console.log("paused")
+                  break;
+                case 'running':
+                  console.log('running')
+                  break;
+              }
+            },
+            (error) => {
+
+            },
+            () =>{
+              Firebase.storage().ref("images/" + user.uid + '/recipe.png').getDownloadURL().then(vidurl =>{
+                setimgUrl(vidurl);
+              });
+            }
+          )
       }
-      setFinished(true)
     })
   }
 
   const onChooseImagePress = async () => {
     let result = await ImagePicker.launchImageLibraryAsync();
     if (!result.cancelled) {
-      uploadImage(result.uri)
+      await uploadImage(result.uri)
         .then(() => {
           console.log("Success");
         })
@@ -48,6 +67,53 @@ export default function RecipeEditor({navigation}) {
           console.log(error);
         });
     }
+  }
+
+  const onChooseVideoPress = async () =>{
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Videos
+    })
+    if(!result.cancelled){
+      await uploadVideo(result.uri)
+        .then(() => {
+          console.log("success")
+        })
+        .catch((error) =>{
+          console.log(error)
+        })
+    }
+  }
+
+  const uploadVideo = async (uri) =>{
+    const response = await fetch(uri,'recipe');
+    const blob = await response.blob();
+    await auth.onAuthStateChanged(user => {
+      if(user){
+            const uploadTask = Firebase.storage().ref("images/" + user.uid + '/recipe.mp4').put(blob);
+            uploadTask.on('state_changed',
+            (snapshot)=>{
+              var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              console.log(progress)
+              switch(snapshot.state){
+                case 'paused':
+                  console.log("pause")
+                  break;
+                case 'running':
+                  console.log('running')
+                  break;
+              }
+            },
+            (error) => {
+
+            },
+            () =>{
+              Firebase.storage().ref("images/" + user.uid + '/recipe.mp4').getDownloadURL().then(vidurl =>{
+                setVidUrl(vidurl);
+              });
+            }
+          )
+      }
+    })
   }
   
   const createRecipe = async () => {
@@ -62,7 +128,8 @@ export default function RecipeEditor({navigation}) {
             Title: Recipe,
             Ingredients: Ingredients,
             Directions: Directions,
-            Url: url,
+            Url: imgUrl,
+            VidUrl: vidUrl,
             pfpUrl: snapshot.profUrl,
             CookedScore: 0,
             CookedVal: 0,
@@ -70,7 +137,6 @@ export default function RecipeEditor({navigation}) {
             Date: firebase.firestore.Timestamp.now(),
             Comments: [],
           })
-          navigation.navigate('RecipesList')
         })
       }
     })
@@ -112,14 +178,26 @@ export default function RecipeEditor({navigation}) {
                 require={true}
                 textAlignVertical={'top'}
             />
-            <View style={{width: '100%', marginBottom: 20,}}>
-              <TouchableOpacity style={styles.Submit} onPress={() => {onChooseImagePress()}}>
-                <Text style={styles.SubmitText}>Upload Photo</Text>
-              </TouchableOpacity>
-              {finished ? <Text style={styles.successUpload}>Photo Uploaded</Text>: <></>}
-              <TouchableOpacity style={styles.Submit} onPress={() => {createRecipe()}}>
-                <Text style={styles.SubmitText}>Submit Recipe</Text>
-              </TouchableOpacity>
+            <View style={styles.Submit}>
+                <Button
+                   onPress={() => {onChooseImagePress()}}
+                   title="Upload Picture"
+                   color="#000"
+               />
+            </View>
+            <View style={styles.Submit}>
+                <Button
+                   onPress={() => {onChooseVideoPress()}}
+                   title="Upload Video"
+                   color="#000"
+               />
+            </View>
+            <View style={styles.Submit}>
+                <Button
+                   onPress={() => {createRecipe(Recipe)}}
+                   title="Submit Recipe"
+                   color="#000"
+               />
             </View>
          </ScrollView>
       </View>
@@ -180,29 +258,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   Submit: {
-    marginVertical: 10,
-    marginHorizontal: 60,
-    borderRadius: 15,
-    paddingVertical: 10,
-    backgroundColor: "black",
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  SubmitText: {
+    margin: 8,
+    paddingHorizontal:80,
     color: "white",
-    fontSize: 20,
-  },
-  successUpload: {
-    fontSize: 20,
-    backgroundColor: '#4BB54399',
-    borderColor: 'green',
-    borderWidth: 2,
-    borderRadius: 15,
-    padding: 5,
-    textAlign: 'center',
-    width: '50%',
-    alignSelf: 'center'
   },
   backButton: {
       flexDirection:'row',

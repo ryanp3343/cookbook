@@ -56,6 +56,7 @@ export default function RecipeScreen({navigation}) {
                 name={recipe.Title} 
                 directions={recipe.directions} 
                 url={recipe.Url} 
+                vidurl={recipe.VidUrl}
                 ingredients={recipe.ingredients}
                 cookedScore={recipe.CookedScore}
                 cookedVal={recipe.CookedVal}
