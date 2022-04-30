@@ -91,14 +91,9 @@ export default function RecipeExpanded({navigation, route}) {
             <View>
                 <View style={styles.descriptionContainer}>
                     <Text style={styles.title}>{name}</Text>
-                    <ScrollView horizontal={true}>
                         <Image source={{uri: photoURL}}
                            style={{width: 320, height: 320, borderRadius: 15, marginBottom: 10, marginRight: 15}}
                         />
-                        <Image source={{uri: photoURL}}
-                           style={{width: 320, height: 320, borderRadius: 15, marginBottom: 10, marginRight: 15}}
-                        />
-                    </ScrollView>
                     <View style={styles.directionContainer}>
                         <Text style={styles.header}>Ingredients:</Text>
                         <Text style={styles.description}>{ingredients}</Text>

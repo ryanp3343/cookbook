@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, Button, Pressable } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, Pressable, TouchableOpacity } from 'react-native';
 import Firebase from '../config/firebase';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import {onAuthStateChanged} from "firebase/auth";
@@ -46,14 +46,13 @@ const createQuestion = async () => {
                 ProfUrl: pfpURL,
                 Uid: user.uid,
               }).then((data) => {
-                console.log("here")
-                console.log(data)                    
+                console.log("here")    
+                navigation.navigate("List")               
               })
                 .catch((error) => console.log(error));
       })
     }
   })
-
 };
 
     return (
@@ -93,14 +92,11 @@ const createQuestion = async () => {
               setValue={setValue}
               setItems={setItems}
             />
-            <View style={styles.Submit}>
-             <Button
-                onPress={() => {createQuestion(Question, Description)}}
-                title="Submit Question"
-                color="#949D7E"
-                accessibilityLabel="Learn more about this purple button"
-            />
-         </View>
+            <View style={{width: '100%', marginBottom: 20,}}>
+              <TouchableOpacity style={styles.Submit} onPress={() => {createQuestion()}}>
+                <Text style={styles.SubmitText}>Submit Recipe</Text>
+              </TouchableOpacity>
+            </View>
           </ScrollView>
         
       </View>
@@ -134,10 +130,13 @@ const styles = StyleSheet.create({
   Question: {
     height: 40,
     width: '100%',
-    margin: 12,
-    borderBottomWidth: 1,
+    height: 'auto',
+    marginVertical: 12,
+    borderWidth: 1,
+    borderRadius: 5,
     padding: 10,
     backgroundColor: "#fff",
+    fontSize: 25,
   },
   Description: {
     height: 400,
@@ -154,10 +153,29 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   Submit: {
-    margin: 8,
-    marginTop: 20,
-    width: '60%',
+    marginVertical: 30,
+    marginHorizontal: 60,
+    borderRadius: 15,
+    paddingVertical: 10,
+    backgroundColor: "black",
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  SubmitText: {
     color: "white",
+    fontSize: 20,
+  },
+  successUpload: {
+    fontSize: 20,
+    backgroundColor: '#4BB54399',
+    borderColor: 'green',
+    borderWidth: 2,
+    borderRadius: 15,
+    padding: 5,
+    textAlign: 'center',
+    width: '50%',
+    alignSelf: 'center'
   },
   backButton: {
       flexDirection:'row',

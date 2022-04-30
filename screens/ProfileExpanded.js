@@ -8,15 +8,21 @@ import { Icon } from 'react-native-elements/dist/icons/Icon';
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
 import LikedRecipeList from '../components/LikedRecipeList';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import firebase from 'firebase'
+import 'firebase/firestore';
+// import { Button, InputField, ErrorMessage } from '../components';
 
+const arrayUnion = firebase.firestore.FieldValue.arrayUnion;
+const arrayRemove = firebase.firestore.FieldValue.arrayRemove;
+
+const db = Firebase.firestore();
 const auth = Firebase.auth();
-const fireDB = Firebase.firestore();
 
 export default function ProfileExpanded({navigation, route}) {
     const { id } = route.params;
   const { user } = useContext(AuthenticatedUserContext);
-  const [followers, setFollowers] = useState(0)
-  const [following, setfollowing] = useState(0)
+  const [followers, setFollowers] = useState([])
+  const [following, setfollowing] = useState([])
   const [username, setUsername] = useState('Username')
   const [userClass, setUserClass] = useState('professional chef')
   const [follow, setFollow] = useState(false)
@@ -27,11 +33,11 @@ export default function ProfileExpanded({navigation, route}) {
   const [recipes, setRecipes] = useState([]);
   
   const getSavedRecipes = async () => {
-    const fireDB = Firebase.firestore();
-    const ref = fireDB.collection('newrecipes');
+    const ref = db.collection('newrecipes');
+
     await auth.onAuthStateChanged(user => {
       if(user){
-        fireDB.collection('newusers').doc(id).get().then((docRef) =>{
+        db.collection('newusers').doc(id).get().then((docRef) =>{
           ref.onSnapshot((QuerySnapshot) => {
             const recipes = [];
             QuerySnapshot.forEach((doc) => {
@@ -42,7 +48,6 @@ export default function ProfileExpanded({navigation, route}) {
                 // console.log(recipes)
               }
             });
-            console.log(recipes)
             setRecipes(recipes)
           })
         })
@@ -50,30 +55,49 @@ export default function ProfileExpanded({navigation, route}) {
     }) 
   }
 
-  const followUser = async () => {
-    const fireDB = Firebase.firestore();
-    const ref = fireDB.collection('newrecipes');
-    await auth.onAuthStateChanged(user => {
-      if(user){
-      }   
-    }) 
+  const followUser = (id) => {
+    auth.onAuthStateChanged(user =>{
+    if(user) {
+      if(!follow){
+        db.collection("newusers").doc(user.uid).update({ following: arrayUnion(id) });
+        setFollow(true)
+        db.collection("newusers").doc(id).update({ followers: arrayUnion(user.uid) });
+      } else if(follow){
+        db.collection("newusers").doc(user.uid).update({ following: arrayRemove(id) });
+        db.collection("newusers").doc(id).update({ followers: arrayRemove(user.uid) });
+        setFollow(false)
+      }
+    }})
+    getProfile()
   }
 
   const getProfile = async  () => {
     setLoading(true);
     await auth.onAuthStateChanged(user => {
       if(user){
-        fireDB.collection('newusers').doc(id).get().then((docRef) =>{
+        db.collection('newusers').doc(id).get().then((docRef) =>{
             const profile = [];
-            console.log(docRef.data())
            // profile.push(docRef.data())
             setProfile(docRef.data());
-            
+            setfollowing(docRef.data().following)
+            setFollowers(docRef.data().followers)
         })
+        console.log("following Size " + following.length)
+        console.log("followers Size " + followers.length)
+        // db.collection('newusers').doc(user.uid).get().then((userRef) =>{
+        //   let tempArray = userRef.following
+        //   console.log("following " + following)
+        //   console.log("check for " + id)
+        //   console.log("OUT " + tempArray.includes(id))
+        //   if(tempArray.includes(id)) {
+        //     console.log('Found it')
+        //     setFollow(true)
+        //   }
+        // })
       }   
     }) 
     await auth.onAuthStateChanged(user =>{
-      fireDB.collection('newusers').doc(id).get().then((docRef) =>{
+      db.collection('newusers').doc(id).get().then((docRef) =>{
         setUserRef(docRef.data());    
     })
     }) 
@@ -105,17 +129,17 @@ export default function ProfileExpanded({navigation, route}) {
             <Image resizeMode='cover' style={styles.Logo} source={{uri: profile.profUrl}}></Image>
             <View>
               <View style={styles.settingsName}>
-                <Text style={styles.userName}>{profile.profUsername}</Text>
+                <Text style={styles.userName}>{profile.username}</Text>
               </View>
               <Text style={styles.userDescription}>{profile.profTitle}</Text>
               <View style={styles.profileFollowers}>
-                <Text style={styles.followers}>followers: {followers}</Text>
-                <Text style={styles.followers}>following: {following}</Text>
+                <Text style={styles.followers}>followers: {followers?.length}</Text>
+                <Text style={styles.followers}>following: {following?.length}</Text>
               </View>
             </View>
           </View>
           <View style={styles.profileFollowers}>
-              <TouchableOpacity style={styles.followButton} onPress={() => {setFollow(!follow)}}>
+              <TouchableOpacity style={styles.followButton} onPress={() => followUser(id)}>
                 <Text style={styles.followText}>{follow ? "unfollow" : "follow"}</Text>
               </TouchableOpacity>
           </View>

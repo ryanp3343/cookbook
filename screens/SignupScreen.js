@@ -34,7 +34,7 @@ export default function SignupScreen({navigation}){
             username: username,
             email: email,
             password: password,
-            profUrl: 'https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png',
+            profUrl: "https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png",
             profTitle: 'sous chef',
             savedRecipes: [],
             userRecipes: [],

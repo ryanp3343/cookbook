@@ -39,7 +39,6 @@ export default function ProfileScreen({navigation}) {
                 // console.log(recipes)
               }
             });
-            console.log(recipes)
             setRecipes(recipes)
           })
         })
@@ -60,10 +59,10 @@ export default function ProfileScreen({navigation}) {
       if(user){
         fireDB.collection('newusers').doc(user.uid).get().then((docRef) =>{
             const profile = [];
-            console.log(docRef.data())
            // profile.push(docRef.data())
             setProfile(docRef.data());
-            
+            setfollowing(docRef.data().following)
+            setFollowers(docRef.data().followers)
         })
       }   
     }) 
@@ -83,6 +82,7 @@ var anotherurl = profile['profUrl']
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       getProfile()
+      getSavedRecipes();
       console.log('Refreshed!');
     });
     return unsubscribe;
@@ -103,14 +103,16 @@ var anotherurl = profile['profUrl']
             <View>
               <View style={styles.settingsName}>
                 <Text style={styles.userName}>{profile.username}</Text>
-                <Pressable style={styles.button} onPress={() => navigation.navigate('ProfileEditor')}>
+                <Pressable style={styles.button} onPress={() => navigation.navigate('ProfileEditor', {
+                  userData: userRef,
+                })}>
                   <Icon name="edit" type='feather' color='#000'/>
                 </Pressable>
               </View>
               <Text style={styles.userDescription}>{profile.profTitle}</Text>
               <View style={styles.profileFollowers}>
-                <Text style={styles.followers}>followers: {followers}</Text>
-                <Text style={styles.followers}>following: {following}</Text>
+                <Text style={styles.followers}>followers: {followers?.length}</Text>
+                <Text style={styles.followers}>following: {following?.length}</Text>
               </View>
             </View>
           </View>
@@ -149,6 +151,7 @@ var anotherurl = profile['profUrl']
                   cooked={recipe.Cooked}
                   username={recipe.Name}
                   date={recipe.Date}
+                  pfpUrl={recipe.pfpUrl}
                 /> ))}
               </ScrollView>
                       :<ForumCard key={"index"} name={"poppmane"} title={"How to boil water?"}/>}

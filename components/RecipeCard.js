@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, View, Image, Pressable, TextInput, Modal,  } from 'react-native';
+import { StyleSheet, Text, View, Image, Pressable, TextInput, Modal, ScrollView  } from 'react-native';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import { BlurView } from 'expo-blur';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -89,21 +89,27 @@ const RecipeCard = ({pfpUrl, name, directions, ingredients, url, recipe, id, use
 
     return (
         <View style={styles.Card}>
-          <Pressable onPress={() => navigation.navigate('RecipeExpanded', {
+            <View style={styles.Title}>
+            <Pressable onPress={() => navigation.navigate('Profile')}>
+            {/* This is all the profile information of postee */}
+            <Pressable onPress={() => navigation.navigate('RecipeExpanded', {
             name: recipe.Title,
             directions: recipe.Directions,
             photoURL: recipe.Url,
             ingredients: recipe.Ingredients,
             recipeid: recipe.id
           })}>
-            <View style={styles.Title}>
-            <Pressable onPress={() => navigation.navigate('Profile')}>
-            {/* This is all the profile information of postee */}
             <Text style={styles.recipeTitle}>{name}</Text>
-          </Pressable>
-                <Image source={{uri: url}}
-                       style={{width: "100%", height: 320}}
-                 />
+            </Pressable>
+            </Pressable>
+            <View>
+              <Image resizeMode='cover' source={{uri: url}}
+                          style={{          
+                            height: 300,
+                            flex: 1,
+                            width: null,}}
+                      />
+            </View>
               <View style={styles.profileHeader}>
                 <Image source={{uri: pfpUrl}}
                   style={styles.profilePhoto}
@@ -111,7 +117,6 @@ const RecipeCard = ({pfpUrl, name, directions, ingredients, url, recipe, id, use
                 <Text style={styles.username}>{username}</Text>
               </View>
             </View>
-          </Pressable>
             <View style={styles.buttonContainer}>
                {/* These are all the user interactions */}
               <View style={styles.buttons}>

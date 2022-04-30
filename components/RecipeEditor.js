@@ -17,9 +17,10 @@ const auth = Firebase.auth();
 export default function RecipeEditor({navigation}) {
   const [Recipe, setRecipe] = useState('');
   const [Ingredients, setIngredients] = useState('');
+  const [finished, setFinished] = useState(false)
+  const [url, setUrl] = useState('')
   const [Directions, setDirections] = useState('');
    
-  var url
   const uploadImage = async (uri) => {
     const response = await fetch(uri, "recipe");
     const blob = await response.blob();
@@ -28,9 +29,10 @@ export default function RecipeEditor({navigation}) {
         var ref = Firebase.storage().ref("images/" + user.uid + '/recipe.png');
         ref.put(blob);
         Firebase.storage().ref("images/" + user.uid + '/recipe.png').getDownloadURL().then(imgUrl =>{
-          url = imgUrl;
+          setUrl(imgUrl);
         })
       }
+      setFinished(true)
     })
   }
 
@@ -68,6 +70,7 @@ export default function RecipeEditor({navigation}) {
             Date: firebase.firestore.Timestamp.now(),
             Comments: [],
           })
+          navigation.navigate('RecipesList')
         })
       }
     })
@@ -109,19 +112,14 @@ export default function RecipeEditor({navigation}) {
                 require={true}
                 textAlignVertical={'top'}
             />
-            <View style={styles.Submit}>
-                <Button
-                   onPress={() => {onChooseImagePress()}}
-                   title="Upload Picture"
-                   color="#000"
-               />
-            </View>
-            <View style={styles.Submit}>
-                <Button
-                   onPress={() => {createRecipe(Recipe)}}
-                   title="Submit Recipe"
-                   color="#000"
-               />
+            <View style={{width: '100%', marginBottom: 20,}}>
+              <TouchableOpacity style={styles.Submit} onPress={() => {onChooseImagePress()}}>
+                <Text style={styles.SubmitText}>Upload Photo</Text>
+              </TouchableOpacity>
+              {finished ? <Text style={styles.successUpload}>Photo Uploaded</Text>: <></>}
+              <TouchableOpacity style={styles.Submit} onPress={() => {createRecipe()}}>
+                <Text style={styles.SubmitText}>Submit Recipe</Text>
+              </TouchableOpacity>
             </View>
          </ScrollView>
       </View>
@@ -182,9 +180,29 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   Submit: {
-    margin: 8,
-    paddingHorizontal:80,
+    marginVertical: 10,
+    marginHorizontal: 60,
+    borderRadius: 15,
+    paddingVertical: 10,
+    backgroundColor: "black",
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  SubmitText: {
     color: "white",
+    fontSize: 20,
+  },
+  successUpload: {
+    fontSize: 20,
+    backgroundColor: '#4BB54399',
+    borderColor: 'green',
+    borderWidth: 2,
+    borderRadius: 15,
+    padding: 5,
+    textAlign: 'center',
+    width: '50%',
+    alignSelf: 'center'
   },
   backButton: {
       flexDirection:'row',

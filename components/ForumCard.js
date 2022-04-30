@@ -12,7 +12,7 @@ const ForumCard = ({name, photoURL, title, question, replies, repliesAmount, id}
             id: id
           })}>
             <View style={styles.Title}>
-                <Image style={styles.Logo} source={{uri: photoURL}}></Image>
+                <Image resizeMode='cover' style={styles.Logo} source={{uri: photoURL}}></Image>
                 <Text style={styles.nameText}>{name}</Text>
             </View>
           </Pressable>
@@ -43,7 +43,6 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 200,
-    resizeMode: 'contain'
   },
   Description: {
     height:40,
