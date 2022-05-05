@@ -33,6 +33,7 @@ export default function ProfileExpanded({navigation, route}) {
   const [recipes, setRecipes] = useState([]);
   
   const getSavedRecipes = async () => {
+    setLoading(true)
     const ref = db.collection('newrecipes');
 
     await auth.onAuthStateChanged(user => {
@@ -49,6 +50,7 @@ export default function ProfileExpanded({navigation, route}) {
               }
             });
             setRecipes(recipes)
+            setLoading(false)
           })
         })
       }   
@@ -72,40 +74,50 @@ export default function ProfileExpanded({navigation, route}) {
   }
 
   const getProfile = async  () => {
+    console.log("GETTING PROFILE===============================")
+    console.log("getting profile")
     setLoading(true);
     await auth.onAuthStateChanged(user => {
       if(user){
         db.collection('newusers').doc(id).get().then((docRef) =>{
-            const profile = [];
            // profile.push(docRef.data())
+            console.log("GETTING PROFILE DONE==========================")
             setProfile(docRef.data());
-            setfollowing(docRef.data().following)
-            setFollowers(docRef.data().followers)
         })
-        console.log("following Size " + following.length)
-        console.log("followers Size " + followers.length)
-        // db.collection('newusers').doc(user.uid).get().then((userRef) =>{
-        //   let tempArray = userRef.following
-        //   console.log("following " + following)
-        //   console.log("check for " + id)
-        //   console.log("OUT " + tempArray.includes(id))
-        //   if(tempArray.includes(id)) {
-        //     console.log('Found it')
-        //     setFollow(true)
-        //   }
-        // })
       }   
     }) 
-    await auth.onAuthStateChanged(user =>{
-      db.collection('newusers').doc(id).get().then((docRef) =>{
-        setUserRef(docRef.data());    
-    })
+  }
+
+  const getFollowed = async  () => {
+    setLoading(true);
+    console.log("GETTING FOLLOWED===============================")
+    let tempArray = []
+    await auth.onAuthStateChanged(user => {
+      if(user){
+        console.log("following Size " + following.length)
+        console.log("followers Size " + followers.length)
+        tempArray = profile.following
+        console.log("following " + following)
+        console.log("check for " + id)
+        console.log("Is following? " + tempArray.includes(id))
+        if(tempArray.includes(id)) {
+          setFollow(true)
+        }
+        setfollowing(profile.following)
+        setFollowers(profile.followers)
+        setLoading(false);
+        console.log("DONE =========================================")
+      }   
     }) 
   }
 
   useEffect(() => {
     getProfile();
   },[]);
+
+  useEffect(() => {
+    getSavedRecipes();
+  },[profile]);
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -116,12 +128,13 @@ export default function ProfileExpanded({navigation, route}) {
   }, [navigation]);
   
   useEffect(() => {
-    getSavedRecipes();
-  },[]);
+    getFollowed();
+  },[profile]);
 
 
   return (
     <View style={styles.container}>
+      {!loading ? <View>
       <StatusBar style='dark-content' />
 
         <View  style={styles.profileHeader}>
@@ -182,6 +195,7 @@ export default function ProfileExpanded({navigation, route}) {
             : <ForumCard key={"index"} name={"poppmane"} title={"How to boil water?"}/>} */}
           </ScrollView>
         </View>
+      </View> : <View></View>}
     </View>
   );
 }

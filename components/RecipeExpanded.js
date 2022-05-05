@@ -6,6 +6,7 @@ import { Icon } from 'react-native-elements/dist/icons/Icon';
 import { doc, setDoc } from "firebase/firestore"; 
 import CommentCard from "../components/CommentCard"
 import firebase from 'firebase'
+import VideoPlayer from 'expo-video-player'
 import { AVPlaybackStatus, Video } from 'expo-av';
 import 'firebase/firestore';
 // import { Button, InputField, ErrorMessage } from '../components';
@@ -110,6 +111,7 @@ export default function RecipeExpanded({navigation, route}) {
                             onPlaybackStatusUpdate={status => setStatus(() => status)}
                         />
                     </ScrollView>
+                    <Text>LINK: {vidurl}</Text>
                     <View style={styles.directionContainer}>
                         <Text style={styles.header}>Ingredients:</Text>
                         <Text style={styles.description}>{ingredients}</Text>

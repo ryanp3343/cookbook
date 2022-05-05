@@ -15,15 +15,18 @@ export default function ProfileScreen({navigation}) {
   const { user } = useContext(AuthenticatedUserContext);
   const [followers, setFollowers] = useState(0)
   const [following, setfollowing] = useState(0)
-  const [username, setUsername] = useState('Username')
-  const [userClass, setUserClass] = useState('professional chef')
   const [display, setDisplay] = useState(true)
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [userRef, setUserRef] = useState({});
   const [profile, setProfile] = useState([]);
   const [recipes, setRecipes] = useState([]);
+  const [forumColor, setForumColor] = useState([]);
+  const [recipeColor, setRecipeColor] = useState([]);
+  const [likedColor, setLikedColor] = useState([]);
   
   const getSavedRecipes = async () => {
+    setLoading(true);
+    console.log("getting Saved Recipes")
     const fireDB = Firebase.firestore();
     const ref = fireDB.collection('newrecipes');
     await auth.onAuthStateChanged(user => {
@@ -40,10 +43,30 @@ export default function ProfileScreen({navigation}) {
               }
             });
             setRecipes(recipes)
+            setLoading(false);
           })
         })
       }   
     }) 
+  }
+
+  const chooseList = (number) => {
+    if (number == 0) {
+      setForumColor("#949D7E")
+      setLikedColor("black")
+      setRecipeColor("black")
+      setDisplay(false)
+    } else if (number == 1) {
+      setForumColor("black")
+      setLikedColor("black")
+      setRecipeColor("#949D7E")
+      setDisplay(true)
+    } else if (number == 2) {
+      setForumColor("black")
+      setLikedColor("#949D7E")
+      setRecipeColor("black")
+      setDisplay(true)
+    }
   }
 
   const handleSignOut = async () => {
@@ -79,6 +102,10 @@ var anotherurl = profile['profUrl']
     getProfile();
   },[]);
 
+  useEffect(() => {
+    getSavedRecipes();
+  },[user]);
+
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       getProfile()
@@ -90,7 +117,7 @@ var anotherurl = profile['profUrl']
   
   useEffect(() => {
     getSavedRecipes();
-  },[]);
+  },[user]);
 
 
   return (
@@ -120,19 +147,19 @@ var anotherurl = profile['profUrl']
 
         <View style={styles.navContainer}>
           <View style={styles.profileNav}>
-            <Pressable style={styles.button} onPress={() => setDisplay(false)}>
-              <Text style={styles.buttonText}>FORUMS</Text>
+            <Pressable style={styles.button} onPress={() => chooseList(0)}>
+              <Text style={[styles.buttonText, {color: forumColor}]}>FORUMS</Text>
             </Pressable>
-            <Pressable style={styles.button} onPress={() => setDisplay(true)}>
-              <Text style={styles.buttonText}>RECIPES</Text>
+            <Pressable style={styles.button} onPress={() => chooseList(1)}>
+              <Text style={[styles.buttonText, {color: recipeColor}]}>RECIPES</Text>
             </Pressable>
-            <Pressable style={styles.button} onPress={() => setDisplay(true)}>
-              <Text style={styles.buttonText}>LIKED</Text>
+            <Pressable style={styles.button} onPress={() => chooseList(2)}>
+              <Text style={[styles.buttonText, {color: likedColor}]}>LIKED</Text>
             </Pressable>
           </View>
         </View>
 
-        <View style={styles.contentContainer}>
+        {!loading ? <View style={styles.contentContainer}>
           <ScrollView style={styles.Scroll}>
             {display ?
               <ScrollView style={styles.Scroll}  showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}>
@@ -157,7 +184,7 @@ var anotherurl = profile['profUrl']
                       :<ForumCard key={"index"} name={"poppmane"} title={"How to boil water?"}/>}
       
           </ScrollView>
-        </View>
+        </View> : <></>}
     </View>
   );
 }

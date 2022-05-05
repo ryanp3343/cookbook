@@ -22,6 +22,11 @@ export default function RecipeEditor({navigation}) {
   const [Directions, setDirections] = useState('');
   const [imgUrl,  setimgUrl] = useState('');
   const [vidUrl , setVidUrl] = useState('');
+  const [finished, setFinished] = useState('');
+  const [progressImg, setProgressImg] = useState('')
+  const [progressVid, setProgressVid] = useState('')
+  const [finishedVid, setFinishedVid] = useState(false)
+  const [finishedImg, setFinishedImg] = useState(false)
    
   const uploadImage = async (uri) => {
     const response = await fetch(uri,'recipe');
@@ -33,6 +38,11 @@ export default function RecipeEditor({navigation}) {
             (snapshot)=>{
               var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
               console.log("upload is " + progress + '% done');
+              setProgressImg(progress)
+              if (progress == 100) {
+                setFinished(true)
+                setFinishedImg(true)
+              }
               switch(snapshot.state){
                 case 'paused':
                   console.log("paused")
@@ -55,20 +65,6 @@ export default function RecipeEditor({navigation}) {
     })
   }
 
-  const onChooseImagePress = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync();
-    if (!result.cancelled) {
-      await uploadImage(result.uri)
-        .then(() => {
-          console.log("Success");
-        })
-        .catch((error) => {
-          console.log("error");
-          console.log(error);
-        });
-    }
-  }
-
   const onChooseVideoPress = async () =>{
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Videos
@@ -84,6 +80,20 @@ export default function RecipeEditor({navigation}) {
     }
   }
 
+  const onChooseImagePress = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync();
+    if (!result.cancelled) {
+      await uploadImage(result.uri)
+        .then(() => {
+          console.log("Success");
+        })
+        .catch((error) => {
+          console.log("error");
+          console.log(error);
+        });
+    }
+  }
+
   const uploadVideo = async (uri) =>{
     const response = await fetch(uri,'recipe');
     const blob = await response.blob();
@@ -94,6 +104,11 @@ export default function RecipeEditor({navigation}) {
             (snapshot)=>{
               var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
               console.log(progress)
+              setProgressVid(progress)
+              if (progress == 100) {
+                setFinished(true)
+                setFinishedVid(true)
+              }
               switch(snapshot.state){
                 case 'paused':
                   console.log("pause")
@@ -178,26 +193,21 @@ export default function RecipeEditor({navigation}) {
                 require={true}
                 textAlignVertical={'top'}
             />
-            <View style={styles.Submit}>
-                <Button
-                   onPress={() => {onChooseImagePress()}}
-                   title="Upload Picture"
-                   color="#000"
-               />
-            </View>
-            <View style={styles.Submit}>
-                <Button
-                   onPress={() => {onChooseVideoPress()}}
-                   title="Upload Video"
-                   color="#000"
-               />
-            </View>
-            <View style={styles.Submit}>
-                <Button
-                   onPress={() => {createRecipe(Recipe)}}
-                   title="Submit Recipe"
-                   color="#000"
-               />
+            <View style={{width: '100%', marginBottom: 20,}}>
+              <TouchableOpacity style={styles.Submit} onPress={() => {onChooseImagePress()}}>
+                <Text style={styles.SubmitText}>Upload Photo</Text>
+              </TouchableOpacity>
+              {finishedImg ? <Text style={styles.successUpload}>Photo Uploaded</Text>: <Text style={styles.progress}>{progressImg == 0 ? "" : progressImg}</Text>}
+              <TouchableOpacity style={styles.Submit} onPress={() => {onChooseVideoPress()}}>
+                <Text style={styles.SubmitText}>Upload Video</Text>
+              </TouchableOpacity>
+              {finishedVid ? <Text style={styles.successUpload}>Video Uploaded</Text>: <Text style={styles.progress}>{progressVid == 0 ? "" : progressVid}</Text>}
+              {finished && finishedImg && finishedVid  ? 
+              <TouchableOpacity style={styles.Submit} onPress={() => {updateProf()}}>
+                <Text style={styles.SubmitText}>Update Profile</Text>
+              </TouchableOpacity> : <TouchableOpacity disabled={true} style={[styles.Submit, {backgroundColor: 'lightgrey'}]} onPress={() => {updateProf()}}>
+                <Text style={styles.SubmitText}>Update Profile</Text>
+              </TouchableOpacity>}
             </View>
          </ScrollView>
       </View>
@@ -243,6 +253,9 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     textAlign: 'left',
   },
+  progress: {
+    textAlign: 'center'
+  }, 
   Directions: {
     height: 400,
     width: '100%',
@@ -258,9 +271,29 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   Submit: {
-    margin: 8,
-    paddingHorizontal:80,
+    marginVertical: 10,
+    marginHorizontal: 60,
+    borderRadius: 15,
+    paddingVertical: 10,
+    backgroundColor: "black",
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  SubmitText: {
     color: "white",
+    fontSize: 20,
+  },
+  successUpload: {
+    fontSize: 20,
+    backgroundColor: '#4BB54399',
+    borderColor: 'green',
+    borderWidth: 2,
+    borderRadius: 15,
+    padding: 5,
+    textAlign: 'center',
+    width: '50%',
+    alignSelf: 'center'
   },
   backButton: {
       flexDirection:'row',

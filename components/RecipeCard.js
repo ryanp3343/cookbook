@@ -9,12 +9,10 @@ import firebase from 'firebase'
 import { Rating } from 'react-native-ratings';
 import 'firebase/firestore';
  
-
-
 const arrayUnion = firebase.firestore.FieldValue.arrayUnion;
 const arrayRemove = firebase.firestore.FieldValue.arrayRemove;
 
-const RecipeCard = ({pfpUrl, name, directions, ingredients, url, recipe, id, userRef, cooked, cookedScore, cookedVal, username, date}) => {
+const RecipeCard = ({pfpUrl, uid, name, vidurl, directions, ingredients, url, recipe, id, userRef, cooked, cookedScore, cookedVal, username, date}) => {
     const [directionList, setDirectionList] = useState([]);
     const [liked, setLiked] = useState(false)
     const [userScore, setUserScore] = useState(0)
@@ -44,7 +42,7 @@ const RecipeCard = ({pfpUrl, name, directions, ingredients, url, recipe, id, use
         name: recipe.Title,
         directions: recipe.Directions,
         photoURL: recipe.Url,
-        vidurl: recipe.VidUrl,
+        vidurl: vidurl,
         ingredients: recipe.Ingredients,
         recipeid: recipe.id
       })
@@ -90,30 +88,39 @@ const RecipeCard = ({pfpUrl, name, directions, ingredients, url, recipe, id, use
 
     return (
         <View style={styles.Card}>
-          <Pressable onPress={() => navigation.navigate('RecipeExpanded', {
+            <View style={styles.Title}>
+            <Pressable onPress={() => navigation.navigate('Profile')}>
+            {/* This is all the profile information of postee */}
+            <Pressable onPress={() => navigation.navigate('RecipeExpanded', {
             name: recipe.Title,
             directions: recipe.Directions,
             photoURL: recipe.Url,
             ingredients: recipe.Ingredients,
             recipeid: recipe.id,
-            vidurl: recipe.VidUrl
+            vidurl: vidurl,
           })}>
-            <View style={styles.Title}>
-            <Pressable onPress={() => navigation.navigate('Profile')}>
-            {/* This is all the profile information of postee */}
             <Text style={styles.recipeTitle}>{name}</Text>
-          </Pressable>
-                <Image source={{uri: url}}
-                       style={{width: "100%", height: 320}}
-                 />
-              <View style={styles.profileHeader}>
-                <Image source={{uri: pfpUrl}}
-                  style={styles.profilePhoto}
-                />
-                <Text style={styles.username}>{username}</Text>
-              </View>
+            </Pressable>
+            </Pressable>
+            <View>
+              <Image resizeMode='cover' source={{uri: url}}
+                          style={{          
+                            height: 300,
+                            flex: 1,
+                            width: null,}}
+                      />
             </View>
-          </Pressable>
+            <View style={styles.profileHeader}>
+            <Pressable style={styles.profileHeaderPress} onPress={() => navigation.navigate("ProfileExpanded", {
+            id: uid
+            })}>
+                  <Image source={{uri: pfpUrl}}
+                    style={styles.profilePhoto}
+                  />
+                  <Text style={styles.username}>{username}</Text>
+                  </Pressable>
+                </View>
+            </View>
             <View style={styles.buttonContainer}>
                {/* These are all the user interactions */}
               <View style={styles.buttons}>
@@ -170,6 +177,11 @@ const styles = StyleSheet.create({
     padding: 10,
     bottom: 0,
     right: 0,
+  }, 
+  profileHeaderPress: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
   }, 
   profilePhoto: {
     height: 40,
