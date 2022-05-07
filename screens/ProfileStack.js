@@ -11,6 +11,7 @@ import RecipeEditor from '../components/RecipeEditor';
 import ProfileScreen from './ProfileScreen';
 import ProfileEditor from '../components/ProfileEditor';
 import ProfileExpanded from './ProfileExpanded';
+import TutorialScreen from '../components/TutorialScreen';
 
 const auth = Firebase.auth();
 const Stack = createStackNavigator();
@@ -24,6 +25,7 @@ export default function ProfileStack() {
     }}>
       <Stack.Screen name='ProfileScreen' component={ProfileScreen} />
       <Stack.Screen name='ProfileEditor' component={ProfileEditor} />
+      <Stack.Screen name='Tutorial' component={TutorialScreen} />
     </Stack.Navigator>
   );
 }

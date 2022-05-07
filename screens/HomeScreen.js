@@ -107,6 +107,9 @@ export default function HomeScreen({ navigation }) {
                 paddingHorizontal: 20,
                 height: StatusBar.currentHeight,
               }}>
+              <View style={{marginRight: 20}}>
+                <Icon name="help-circle" type='feather'  color='#fff' onPress={() => navigation.navigate("Tutorial") }/>
+              </View>
               <Icon name="logout" type='material'  color='#fff' onPress={() => handleSignOut() }/>
               </View>
             ), headerLeft: () => (
