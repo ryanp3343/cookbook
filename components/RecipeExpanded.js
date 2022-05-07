@@ -1,17 +1,13 @@
-import { StatusBar } from 'expo-status-bar';
 import React, { useContext, useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, Pressable, Image, ScrollView, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import Firebase from '../config/firebase';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import { doc, setDoc } from "firebase/firestore"; 
 import CommentCard from "../components/CommentCard"
-import firebase from 'firebase'
-import VideoPlayer from 'expo-video-player'
+import { arrayUnion } from 'firebase'
 import { AVPlaybackStatus, Video } from 'expo-av';
 import 'firebase/firestore';
 // import { Button, InputField, ErrorMessage } from '../components';
-
-const arrayUnion = firebase.firestore.FieldValue.arrayUnion;
 
 export default function RecipeExpanded({navigation, route}) {
     const { name, directions, photoURL, ingredients, recipeid, vidurl } = route.params;
@@ -97,7 +93,7 @@ export default function RecipeExpanded({navigation, route}) {
                     <Text style={styles.title}>{name}</Text>
                     <ScrollView horizontal={true}>
                         <Image source={{uri: photoURL}}
-                           style={{width: 320, height: 320, borderRadius: 15, marginBottom: 10, marginRight: 15}}
+                           style={{width: 320, height: 320, borderRadius: 5, marginBottom: 10, marginRight: 15}}
                         />
                         <Video
                             ref={video} 
@@ -111,7 +107,6 @@ export default function RecipeExpanded({navigation, route}) {
                             onPlaybackStatusUpdate={status => setStatus(() => status)}
                         />
                     </ScrollView>
-                    <Text>LINK: {vidurl}</Text>
                     <View style={styles.directionContainer}>
                         <Text style={styles.header}>Ingredients:</Text>
                         <Text style={styles.description}>{ingredients}</Text>
@@ -121,26 +116,30 @@ export default function RecipeExpanded({navigation, route}) {
                         <Text style={styles.description}>{directions}</Text>
                     </View>
                 </View>
-                <View>
-                    <Text style={styles.replies}>Replies:</Text>
-                </View>
-
-                <TextInput 
-                    style={styles.Coment}
-                    onChangeText={setComment}
-                    value={Comment}
-                    placeholder="Reply"
-                    multiline
-                    numberOfLines={1}
-                    onContentSizeChange={(e) => updateSize(e.nativeEvent.contentSize.height)}
-                    require={true}
-                />
-
-                <View style={styles.submit}>
+                <KeyboardAvoidingView
+                    behavior={Platform.OS === "ios" ? "padding" : "height"}
+                    style={{ flex: 1 }}
+                > 
+                    <View>
+                        <Text style={styles.replies}>Replies:</Text>
+                    </View>
+                            
+                    <TextInput 
+                        style={styles.Coment}
+                        onChangeText={setComment}
+                        value={Comment}
+                        placeholder="Reply"
+                        multiline
+                        numberOfLines={1}
+                        onContentSizeChange={(e) => updateSize(e.nativeEvent.contentSize.height)}
+                        require={true}
+                    />
                     <TouchableOpacity  onPress={() => (createComment())}>
-                        <Text style={styles.submitText}>Comment</Text>
+                        <View style={styles.submit}>
+                            <Text style={styles.submitText}>Comment</Text>
+                        </View>
                     </TouchableOpacity>
-                </View>
+                </KeyboardAvoidingView>
 
                 <View>
                     {Comments?.map((com, index) => (
@@ -160,7 +159,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     paddingHorizontal: 10,
     paddingBottom: 60,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   },
   backButton: {
     flexDirection:'row',

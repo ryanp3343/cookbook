@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import React, { useContext, useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, Pressable, ScrollView, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import Firebase from '../config/firebase';
@@ -20,7 +19,7 @@ export default function ForumExpanded({navigation, route}) {
     const createComment = async () => {
         var userName
         await auth.onAuthStateChanged(user =>{
-          if(user){
+          if(user && Comment){
             db.collection("newusers").doc(user.uid).get().then((docRef) => {
               const snapshot = docRef.data();
               // userName = snapshot["username"];
@@ -34,7 +33,7 @@ export default function ForumExpanded({navigation, route}) {
                      }).then((data) => addComplete(data))
                        .catch((error) => console.log(error));
             })
-          }
+          } 
         })
       };
 
@@ -94,11 +93,11 @@ export default function ForumExpanded({navigation, route}) {
                 require={true}
             />
 
-            <View style={styles.submit}>
-                <TouchableOpacity  onPress={() => (createComment())}>
-                    <Text style={styles.submitText}>Comment</Text>
-                </TouchableOpacity>
-            </View>
+            <TouchableOpacity  onPress={() => (createComment())}>
+                <View style={styles.submit}>
+                  <Text style={styles.submitText}>Comment</Text>
+                </View>
+            </TouchableOpacity>
 
             </KeyboardAvoidingView >
             <View>

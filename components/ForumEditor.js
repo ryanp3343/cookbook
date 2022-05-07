@@ -7,6 +7,9 @@ import {onAuthStateChanged} from "firebase/auth";
 import { useState } from 'react';
 import { ScrollView } from 'react-native-gesture-handler';
 import DropDownPicker from 'react-native-dropdown-picker';
+import firebase from 'firebase';
+
+const arrayUnion = firebase.firestore.FieldValue.arrayUnion;
 
 const db = Firebase.firestore()
 const auth = Firebase.auth();
@@ -17,7 +20,8 @@ export default function ForumEditor({navigation}) {
 const [Question, setQuestion] = useState('');
 const [Description, setDescription] = useState('');
 const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
+const [height, setHeight] = useState(40);  
+const [value, setValue] = useState(null);
   const [items, setItems] = useState([
     {label: 'Breakfast', value: 'Breakfast'},
     {label: 'Lunch', value: 'Lunch'},
@@ -33,27 +37,30 @@ const createQuestion = async () => {
   await auth.onAuthStateChanged(user =>{
     if(user){
       db.collection("newusers").doc(user.uid).get().then((docRef) => {
-        const snapshot = docRef.data();
-        userName = snapshot.username
-        pfpURL = snapshot.profUrl
-        Firebase.firestore()
-          .collection("newforums")
-          .add({Question: Question,
+          const snapshot = docRef.data();
+          const ref = db.collection('newforums').doc();
+          const id = ref.id;
+          ref.set({
+                Question: Question,
                 Description: Description,
-                Name: userName,
+                Name: snapshot.username,
                 Replies: null,
                 Tag: value,
-                ProfUrl: pfpURL,
+                ProfUrl: snapshot.profUrl,
                 Uid: user.uid,
               }).then((data) => {
-                console.log("here")    
-                navigation.navigate("List")               
+                console.log("========================================================")
+                console.log(id)
+                db.collection("newusers").doc(user.uid).update({ userForums: arrayUnion(id) });            
               })
-                .catch((error) => console.log(error));
       })
     }
   })
 };
+
+const updateSize = (height) => {
+  setHeight(height)
+}
 
     return (
       <View style={styles.backgroundImage}>
@@ -79,7 +86,8 @@ const createQuestion = async () => {
                 placeholder="Description"
                 maxLength = {300}
                 multiline={true}
-                numberOfLines={3}
+                numberOfLines={1}
+                onContentSizeChange={(e) => updateSize(e.nativeEvent.contentSize.height)}
                 require={true}
                 textAlignVertical={'top'}
             />
@@ -132,14 +140,13 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 'auto',
     marginVertical: 12,
-    borderWidth: 1,
+    borderBottomWidth: 1,
     borderRadius: 5,
     padding: 10,
     backgroundColor: "#fff",
     fontSize: 25,
   },
   Description: {
-    height: 400,
     width: '100%',
     margin: 12,
     borderWidth: 1,
@@ -148,6 +155,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingTop: 10,
     textAlign: 'left',
+    fontSize: 20,
+    marginBottom: 20,
   },
   inputContaier: {
     paddingHorizontal: 20,

@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import firebase from 'firebase';
 import { StyleSheet, Text, View, TextInput, Button, Pressable, TouchableOpacity, Alert } from 'react-native';
@@ -10,6 +9,8 @@ import { useState } from 'react';
 import { LogBox } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { ScrollView } from 'react-native-gesture-handler';
+
+const arrayUnion = firebase.firestore.FieldValue.arrayUnion;
 
 const db = Firebase.firestore()
 const auth = Firebase.auth();
@@ -27,7 +28,9 @@ export default function RecipeEditor({navigation}) {
   const [progressVid, setProgressVid] = useState('')
   const [finishedVid, setFinishedVid] = useState(false)
   const [finishedImg, setFinishedImg] = useState(false)
-   
+  const [height, setHeight] = useState(); 
+  const [heightDir, setHeightDir] = useState(); 
+
   const uploadImage = async (uri) => {
     const response = await fetch(uri,'recipe');
     const blob = await response.blob();
@@ -136,8 +139,9 @@ export default function RecipeEditor({navigation}) {
       if(user){
         db.collection("newusers").doc(user.uid).get().then((docRef) => {
           const snapshot = docRef.data();
-          db.collection("newrecipes").doc()
-          .set({
+          const ref = db.collection('newrecipes').doc();
+          const id = ref.id;
+          ref.set({
             Name: snapshot.username,
             Uid: user.uid,
             Title: Recipe,
@@ -151,11 +155,23 @@ export default function RecipeEditor({navigation}) {
             Cooked: 0,
             Date: firebase.firestore.Timestamp.now(),
             Comments: [],
+          }).then((recRef) => {
+            console.log("========================================================")
+            console.log(id)
+            db.collection("newusers").doc(user.uid).update({ userRecipes: arrayUnion(id) });
           })
         })
       }
     })
   };
+
+  const updateSize = (height) => {
+    setHeight(height)
+  }
+
+  const updateSizeDir = (height) => {
+    setHeightDir(height)
+  }
 
     return (
       <View style={styles.backgroundImage}>
@@ -178,8 +194,9 @@ export default function RecipeEditor({navigation}) {
                 onChangeText={text => setIngredients(text)}
                 value={Ingredients}
                 placeholder="Ingredients"
-                multiline={true}
-                numberOfLines={3}
+                multiline
+                numberOfLines={1}
+                onContentSizeChange={(e) => updateSize(e.nativeEvent.contentSize.height)}
                 require={true}
                 textAlignVertical={'top'}
             />
@@ -188,10 +205,11 @@ export default function RecipeEditor({navigation}) {
                 onChangeText={text => setDirections(text)}
                 value={Directions}
                 placeholder="Directions"
-                multiline={true}
-                numberOfLines={3}
+                multiline
+                onContentSizeChange={(e) => updateSizeDir(e.nativeEvent.contentSize.height)}
                 require={true}
                 textAlignVertical={'top'}
+
             />
             <View style={{width: '100%', marginBottom: 20,}}>
               <TouchableOpacity style={styles.Submit} onPress={() => {onChooseImagePress()}}>
@@ -203,10 +221,10 @@ export default function RecipeEditor({navigation}) {
               </TouchableOpacity>
               {finishedVid ? <Text style={styles.successUpload}>Video Uploaded</Text>: <Text style={styles.progress}>{progressVid == 0 ? "" : progressVid}</Text>}
               {finished && finishedImg && finishedVid  ? 
-              <TouchableOpacity style={styles.Submit} onPress={() => {updateProf()}}>
-                <Text style={styles.SubmitText}>Update Profile</Text>
-              </TouchableOpacity> : <TouchableOpacity disabled={true} style={[styles.Submit, {backgroundColor: 'lightgrey'}]} onPress={() => {updateProf()}}>
-                <Text style={styles.SubmitText}>Update Profile</Text>
+              <TouchableOpacity style={styles.Submit} onPress={() => {createRecipe()}}>
+                <Text style={styles.SubmitText}>Upload Recipe</Text>
+              </TouchableOpacity> : <TouchableOpacity disabled={true} style={[styles.Submit, {backgroundColor: 'lightgrey'}]} onPress={() => {createRecipe()}}>
+                <Text style={styles.SubmitText}>Upload Recipe</Text>
               </TouchableOpacity>}
             </View>
          </ScrollView>
@@ -237,27 +255,27 @@ const styles = StyleSheet.create({
     height: 40,
     width: '100%',
     margin: 12,
-    fontSize: 20,
+    fontSize: 25,
     borderBottomWidth: 1,
     paddingLeft: 10,
     backgroundColor: "#fff",
   },
   Ingredients: {
-    height: 400,
     width: '100%',
     margin: 12,
     borderWidth: 1,
     borderRadius: 5,
-    padding: 10,
     backgroundColor: "#fff",
+    padding: 10,
     paddingTop: 10,
     textAlign: 'left',
+    marginBottom: 20,
+    fontSize: 20,
   },
   progress: {
     textAlign: 'center'
   }, 
   Directions: {
-    height: 400,
     width: '100%',
     margin: 12,
     borderWidth: 1,
@@ -266,6 +284,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingTop: 10,
     textAlign: 'left',
+    marginBottom: 20,
+    fontSize: 20,
   },
   inputContaier: {
     paddingHorizontal: 20,

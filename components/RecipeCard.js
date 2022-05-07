@@ -56,17 +56,30 @@ const RecipeCard = ({pfpUrl, uid, name, vidurl, directions, ingredients, url, re
           let _cookedVal = cookedVal
           let _cooked = cooked
 
-          _cookedVal = _cookedVal + score
+          console.log("csN " + cookedScore)
+          console.log("cvN " + cookedVal)
+          console.log("cN " +cooked)
+
+          console.log("cs " + _cookedScore)
+          console.log("cv " + _cookedVal)
+          console.log("c " +_cooked)
+          let us =  parseInt(userScore)
+          console.log("userscore " + us)
+
+          _cookedVal = _cookedVal + us
           _cooked = _cooked + 1
-          _cookedScore = cookedVal / cooked
-          
-          db.collection("newusers").doc(user.uid).update(
+          _cookedScore = _cookedVal / _cooked
+          setScore(_cookedScore.toFixed(2))
+
+          db.collection("newrecipes").doc(id).update(
             { 
               CookedScore: _cookedScore,
               CookedVal: _cookedVal,
               Cooked:  _cooked,
             });
         }})
+        setUserScore(0)
+        setShowCooked(false)
     }
 
     const updateCard = async () => {
@@ -84,6 +97,7 @@ const RecipeCard = ({pfpUrl, uid, name, vidurl, directions, ingredients, url, re
 
     useEffect(() => {
       updateCard()
+      setScore(cookedScore)
     }, [])
 
     return (
@@ -146,10 +160,27 @@ const RecipeCard = ({pfpUrl, uid, name, vidurl, directions, ingredients, url, re
                   showRating={2}
                 /> */}
             <View style={styles.rating}>
-              <Text style={styles.ratingFont}>{cooked}</Text>
+              <Text style={styles.ratingFont}>{score}</Text>
               <Text style={styles.ratingFontConstant}>/5</Text>
             </View>
             </View>
+            {showCooked ? 
+              <View style={styles.scoreContainer}>
+                <Text>Give it a rating:</Text>
+                <TextInput 
+                  style={styles.scoreInput}
+                  onChangeText={text => setUserScore(text)}
+                  value={userScore}
+                  placeholder="Score"
+                  maxLength = {2}
+                  multiline={false}
+                  numberOfLines={1}
+                  textAlignVertical={'top'}
+                />
+                <TouchableOpacity style={styles.submitBox} onPress={() => cookedRecipe()}>
+                  <Text style={styles.submitText}>Submit</Text>
+                </TouchableOpacity>
+              </View> : <></>}
             <View style={styles.date}>
               <Text style={styles.dateText}>{datePrint}</Text>
             </View>
@@ -188,6 +219,32 @@ const styles = StyleSheet.create({
     width: 40,
     borderRadius: 50,
   },  
+  scoreContainer: {
+    borderWidth: 1,
+    marginHorizontal: 10,
+    width: 150,
+    padding: 5,
+    borderRadius: 15,
+    marginBottom: 10,
+  },  
+  scoreInput: {
+    width: '100%',
+    borderRadius: 5,
+    padding: 10,
+    backgroundColor: "#fff",
+    paddingTop: 10,
+    textAlign: 'left',
+    fontSize: 20,
+  },
+  submitBox: {
+    backgroundColor: 'black',
+    borderRadius: 15,
+    paddingVertical: 5,
+  },
+  submitText: {
+    textAlign: 'center',
+    color: '#fff',
+  },
   username: {
     fontSize: 20,
     marginLeft: 5,

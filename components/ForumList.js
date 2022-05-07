@@ -1,6 +1,5 @@
-import { StatusBar } from 'expo-status-bar';
 import React, { useContext, useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView, TextInput, Button, TouchableOpacity, Pressable } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TextInput, Button, TouchableOpacity, Pressable, FlatList } from 'react-native';
 import ForumCard from '../components/ForumCard';
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
@@ -8,9 +7,25 @@ import FilterLabel from './FilterLabel';
 import Firebase from '../config/firebase.js'
 import DropDownPicker from 'react-native-dropdown-picker';
 
+const placeHolder = "https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png"
+
+const Forum = ({ forum, navigation }) => (
+  <Pressable onPress={() => navigation.navigate('ForumExpand', {
+    name: forum.Name,
+    title: forum.Question,
+    repliesAmount: forum.Replies,
+    description: forum.Description,
+    id: forum.id,
+    ProfileURL: forum.ProfUrl,
+    uid: forum.Uid
+  })}>
+      <ForumCard key={forum.id} uid={forum.Uid} photoURL={forum.ProfUrl ? forum.ProfUrl : placeHolder} name={forum.Name} title={forum.Question} id={forum.Uid} repliesAmount={forum.Replies}/>
+  </Pressable>
+);
 
 export default function ForumList({navigation}) {
   const { user } = useContext(AuthenticatedUserContext);
+  const [selectedId, setSelectedId] = useState(null);
   const[forums, setForums] = useState([]);
   const[newForums, setNewForums] = useState([]);
   const [searchText, onChangeText] = React.useState("");
@@ -27,7 +42,6 @@ export default function ForumList({navigation}) {
     {label: 'Drink', value: 'Drink'},
     {label: 'Other', value: 'Other'}
   ]);
-  const placeHolder = "https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png"
 
   const getForums = async () => {
     const fireDB = Firebase.firestore();
@@ -66,9 +80,19 @@ export default function ForumList({navigation}) {
     filterForums();
   }, [value]);
 
+  const renderItem = ({ item }) => {
+    return (
+      <Forum
+        forum={item}
+        navigation={navigation}
+      />
+    );
+  };
+
   return (
+    
+
       <View style={styles.container}>
-      <StatusBar style='dark-content'/>
       <View style={styles.filterList}>
       <DropDownPicker
               placeholder='Select Type'
@@ -80,20 +104,12 @@ export default function ForumList({navigation}) {
               setItems={setItems}
             />
       </View>
-      <ScrollView style={styles.Scroll}>
-        {newForums.map((forum, index) => (
-          <Pressable key={index} onPress={() => navigation.navigate('ForumExpand', {
-            name: forum.Name,
-            title: forum.Question,
-            repliesAmount: forum.Replies,
-            description: forum.Description,
-            id: forum.id,
-            ProfileURL: forum.ProfUrl
-          })}>
-              <ForumCard key={index} photoURL={forum.ProfUrl ? forum.ProfUrl : placeHolder} name={forum.Name} title={forum.Question} id={forum.Uid} repliesAmount={forum.Replies}/>
-          </Pressable>
-        ))}
-      </ScrollView>
+      <FlatList
+        data={newForums}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        extraData={selectedId}
+      />
     </View>
   );
 }

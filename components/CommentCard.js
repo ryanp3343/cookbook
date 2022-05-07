@@ -47,7 +47,6 @@ const styles = StyleSheet.create({
   TitleText: {
     fontSize: 20,
     color: '#4D4D3D',
-    fontWeight: 'bold',
   },
   NameTitle: {
     fontWeight: 'bold',

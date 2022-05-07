@@ -3,13 +3,14 @@ import React from 'react';
 import { StyleSheet, Text, View, Image, Pressable } from 'react-native';
 
 
-const ForumCard = ({name, photoURL, title, question, replies, repliesAmount, id}) => {
+const ForumCard = ({name, photoURL, title, question, replies, repliesAmount, id, uid}) => {
   const navigation = useNavigation()
 
     return (
         <View style={styles.Card}>
           <Pressable onPress={() => navigation.navigate("ProfileExpanded", {
-            id: id
+            id: id,
+            uid: uid
           })}>
             <View style={styles.Title}>
                 <Image resizeMode='cover' style={styles.Logo} source={{uri: photoURL}}></Image>

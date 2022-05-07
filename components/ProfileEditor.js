@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View, TextInput, Button, Pressable, TouchableOpacity } from 'react-native';
 import Firebase from '../config/firebase';

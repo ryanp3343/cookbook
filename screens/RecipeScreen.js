@@ -1,14 +1,36 @@
-import { StatusBar } from 'expo-status-bar';
 import React, { useContext, useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView, Pressable, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Pressable, TouchableOpacity, FlatList} from 'react-native';
 import Firebase from '../config/firebase';
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
 import RecipeEditor from '../components/RecipeEditor';
 import RecipeCard from '../components/RecipeCard';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 
+const placeHolder = "https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png"
+
+const Recipe = ({ recipe, navigation, userRef }) => (
+  <RecipeCard 
+                key={recipe.id} 
+                userRef={userRef} 
+                id = {recipe.id} 
+                recipe={recipe} 
+                name={recipe.Title} 
+                directions={recipe.directions} 
+                url={recipe.Url} 
+                vidurl={recipe.VidUrl}
+                ingredients={recipe.ingredients}
+                cookedScore={recipe.CookedScore}
+                cookedVal={recipe.CookedVal}
+                cooked={recipe.Cooked}
+                username={recipe.Name}
+                date={recipe.Date}
+                pfpUrl={recipe.pfpUrl ? recipe.pfpUrl : placeHolder}
+              />
+);
+
 export default function RecipeScreen({navigation}) {
   const placeHolder = "https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png"
+  const [selectedId, setSelectedId] = useState(null);
   const[recipes, setRecipes] = useState([]);
   const [text, onChangeText] = React.useState("");
   const [userRef, setUserRef] = useState({});
@@ -42,31 +64,24 @@ export default function RecipeScreen({navigation}) {
     getRecipes();
   },[]);
 
+  const renderItem = ({ item }) => {
+    return (
+      <Recipe
+        recipe={item}
+        navigation={navigation}
+        userRef={userRef}
+      />
+    );
+  };
+
   return (
     <View style={styles.container}>
-      <StatusBar style='dark-content' />
-        <ScrollView style={styles.Scroll}  showsVerticalScrollIndicator={false}
-                                           showsHorizontalScrollIndicator={false}>
-        {recipes.map((recipe, index) => (
-              <RecipeCard 
-                key={index} 
-                userRef={userRef} 
-                id = {recipe.id} 
-                recipe={recipe} 
-                name={recipe.Title} 
-                directions={recipe.directions} 
-                url={recipe.Url} 
-                vidurl={recipe.VidUrl}
-                ingredients={recipe.ingredients}
-                cookedScore={recipe.CookedScore}
-                cookedVal={recipe.CookedVal}
-                cooked={recipe.Cooked}
-                username={recipe.Name}
-                date={recipe.Date}
-                pfpUrl={recipe.pfpUrl ? recipe.pfpUrl : placeHolder}
-              />
-        ))}
-        </ScrollView>
+      <FlatList
+        data={recipes}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        extraData={selectedId}
+      />
     </View>
   );
 }

@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import React, { useContext, useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, Pressable, ScrollView } from 'react-native';
 import ForumCard from '../components/ForumCard';
@@ -20,10 +19,37 @@ export default function ProfileScreen({navigation}) {
   const [userRef, setUserRef] = useState({});
   const [profile, setProfile] = useState([]);
   const [recipes, setRecipes] = useState([]);
-  const [forumColor, setForumColor] = useState([]);
-  const [recipeColor, setRecipeColor] = useState([]);
-  const [likedColor, setLikedColor] = useState([]);
+  const [userRecipes, setUserRecipes] = useState([]);
+  const [forumColor, setForumColor] = useState("black");
+  const [recipeColor, setRecipeColor] = useState("black");
+  const [likedColor, setLikedColor] = useState("#949D7E");
   
+  const getUserRecipes = async () => {
+    setLoading(true);
+    console.log("getting User Recipes")
+    const fireDB = Firebase.firestore();
+    const ref = fireDB.collection('newrecipes');
+    await auth.onAuthStateChanged(user => {
+      if(user){
+        fireDB.collection('newusers').doc(user.uid).get().then((docRef) =>{
+          ref.onSnapshot((QuerySnapshot) => {
+            const recipes = [];
+            QuerySnapshot.forEach((doc) => {
+              if(docRef.data()["userRecipes"].includes(doc.id)){
+                let currentID = doc.id
+                let appObj = { ...doc.data(), ['id']: currentID }
+                recipes.push(appObj);
+                // console.log(recipes)
+              }
+            });
+            setUserRecipes(recipes)
+            setLoading(false);
+          })
+        })
+      }   
+    }) 
+  }
+
   const getSavedRecipes = async () => {
     setLoading(true);
     console.log("getting Saved Recipes")
@@ -117,13 +143,12 @@ var anotherurl = profile['profUrl']
   
   useEffect(() => {
     getSavedRecipes();
+    getUserRecipes();
   },[user]);
 
 
   return (
     <View style={styles.container}>
-      <StatusBar style='dark-content' />
-
         <View  style={styles.profileHeader}>
           <View style={styles.profileInfo}>
             <Image resizeMode='cover' style={styles.Logo} source={{uri: profile.profUrl}}></Image>
@@ -148,10 +173,7 @@ var anotherurl = profile['profUrl']
         <View style={styles.navContainer}>
           <View style={styles.profileNav}>
             <Pressable style={styles.button} onPress={() => chooseList(0)}>
-              <Text style={[styles.buttonText, {color: forumColor}]}>FORUMS</Text>
-            </Pressable>
-            <Pressable style={styles.button} onPress={() => chooseList(1)}>
-              <Text style={[styles.buttonText, {color: recipeColor}]}>RECIPES</Text>
+              <Text style={[styles.buttonText, {color: forumColor}]}>RECIPES</Text>
             </Pressable>
             <Pressable style={styles.button} onPress={() => chooseList(2)}>
               <Text style={[styles.buttonText, {color: likedColor}]}>LIKED</Text>
@@ -181,7 +203,26 @@ var anotherurl = profile['profUrl']
                   pfpUrl={recipe.pfpUrl}
                 /> ))}
               </ScrollView>
-                      :<ForumCard key={"index"} name={"poppmane"} title={"How to boil water?"}/>}
+                      :
+              <ScrollView style={styles.Scroll}  showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}>
+              {userRecipes.map((recipe, index) => (
+                <RecipeCard 
+                  key={index} 
+                  userRef={userRef} 
+                  id = {recipe.id} 
+                  recipe={recipe} 
+                  name={recipe.Title} 
+                  directions={recipe.directions} 
+                  url={recipe.Url} 
+                  ingredients={recipe.ingredients}
+                  cookedScore={recipe.CookedScore}
+                  cookedVal={recipe.CookedVal}
+                  cooked={recipe.Cooked}
+                  username={recipe.Name}
+                  date={recipe.Date}
+                  pfpUrl={recipe.pfpUrl}
+                /> ))}
+              </ScrollView>}
       
           </ScrollView>
         </View> : <></>}
@@ -253,7 +294,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingHorizontal: 15,
     justifyContent: 'space-between',
-    width: "100%",
+    width: "80%",
+    alignSelf: 'center'
   },
   button: {
     marginTop: 5,
