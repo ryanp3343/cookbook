@@ -159,6 +159,7 @@ export default function RecipeEditor({navigation}) {
             console.log("========================================================")
             console.log(id)
             db.collection("newusers").doc(user.uid).update({ userRecipes: arrayUnion(id) });
+            navigation.navigate("RecipesList")
           })
         })
       }

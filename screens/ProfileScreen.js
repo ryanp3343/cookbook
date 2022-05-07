@@ -136,6 +136,7 @@ var anotherurl = profile['profUrl']
     const unsubscribe = navigation.addListener('focus', () => {
       getProfile()
       getSavedRecipes();
+      getUserRecipes();
       console.log('Refreshed!');
     });
     return unsubscribe;

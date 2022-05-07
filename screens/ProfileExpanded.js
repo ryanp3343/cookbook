@@ -166,6 +166,14 @@ export default function ProfileExpanded({navigation, route}) {
     <View style={styles.container}>
       <View>
 
+      <View style={styles.HeaderContainer}>
+            <Pressable onPress={() => navigation.navigate('List')}>
+              <View style={styles.backButton}>
+                <Icon size={40} name="arrow-left" type='feather' color='#000'/>
+              </View>
+            </Pressable>
+          </View>
+
         <View  style={styles.profileHeader}>
         {!loading ? <View style={styles.profileInfo}>
             <Image resizeMode='cover' style={styles.Logo} source={{uri: profile.profUrl}}></Image>
@@ -250,6 +258,18 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     
   },
+  HeaderContainer: {
+    flexDirection: 'row',
+    paddingLeft: 20,
+    paddingRight: 20,
+    justifyContent: 'space-between'
+  },
+  backButton: {
+    flexDirection:'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontSize: 30
+},
   profileFollowers: {
     marginTop: 10,
     flexDirection: 'row',

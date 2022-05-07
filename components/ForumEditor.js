@@ -52,6 +52,7 @@ const createQuestion = async () => {
                 console.log("========================================================")
                 console.log(id)
                 db.collection("newusers").doc(user.uid).update({ userForums: arrayUnion(id) });            
+                navigation.navigate("List")
               })
       })
     }
