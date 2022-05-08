@@ -8,9 +8,9 @@ The CookBook app is intended to be a social media platform for chefs and at home
 
 Cookbook uses these to run as smoothly as possible 
 
-* [Firebase](https://firebase.google.com/docs) for all backend 
-* [React Native](https://reactnative.dev/docs/getting-started) for all frontend
-* [Expo](https://docs.expo.dev/) client for hosting and bundling
+* [Firebase](https://firebase.google.com/docs) - Backend 
+* [React Native](https://reactnative.dev/docs/getting-started) - Frontend
+* [Expo](https://docs.expo.dev/) - Hosting/Bundling
 
 ## Local Install
 
@@ -49,7 +49,7 @@ Here you scan the QR code on your phone and it will open up the project in your 
 
 ## Hosted on Expo
 
-### Requirments 
+### Requirements 
 
 Expo go app on any mobile device
 
@@ -62,4 +62,4 @@ Scan the QR code and it will open the project in the Expo Go app.
 
 ## Project Members
 
-[Joshua Popp](https://github.com/joshuapopp17) [Ryan Puertas](https://github.com/ryanp3343) [Manpreet Saini](https://github.com/mksaini007) [Andrew Phan](https://github.com/andrewphan23) [Nicolas Vasquez](https://github.com/Nick-Vasquez-CSU) [Steven Chiang](https://github.com/StevenChiang57) [Dung Tran](https://github.com/Dungtran713)
+[Joshua Popp](https://github.com/joshuapopp17) , [Ryan Puertas](https://github.com/ryanp3343), [Manpreet Saini](https://github.com/mksaini007) , [Andrew Phan](https://github.com/andrewphan23) , [Nicolas Vasquez](https://github.com/Nick-Vasquez-CSU) , [Steven Chiang](https://github.com/StevenChiang57) , [Dung Tran](https://github.com/Dungtran713)
