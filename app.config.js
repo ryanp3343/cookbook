@@ -4,9 +4,10 @@ export default {
   expo: {
     name: 'CookBook',
     slug: 'CookBook',
+    description: 'The cookbook app',
     version: '1.0.0',
     orientation: 'portrait',
-    icon: './assets/icon.png',
+    icon: './imgs/LOGO.png',
     splash: {
       image: './assets/splash.png',
       resizeMode: 'contain',
