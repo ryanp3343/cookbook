@@ -55,9 +55,9 @@ Expo go app on any mobile device
 
 ### Viewing the Application
 
-Scan the QR code and it will open the project in the Expo Go app.
+Scan the QR code and it will open the project in the Expo Go app. Only works on android devices.
 
-![Test QR code](https://play-lh.googleusercontent.com/algsmuhitlyCU_Yy3IU7-7KYIhCBwx5UJG4Bln-hygBjjlUVCiGo1y8W5JNqYm9WW3s)
+![Test QR code](/markdown/images/host.png')
 
 
 ## Project Members

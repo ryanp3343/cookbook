@@ -18,9 +18,13 @@ export default {
     },
     assetBundlePatterns: ['**/*'],
     ios: {
-      supportsTablet: true
+      supportsTablet: true,
+      bundleIdentifier: "com.cookbookCO.cookbook",
+      buildNumber: '1.0.0'
     },
     android: {
+      package: "com.cookbookCO.cookbook",
+      versionCode: 1,
       adaptiveIcon: {
         foregroundImage: './assets/adaptive-icon.png',
         backgroundColor: '#FFFFFF'
