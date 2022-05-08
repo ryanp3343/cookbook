@@ -3,11 +3,11 @@ import { StyleSheet, Text, View, Image } from 'react-native';
 import { color } from 'react-native-reanimated';
 
 
-const CommentCard = ({name, comment, profilePhoto}) => {
+const CommentCard = ({name, comment}) => {
     return (
         <View style={styles.Card}>
             <View style={styles.Title}>
-                <Image style={styles.Logo} source={{uri: profilePhoto}}></Image>
+                <Image style={styles.Logo} source={require('../imgs/pfp1.jpg')}></Image>
                 <Text style={styles.NameTitle}>{name}</Text>
             </View>
             <View style={styles.Description}>
@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
   TitleText: {
     fontSize: 20,
     color: '#4D4D3D',
+    fontWeight: 'bold',
   },
   NameTitle: {
     fontWeight: 'bold',

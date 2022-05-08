@@ -4,6 +4,7 @@ import HomeScreen from '../screens/HomeScreen';
 import RecipeScreen from '../screens/RecipeScreen';
 import ForumScreen from '../screens/ForumScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import ProfileExpanded from '../screens/ProfileExpanded';
 
 
 const Stack = createStackNavigator();

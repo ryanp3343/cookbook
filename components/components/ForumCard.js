@@ -1,22 +1,14 @@
-import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { StyleSheet, Text, View, Image, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 
 
-const ForumCard = ({name, photoURL, title, question, replies, repliesAmount, id, uid}) => {
-  const navigation = useNavigation()
-
+const ForumCard = ({name, photoURL, title, question, replies, repliesAmount}) => {
     return (
         <View style={styles.Card}>
-          <Pressable onPress={() => navigation.navigate("ProfileExpanded", {
-            id: id,
-            uid: uid
-          })}>
             <View style={styles.Title}>
-                <Image resizeMode='cover' style={styles.Logo} source={{uri: photoURL}}></Image>
+                <Image style={styles.Logo} source={require('../imgs/pfp1.jpg')}></Image>
                 <Text style={styles.nameText}>{name}</Text>
             </View>
-          </Pressable>
             <View style={styles.Description}>
                 <Text style={styles.TitleText}>{title}</Text>
                 {/* <Text>{repliesAmount ? repliesAmount : "no"} replies</Text> */}
@@ -43,7 +35,8 @@ const styles = StyleSheet.create({
     marginRight: 10,
     width: 50,
     height: 50,
-    borderRadius: 200,
+    borderRadius: 100,
+    resizeMode: 'contain'
   },
   Description: {
     height:40,
@@ -55,12 +48,12 @@ const styles = StyleSheet.create({
   },
   TitleText: {
     fontSize: 20,
-    color: '#333',
-    fontWeight: '400',
+    color: '#4D4D3D',
+    fontWeight: 'bold',
   },
   nameText: {
     fontSize: 20,
-    fontWeight: '500',
+    fontWeight: 'bold',
   }
 });
 

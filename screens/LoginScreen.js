@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { Component } from 'react';
 import { useState } from 'react';
-import { StyleSheet, View,Image} from 'react-native';
+import { StyleSheet, View,Image, KeyboardAvoidingView} from 'react-native';
 
 import { Button, InputField, ErrorMessage } from '../components';
 import Firebase from '../config/firebase';
@@ -39,6 +39,10 @@ export default function LoginScreen({ navigation }) {
   };
 
   return (
+    <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={{ flex: 1 }}
+      >
     <View style={styles.container}>
       <StatusBar style='dark-content' />
       {<Image style={styles.Logo} source={require('../imgs/LOGO_BLACK.png')} />}
@@ -50,7 +54,8 @@ export default function LoginScreen({ navigation }) {
           backgroundColor: 'transparent',
           marginBottom: 20,
           borderBottomColor: 'black',
-          borderBottomWidth: 2
+          borderBottomWidth: 2,
+          borderRadius: 0,
         }}
         placeholder='EMAIL'
         placeholderTextColor='#bbb'
@@ -69,7 +74,8 @@ export default function LoginScreen({ navigation }) {
           backgroundColor: 'transparent',
           marginBottom: 20,
           borderBottomColor: 'black',
-          borderBottomWidth: 2
+          borderBottomWidth: 2,
+          borderRadius: 0,
         }}
         placeholder='PASSWORD'
         placeholderTextColor='#bbb'
@@ -93,13 +99,14 @@ export default function LoginScreen({ navigation }) {
       <View style = {styles.alternateButton}>
       <Button
         onPress={() => navigation.navigate('Signup')}
-        title='REGISTER'
+        title={`Don't have an account? Sign up`}
         titleSize={13}
         backgroundColor='transparent'
         titleColor='#000'
       />
       </View>
     </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -118,11 +125,11 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
       margin:2,
-      paddingHorizontal:30
+      paddingHorizontal:10
   },
   alternateButton: {
     margin: 5,
-    paddingHorizontal:50,
+    paddingHorizontal:10,
     color: "white"
   },
 });

@@ -1,6 +1,8 @@
+import { StatusBar } from 'expo-status-bar';
 import React, { useContext, useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, Pressable, ScrollView } from 'react-native';
 import ForumCard from '../components/ForumCard';
+
 import { IconButton, InputField } from '../components';
 import Firebase from '../config/firebase';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
@@ -12,6 +14,8 @@ export default function profileHeader({username, userClass, followers, following
   const { user } = useContext(AuthenticatedUserContext);
   return (
     <View style={styles.container}>
+      <StatusBar style='dark-content' />
+
         <View  style={styles.profileHeader}>
           <View style={styles.profileInfo}>
             <Image style={styles.Logo} source={require('../imgs/pfp1.jpg')}></Image>

@@ -1,5 +1,6 @@
+import { StatusBar } from 'expo-status-bar';
 import React, { useContext, useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, Pressable, ScrollView, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, Pressable, ScrollView } from 'react-native';
 import Firebase from '../config/firebase';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import { doc, setDoc } from "firebase/firestore"; 
@@ -12,28 +13,27 @@ const auth = Firebase.auth();
 export default function ForumExpanded({navigation, route}) {
     const [Comment, setComment] = useState('');
     const [Comments, setComments] = useState([]);
-    const [height, setHeight] = useState(40);
     const[loading, setLoading] = useState(false);
     const { name, title, repliesAmount, description, id } = route.params;
 
     const createComment = async () => {
         var userName
         await auth.onAuthStateChanged(user =>{
-          if(user && Comment){
+          if(user){
             db.collection("newusers").doc(user.uid).get().then((docRef) => {
               const snapshot = docRef.data();
               // userName = snapshot["username"];
+              console.log(typeof(snapshot["username"]))
               Firebase.firestore()
                 .collection("forumComments")
                 .add({Comment: Comment,
-                    Name: snapshot.username,
+                    Name: snapshot["username"],
                     Forum: JSON.stringify(id),
-                    pfpPhoto: snapshot.profUrl,
                     Time: Date.now()
                      }).then((data) => addComplete(data))
                        .catch((error) => console.log(error));
             })
-          } 
+          }
         })
       };
 
@@ -58,10 +58,6 @@ export default function ForumExpanded({navigation, route}) {
         getComments();
       }, []);
 
-      const updateSize = (height) => {
-        setHeight(height)
-      }
-
     return (
       <View style={styles.Container}>
         <Pressable onPress={() => navigation.navigate('List')}>
@@ -69,7 +65,7 @@ export default function ForumExpanded({navigation, route}) {
                 <Icon size={40} name="arrow-left" type='feather' color='#000'/>
             </View>
         </Pressable>
-        <ScrollView style={styles.Scroll}>
+        <ScrollView>
           <View>
             <View>
                 <View style={styles.descriptionContainer}>
@@ -81,29 +77,27 @@ export default function ForumExpanded({navigation, route}) {
             <View>
                 <Text style={styles.replies}>Replies:</Text>
             </View>
-            <KeyboardAvoidingView  behavior={Platform.OS === "ios" ? "padding" : "height"}>
+
             <TextInput 
                 style={styles.Coment}
                 onChangeText={setComment}
                 value={Comment}
                 placeholder="Reply"
-                multiline
-                numberOfLines={1}
-                onContentSizeChange={(e) => updateSize(e.nativeEvent.contentSize.height)}
+                multiline={true}
+                numberOfLines={3}
                 require={true}
             />
 
-            <TouchableOpacity  onPress={() => (createComment())}>
-                <View style={styles.submit}>
-                  <Text style={styles.submitText}>Comment</Text>
-                </View>
-            </TouchableOpacity>
+            <View style={styles.submit}>
+                <Pressable  onPress={() => (createComment())}>
+                    <Text style={styles.submitText}>Comment</Text>
+                </Pressable>
+            </View>
 
-            </KeyboardAvoidingView >
             <View>
-              <View>
+              <View style={styles.commentContainer}>
                   {Comments.map((com, index) => (
-                    <CommentCard key={index} profilePhoto={com.pfpPhoto} name={com.Name} comment={com.Comment}/>
+                    <CommentCard key={index} name={com.Name} comment={com.Comment}/>
                   ))} 
               </View>
             </View>
@@ -133,7 +127,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 25,
-    fontWeight: '500',
+    fontWeight: 'bold',
   },
   description: {
     marginTop: 10,
@@ -141,9 +135,10 @@ const styles = StyleSheet.create({
   },
   descriptionContainer: {
     borderBottomWidth: 1,
-    paddingHorizontal: 5,
+    paddingHorizontal:10,
     borderColor: "#ccc",
     paddingVertical: 10,
+    borderRadius: 10,
     marginBottom: 10,
   },
   replies: {
@@ -152,8 +147,7 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   Coment: {
-    // height: 40,
-    textAlignVertical: 'top',
+    height: 40,
     marginTop: 10,
     marginBottom: 10,
     borderBottomWidth: 2,
@@ -165,18 +159,20 @@ const styles = StyleSheet.create({
   submit: {
       alignItems: 'center',
       justifyContent: 'center',
-      borderColor: '#949D7E',
-      marginBottom: 10,
+      borderColor: '#3f5c41',
       borderWidth: 2,
       width: 100,
-      borderRadius: 5,
+      height: 30,
+      borderRadius: 8,
   },
   submitText: {
-      fontSize: 15,
-      color: '#949D7E',
+      fontSize: 16,
+      color: '#3f5c41',
       fontWeight: 'bold'
   },
-   Scroll: {
-    paddingHorizontal: 5,
+   commentContainer: {
+       marginTop: 10,
+       height: 300,
+       marginBottom: 50,
    },
 });

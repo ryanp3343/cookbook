@@ -1,71 +1,115 @@
-import { StatusBar } from 'expo-status-bar';
 import React, { useContext, useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView, TextInput, Button, Pressable } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TextInput, Button, TouchableOpacity, Pressable, FlatList } from 'react-native';
 import ForumCard from '../components/ForumCard';
-import ForumEditor from '../components/ForumEditor';
-import Firebase from '../config/firebase';
-import { NavigationContainer } from '@react-navigation/native';
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
+import FilterLabel from './FilterLabel';
+import Firebase from '../config/firebase.js'
+import DropDownPicker from 'react-native-dropdown-picker';
 
-const auth = Firebase.auth();
-const fireDB = Firebase.firestore();
+const placeHolder = "https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png"
+
+const Forum = ({ forum, navigation }) => (
+  <Pressable onPress={() => navigation.navigate('ForumExpand', {
+    name: forum.Name,
+    title: forum.Question,
+    repliesAmount: forum.Replies,
+    description: forum.Description,
+    id: forum.id,
+    ProfileURL: forum.ProfUrl,
+    uid: forum.Uid
+  })}>
+      <ForumCard key={forum.id} uid={forum.Uid} photoURL={forum.ProfUrl ? forum.ProfUrl : placeHolder} name={forum.Name} title={forum.Question} id={forum.Uid} repliesAmount={forum.Replies}/>
+  </Pressable>
+);
 
 export default function ForumList({navigation}) {
   const { user } = useContext(AuthenticatedUserContext);
+  const [selectedId, setSelectedId] = useState(null);
   const[forums, setForums] = useState([]);
-  const [text, onChangeText] = React.useState("");
+  const[newForums, setNewForums] = useState([]);
+  const [searchText, onChangeText] = React.useState("");
   const[loading, setLoading] = useState(false);
-  const[editor, setEditor] = useState(true);
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null);
+  const [items, setItems] = useState([
+    {label: 'All', value: 'All'},
+    {label: 'Breakfast', value: 'Breakfast'},
+    {label: 'Lunch', value: 'Lunch'},
+    {label: 'Dinner', value: 'Dinner'},
+    {label: 'Desert', value: 'Desert'},
+    {label: 'Snack', value: 'Snack'},
+    {label: 'Drink', value: 'Drink'},
+    {label: 'Other', value: 'Other'}
+  ]);
 
-  const ref = fireDB.collection('Forums');
-  
-  const getForums = () => {
-    setLoading(true);
-    ref.onSnapshot((QuerySnapshot) => {
-      const forums = [];
-      QuerySnapshot.forEach((doc) => {
-        forums.push(doc.data());
-      });
-      setForums(forums);
-      setLoading(false);
-    });
+  const getForums = async () => {
+    const fireDB = Firebase.firestore();
+    const ref = fireDB.collection('newforums');
+    await ref.onSnapshot((QuerySnapshot) => {
+        const temp = [];
+        QuerySnapshot.forEach((doc) => {
+          let currentID = doc.id
+          let appObj = { ...doc.data(), ['id']: currentID }
+          temp.push(appObj);
+        });
+        setForums(temp)
+        setNewForums(temp)
+    })
+}
+
+  const filterForums = () => {
+    const temp = [];
+    if (value == "All") {
+      setNewForums(forums)
+    } else {
+      for (let x of forums) {
+        if(x.Tag == value) {
+          temp.push(x)
+        }
+      }
+      setNewForums(temp)
+    }
   }
 
   useEffect(() => {
     getForums();
   }, []);
 
+  useEffect(() => {
+    filterForums();
+  }, [value]);
+
+  const renderItem = ({ item }) => {
+    return (
+      <Forum
+        forum={item}
+        navigation={navigation}
+      />
+    );
+  };
+
   return (
+    
+
       <View style={styles.container}>
-      <StatusBar style='dark-content'/>
-      <TextInput style={styles.input}  placeholder="Search" value={text}/>
-      <View style={styles.editorButton}>
-      <Pressable onPress={() => navigation.navigate('Editor')}>
-            <Icon size={40} name="edit" type='material' color='#fff'/>
-      </Pressable>
+      <View style={styles.filterList}>
+      <DropDownPicker
+              placeholder='Select Type'
+              open={open}
+              value={value}
+              items={items}
+              setOpen={setOpen}
+              setValue={setValue}
+              setItems={setItems}
+            />
       </View>
-      <Text>Filter by:</Text>
-      <ScrollView style={styles.Scroll}>
-        {forums.map((forum, index) => (
-          <Pressable key={index} onPress={() => navigation.navigate('ForumExpand', {
-            name: forum.Name,
-            title: forum.Question,
-            repliesAmount: forum.Replies,
-            description: forum.Description
-          })}>
-              <ForumCard key={index} name={forum.Name} title={forum.Question} repliesAmount={forum.Replies}/>
-          </Pressable>
-        ))}
-        {/* <ForumCard name="Skinner" title="Cut my Finger!" repliesAmount={15}/>
-        <ForumCard name="Skinner" title="Chicken undercooked?" repliesAmount={5}/>
-        <ForumCard name="Skinner" title="Freeze milk?" repliesAmount={20}/>
-        <ForumCard name="Skinner" title="Best Cheese?" repliesAmount={3}/>
-        <ForumCard name="Skinner" title="Beef Steak Dry?" repliesAmount={23}/>
-        <ForumCard name="Skinner" title="Spork or Foon?" repliesAmount={121}/>
-        <ForumCard name="Skinner" title="Cut my Finger!" repliesAmount={15}/>
-        <ForumCard name="Skinner" title="Cut my Finger!" repliesAmount={15}/> */}
-      </ScrollView>
+      <FlatList
+        data={newForums}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        extraData={selectedId}
+      />
     </View>
   );
 }
@@ -75,19 +119,29 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     paddingTop: 10,
-    paddingHorizontal: 8,
+    paddingHorizontal: 0,
     paddingBottom: 60
   },
    Scroll: {
     marginTop: 10,
+    marginHorizontal: 5,
    },
+   searchBar: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingRight: 10,
+    backgroundColor: '#0000',
+   }, 
    input: {
     backgroundColor: '#fff',
-    height: 40,
     marginBottom: 10,
-    borderWidth: 1,
+    marginHorizontal: 10,
+    borderBottomWidth: 2,
+    borderColor: "#ccc",
     padding: 10,
-    borderRadius: 10
+    fontSize: 20,
+    flex: 5,
   },
   editorButton: {
       position: 'absolute',
@@ -96,7 +150,7 @@ const styles = StyleSheet.create({
       width: 80,
       height: 80,
       borderRadius: 50,
-      backgroundColor: "#3f5c41",
+      backgroundColor: "#949D7E",
       zIndex: 10,
       justifyContent: 'center',
       alignItems: 'center'
@@ -104,5 +158,10 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 80,
     color: "white"
+  },
+  filterList: {
+    display: 'flex',
+    flexDirection: 'row',
+    paddingHorizontal: 10,
   },
 });

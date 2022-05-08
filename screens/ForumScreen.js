@@ -8,6 +8,7 @@ import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvide
 import ForumList from '../components/ForumList';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import ForumExpanded from '../components/ForumExpanded';
+import ProfileExpanded from './ProfileExpanded';
 
 const auth = Firebase.auth();
 const Stack = createStackNavigator();
@@ -22,6 +23,7 @@ export default function ForumScreen() {
       <Stack.Screen name='List' component={ForumList} />
       <Stack.Screen name='Editor' component={ForumEditor} />
       <Stack.Screen name='ForumExpand' component={ForumExpanded} />
+      <Stack.Screen name='ProfileExpanded' component={ProfileExpanded} />
     </Stack.Navigator>
   );
 }

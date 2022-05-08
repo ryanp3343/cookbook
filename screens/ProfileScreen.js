@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import React, { useContext, useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, Pressable, ScrollView } from 'react-native';
 import ForumCard from '../components/ForumCard';
@@ -6,17 +5,95 @@ import RecipeCard from '../components/RecipeCard';
 import Firebase from '../config/firebase';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
+import LikedRecipeList from '../components/LikedRecipeList';
 
 const auth = Firebase.auth();
+const fireDB = Firebase.firestore();
 
-export default function ProfileScreen() {
+export default function ProfileScreen({navigation}) {
   const { user } = useContext(AuthenticatedUserContext);
-  const [followers, setFollowers] = useState(300)
-  const [following, setfollowing] = useState(400)
-  const [username, setUsername] = useState('Username')
-  const [userClass, setUserClass] = useState('professional chef')
+  const [followers, setFollowers] = useState(0)
+  const [following, setfollowing] = useState(0)
   const [display, setDisplay] = useState(true)
+  const [loading, setLoading] = useState(true);
+  const [userRef, setUserRef] = useState({});
+  const [profile, setProfile] = useState([]);
+  const [recipes, setRecipes] = useState([]);
+  const [userRecipes, setUserRecipes] = useState([]);
+  const [forumColor, setForumColor] = useState("black");
+  const [recipeColor, setRecipeColor] = useState("black");
+  const [likedColor, setLikedColor] = useState("#949D7E");
+  
+  const getUserRecipes = async () => {
+    setLoading(true);
+    console.log("getting User Recipes")
+    const fireDB = Firebase.firestore();
+    const ref = fireDB.collection('newrecipes');
+    await auth.onAuthStateChanged(user => {
+      if(user){
+        fireDB.collection('newusers').doc(user.uid).get().then((docRef) =>{
+          ref.onSnapshot((QuerySnapshot) => {
+            const recipes = [];
+            QuerySnapshot.forEach((doc) => {
+              if(docRef.data()["userRecipes"].includes(doc.id)){
+                let currentID = doc.id
+                let appObj = { ...doc.data(), ['id']: currentID }
+                recipes.push(appObj);
+                // console.log(recipes)
+              }
+            });
+            setUserRecipes(recipes)
+            setLoading(false);
+          })
+        })
+      }   
+    }) 
+  }
 
+  const getSavedRecipes = async () => {
+    setLoading(true);
+    console.log("getting Saved Recipes")
+    const fireDB = Firebase.firestore();
+    const ref = fireDB.collection('newrecipes');
+    await auth.onAuthStateChanged(user => {
+      if(user){
+        fireDB.collection('newusers').doc(user.uid).get().then((docRef) =>{
+          ref.onSnapshot((QuerySnapshot) => {
+            const recipes = [];
+            QuerySnapshot.forEach((doc) => {
+              if(docRef.data()["savedRecipes"].includes(doc.id)){
+                let currentID = doc.id
+                let appObj = { ...doc.data(), ['id']: currentID }
+                recipes.push(appObj);
+                // console.log(recipes)
+              }
+            });
+            setRecipes(recipes)
+            setLoading(false);
+          })
+        })
+      }   
+    }) 
+  }
+
+  const chooseList = (number) => {
+    if (number == 0) {
+      setForumColor("#949D7E")
+      setLikedColor("black")
+      setRecipeColor("black")
+      setDisplay(false)
+    } else if (number == 1) {
+      setForumColor("black")
+      setLikedColor("black")
+      setRecipeColor("#949D7E")
+      setDisplay(true)
+    } else if (number == 2) {
+      setForumColor("black")
+      setLikedColor("#949D7E")
+      setRecipeColor("black")
+      setDisplay(true)
+    }
+  }
 
   const handleSignOut = async () => {
     try {
@@ -25,25 +102,70 @@ export default function ProfileScreen() {
       console.log(error);
     }
   };
+  const getProfile = async  () => {
+    setLoading(true);
+    await auth.onAuthStateChanged(user => {
+      if(user){
+        fireDB.collection('newusers').doc(user.uid).get().then((docRef) =>{
+            const profile = [];
+           // profile.push(docRef.data())
+            setProfile(docRef.data());
+            setfollowing(docRef.data().following)
+            setFollowers(docRef.data().followers)
+        })
+      }   
+    }) 
+    await auth.onAuthStateChanged(user =>{
+      fireDB.collection('newusers').doc(user.uid).get().then((docRef) =>{
+        setUserRef(docRef.data());    
+    })
+    }) 
+    
+  }
+var anotherurl = profile['profUrl']
+
+  useEffect(() => {
+    getProfile();
+  },[]);
+
+  useEffect(() => {
+    getSavedRecipes();
+  },[user]);
+
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      getProfile()
+      getSavedRecipes();
+      getUserRecipes();
+      console.log('Refreshed!');
+    });
+    return unsubscribe;
+  }, [navigation]);
+  
+  useEffect(() => {
+    getSavedRecipes();
+    getUserRecipes();
+  },[user]);
+
 
   return (
     <View style={styles.container}>
-      <StatusBar style='dark-content' />
-
         <View  style={styles.profileHeader}>
           <View style={styles.profileInfo}>
-            <Image style={styles.Logo} source={require('../imgs/pfp1.jpg')}></Image>
+            <Image resizeMode='cover' style={styles.Logo} source={{uri: profile.profUrl}}></Image>
             <View>
               <View style={styles.settingsName}>
-                <Text style={styles.userName}>{username}</Text>
-                <Pressable style={styles.button} onPress={() => navigation.navigate('Register')}>
-                  <Icon name="edit" type='material' color='#000'/>
+                <Text style={styles.userName}>{profile.username}</Text>
+                <Pressable style={styles.button} onPress={() => navigation.navigate('ProfileEditor', {
+                  userData: userRef,
+                })}>
+                  <Icon name="edit" type='feather' color='#000'/>
                 </Pressable>
               </View>
-              <Text style={styles.userDescription}>{userClass}</Text>
+              <Text style={styles.userDescription}>{profile.profTitle}</Text>
               <View style={styles.profileFollowers}>
-                <Text style={styles.followers}>followers: {followers}</Text>
-                <Text style={styles.followers}>following: {following}</Text>
+                <Text style={styles.followers}>followers: {followers?.length}</Text>
+                <Text style={styles.followers}>following: {following?.length}</Text>
               </View>
             </View>
           </View>
@@ -51,28 +173,60 @@ export default function ProfileScreen() {
 
         <View style={styles.navContainer}>
           <View style={styles.profileNav}>
-            <Pressable style={styles.button} onPress={() => setDisplay(true)}>
-              <Text style={styles.buttonText}>FORUMS</Text>
+            <Pressable style={styles.button} onPress={() => chooseList(0)}>
+              <Text style={[styles.buttonText, {color: forumColor}]}>RECIPES</Text>
             </Pressable>
-            <Pressable style={styles.button} onPress={() => setDisplay(false)}>
-              <Text style={styles.buttonText}>RECIPES</Text>
+            <Pressable style={styles.button} onPress={() => chooseList(2)}>
+              <Text style={[styles.buttonText, {color: likedColor}]}>LIKED</Text>
             </Pressable>
           </View>
         </View>
 
-        <View style={styles.contentContainer}>
+        {!loading ? <View style={styles.contentContainer}>
           <ScrollView style={styles.Scroll}>
-            {display ? <ForumCard name="Skinner" title="Cut my Finger!" repliesAmount={15}/> 
-                     : <RecipeCard name={"Spaghetti"} url={'https://www.eatthis.com/wp-content/uploads/sites/4/2019/01/healthy-spaghetti-spicy-tomato-sauce.jpg?fit=1200%2C879&ssl=1'} directions={"odk"} ingredients={"odk"}/>}
+            {display ?
+              <ScrollView style={styles.Scroll}  showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}>
+              {recipes.map((recipe, index) => (
+                <RecipeCard 
+                  key={index} 
+                  userRef={userRef} 
+                  id = {recipe.id} 
+                  recipe={recipe} 
+                  name={recipe.Title} 
+                  directions={recipe.directions} 
+                  url={recipe.Url} 
+                  ingredients={recipe.ingredients}
+                  cookedScore={recipe.CookedScore}
+                  cookedVal={recipe.CookedVal}
+                  cooked={recipe.Cooked}
+                  username={recipe.Name}
+                  date={recipe.Date}
+                  pfpUrl={recipe.pfpUrl}
+                /> ))}
+              </ScrollView>
+                      :
+              <ScrollView style={styles.Scroll}  showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}>
+              {userRecipes.map((recipe, index) => (
+                <RecipeCard 
+                  key={index} 
+                  userRef={userRef} 
+                  id = {recipe.id} 
+                  recipe={recipe} 
+                  name={recipe.Title} 
+                  directions={recipe.directions} 
+                  url={recipe.Url} 
+                  ingredients={recipe.ingredients}
+                  cookedScore={recipe.CookedScore}
+                  cookedVal={recipe.CookedVal}
+                  cooked={recipe.Cooked}
+                  username={recipe.Name}
+                  date={recipe.Date}
+                  pfpUrl={recipe.pfpUrl}
+                /> ))}
+              </ScrollView>}
+      
           </ScrollView>
-        </View>
-
-        <View style={styles.logOut}>
-            <Pressable style={styles.button} onPress={handleSignOut}>
-              <Text style={styles.buttonText}>Log out</Text>
-            </Pressable>
-        </View>
-
+        </View> : <></>}
     </View>
   );
 }
@@ -82,10 +236,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     paddingTop: 15,
-    paddingHorizontal: 8,
+    flexDirection: 'column',
   },
   profileHeader: {
-    flexDirection: 'column'
+    paddingLeft: 15,
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    paddingBottom: 20,
+    borderBottomWidth: 1,
+    borderColor: '#D8d8d8',
   },
   profileInfo: {
     flexDirection: 'row',
@@ -110,6 +269,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 50,
+    
   },
   profileFollowers: {
     marginTop: 10,
@@ -124,24 +284,23 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
   },
-  navContainer: {
-    height: 'auto',
-    paddingTop: 15,
-    alignItems: 'center',
-  },
   contentContainer: {
-    alignItems: 'center',
-    marginBottom: 250
+    // alignItems: 'center',
+    marginBottom: 250,
+    width: '100%',
   },
   profileNav: {
     flexDirection: 'row',
     marginTop: 20,
     marginBottom: 20,
+    paddingHorizontal: 15,
     justifyContent: 'space-between',
-    width: 300,
+    width: "80%",
+    alignSelf: 'center'
   },
   button: {
     marginTop: 5,
+    backgroundColor: '#fff'
   },
   buttonText: {
     fontSize: 20,

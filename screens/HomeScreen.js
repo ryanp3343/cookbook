@@ -2,11 +2,11 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StatusBar } from 'expo-status-bar';
 import React, { useContext } from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, Image } from 'react-native';
 import { IconButton } from '../components';
 import Firebase from '../config/firebase';
 import { AuthenticatedUserContext } from '../navigation/AuthenticatedUserProvider';
-import ProfileScreen from './ProfileScreen'
+import ProfileStack from './ProfileStack';
 import RecipeScreen from './RecipeScreen'
 import ForumScreen  from './ForumScreen'
 import RecipeStack from './RecipeStack';
@@ -27,28 +27,103 @@ export default function HomeScreen({ navigation }) {
   };
   return (
     <Tabs.Navigator screenOptions={{
-                    tabBarStyle: { position: 'absolute' },
+                    tabBarStyle: { 
+                      position: 'absolute',
+                      elevation: 1,
+                      backgroundColor: '#ffff',
+                      height: 70, 
+                    }, 
+                    tabBarShowLabel: false,  
                     tabBarActiveTintColor: '#fff',
-                    tabBarActiveBackgroundColor: '#84a186',
-                    tabBarInactiveBackgroundColor: '#3f5c41',
-                    tabBarLabelStyle: {
-                      fontSize: 15,
-                      color: '#000',
-                    },
+                    tabBarActiveBackgroundColor: '#fff',
                     headerStyle: {
-                      backgroundColor: '#3f5c41',
+                      backgroundColor: '#949D7E',
                     },
-                    headerTintColor: "white"
-    }}>
-        <Tabs.Screen name="Forums" component={ForumScreen} options={{tabBarIcon: ({ tintColor }) => (
-                <Icon name="forum" type='material' color='#000'/>
-            )}}/>
-        <Tabs.Screen name="Recipes" component={RecipeStack} options={{tabBarIcon: ({ tintColor }) => (
-                <Icon name="book" type='material' color='#000'/>
-            )}}/>
-        <Tabs.Screen name="Profile" component={ProfileScreen} options={{tabBarIcon: ({ tintColor }) => (
-                <Icon name="person" type='material' color='#000'/>
-            )}}/>
+                    headerTitleAlign: 'center',
+                    headerTintColor: "white",
+                    headerShown: true
+    }}
+     >
+        <Tabs.Screen name="Forums" component={ForumScreen} options={{tabBarIcon: ({ focused }) => (
+                <Icon name="message-square" type='feather' size={40} color={focused ? "#949D7E" : "#bbb"}/>
+            ), headerLeft: () => (
+              <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                flexDirection: 'row',
+                paddingHorizontal: 20,
+                height: StatusBar.currentHeight,
+              }}>
+                 <Image style={styles.stretch} source={require("../imgs/cooked_white.png")} size={40}></Image>
+              </View>
+            ),  headerRight: () => (
+              <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                flexDirection: 'row',
+                paddingHorizontal: 20,
+                height: StatusBar.currentHeight,
+              }}>
+                <Icon name="plus-square" size={30} type='feather'  color='#fff' onPress={() => navigation.navigate("Editor") }/>
+              </View>
+            ),}}/>
+
+        <Tabs.Screen name="Recipes" component={RecipeStack} options={{tabBarIcon: ({ focused }) => (
+                <Icon name="book" type='feather' size={40} color={focused ? "#949D7E" : "#bbb"}/>
+            ), headerLeft: () => (
+              <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                flexDirection: 'row',
+                paddingHorizontal: 20,
+                height: StatusBar.currentHeight,
+              }}>
+                 <Image style={styles.stretch} source={require("../imgs/cooked_white.png")} size={40}></Image>
+              </View>
+            ), headerRight: () => (
+              <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                flexDirection: 'row',
+                paddingHorizontal: 20,
+                height: StatusBar.currentHeight,
+              }}>
+                <Icon name="plus-square" size={30} type='feather'  color='#fff' onPress={() => navigation.navigate("RecipeEditor") }/>
+              </View>
+            ),}}/>
+
+        <Tabs.Screen name="Profile" component={ProfileStack} options={{tabBarIcon: ({ focused }) => (
+                <Icon name="user" type='feather' size={40} color={focused ? "#949D7E" : "#bbb"}/>
+            ), headerRight: () => (
+              <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                flexDirection: 'row',
+                paddingHorizontal: 20,
+                height: StatusBar.currentHeight,
+              }}>
+              <View style={{marginRight: 20}}>
+                <Icon name="help-circle" type='feather'  color='#fff' onPress={() => navigation.navigate("Tutorial") }/>
+              </View>
+              <Icon name="logout" type='material'  color='#fff' onPress={() => handleSignOut() }/>
+              </View>
+            ), headerLeft: () => (
+              <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                flexDirection: 'row',
+                paddingHorizontal: 20,
+                height: StatusBar.currentHeight,
+              }}>
+                 <Image style={styles.stretch} source={require("../imgs/cooked_white.png")} size={40}></Image>
+              </View>
+            ),}}/>
       </Tabs.Navigator>
   );
 }
@@ -75,5 +150,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'normal',
     color: '#fff'
+  },
+  stretch: {
+    width: 30,
+    height: 23,
+    resizeMode: 'stretch'
   }
 });
