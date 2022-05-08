@@ -5,13 +5,13 @@ import Constants from 'expo-constants';
 
 // Initialize Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyASRvqTbBV61Va8I4boRyOU5yvY942tsFQ",
-  authDomain: "test2-7ed41.firebaseapp.com",
-  databaseURL: "https://test2-7ed41-default-rtdb.firebaseio.com",
-  projectId: "test2-7ed41",
-  storageBucket: "test2-7ed41.appspot.com",
-  messagingSenderId: "458106844118",
-  appId: "1:458106844118:web:b1c9e9afb9120617d7ea77"
+  apiKey: Constants.manifest.extra.apiKey,
+  authDomain: Constants.manifest.extra.authDomain,
+  databaseURL:  Constants.manifest.extra.databaseURL,
+  projectId: Constants.manifest.extra.projectId,
+  storageBucket:  Constants.manifest.extra.storageBucket,
+  messagingSenderId:  Constants.manifest.extra.messagingSenderId,
+  appId:  Constants.manifest.extra.appId
 };
 
 let Firebase;
